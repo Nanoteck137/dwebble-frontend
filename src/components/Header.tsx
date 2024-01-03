@@ -3,7 +3,7 @@ import { queue } from "./AudioHandler";
 const Header = () => {
   return (
     <>
-      <div class="fixed top-16 bottom-16 right-0 w-64 bg-red-100">
+      <div class="fixed z-50 top-16 bottom-16 right-0 w-64 bg-red-100">
         {queue().items.map((item, i) => {
           if (i === queue().index) {
             return <p class="text-yellow-400">{item.name}</p>;
