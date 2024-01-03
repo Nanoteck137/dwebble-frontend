@@ -2,8 +2,6 @@
 import { ViewTransitions } from "astro:transitions";
 import AudioPlayer from "../components/AudioPlayer";
 import Header from "../components/Header";
-
-const items = new Array(100).fill(0).map((v, i) => `Item ${i}`);
 ---
 
 <!doctype html>
@@ -15,14 +13,12 @@ const items = new Array(100).fill(0).map((v, i) => `Item ${i}`);
     <ViewTransitions />
   </head>
   <body>
-    <!-- <slot /> -->
-
     <Header transition:persist client:load />
-    <div class="py-16 h-full">
+    <div class="h-full py-16">
       <slot />
     </div>
     <footer
-      class="fixed left-0 right-0 bottom-0 z-50 h-16 px-4 shadow-lg bg-red-300"
+      class="fixed bottom-0 left-0 right-0 z-50 h-16 bg-red-300 px-4 shadow-lg"
     >
       <AudioPlayer client:load transition:persist />
     </footer>
