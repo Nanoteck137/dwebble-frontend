@@ -1,4 +1,5 @@
 ---
+import { ViewTransitions } from "astro:transitions";
 import AudioPlayer from "../components/AudioPlayer";
 import Header from "../components/Header";
 
@@ -11,18 +12,19 @@ const items = new Array(100).fill(0).map((v, i) => `Item ${i}`);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dwebble</title>
+    <ViewTransitions />
   </head>
   <body>
     <!-- <slot /> -->
 
-    <Header client:load />
+    <Header transition:persist client:load />
     <div class="py-16 h-full">
       <slot />
     </div>
     <footer
       class="fixed left-0 right-0 bottom-0 z-50 h-16 px-4 shadow-lg bg-red-300"
     >
-      <AudioPlayer client:load />
+      <AudioPlayer client:load transition:persist />
     </footer>
   </body>
 </html>
