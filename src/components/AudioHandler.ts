@@ -27,7 +27,6 @@ class AudioHandler {
 
   constructor(audioEl: HTMLAudioElement) {
     this.queueIndex = 0;
-    console.log("HELLO");
     this.queue = [];
 
     this.audioEl = audioEl;
