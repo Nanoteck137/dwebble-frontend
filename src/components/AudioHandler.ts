@@ -78,6 +78,10 @@ class AudioHandler {
 
   next() {
     this.queueIndex += 1;
+    if (this.queueIndex >= this.queue.length) {
+      this.queueIndex = this.queue.length - 1;
+      return;
+    }
     this.updateAudio();
     setQueue((prev) => ({ ...prev, index: this.queueIndex }));
   }
