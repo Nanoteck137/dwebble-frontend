@@ -44,7 +44,9 @@ const AudioPlayer = () => {
       <input
         class="w-full"
         type="range"
-        value={(time().time / time().duration) * 100}
+        value={`${
+          time().duration > 0 ? (time().time / time().duration) * 100 : 1
+        }`}
         onInput={(e) => {
           const n = (e.currentTarget.valueAsNumber / 100) * time().duration;
           audioHandler?.seek(n);
