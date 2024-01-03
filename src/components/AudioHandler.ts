@@ -1,15 +1,16 @@
 import { createSignal } from "solid-js";
 import type { Track } from "src/models/track";
 
-export const [state, setState] = createSignal<"playing" | "paused" | "loading">(
-  "paused"
-);
-export const [time, setTime] = createSignal<{ time: number; duration: number }>(
-  {
-    time: 0,
-    duration: 0,
-  }
-);
+export const [state, setState] = createSignal<
+  "playing" | "paused" | "loading"
+>("paused");
+export const [time, setTime] = createSignal<{
+  time: number;
+  duration: number;
+}>({
+  time: 0,
+  duration: 0,
+});
 
 export const [queue, setQueue] = createSignal<{
   index: number;
@@ -33,7 +34,10 @@ class AudioHandler {
     this.audioEl.volume = 0.01;
 
     this.audioEl.addEventListener("durationchange", () => {
-      setTime((prev) => ({ time: prev.time, duration: this.audioEl.duration }));
+      setTime((prev) => ({
+        time: prev.time,
+        duration: this.audioEl.duration,
+      }));
     });
     this.audioEl.addEventListener("volumechange", () => {});
     this.audioEl.addEventListener("loadstart", () => {
@@ -67,23 +71,33 @@ class AudioHandler {
     this.updateAudio();
   }
 
+  setQueueIndex(index: number) {
+    this.queueIndex = index;
+    if (this.queueIndex >= this.queue.length) {
+      this.queueIndex = this.queue.length - 1;
+    }
+
+    if (this.queueIndex < 0) {
+      this.queueIndex = 0;
+    }
+
+    this.updateAudio();
+    setQueue((prev) => ({ ...prev, index: this.queueIndex }));
+  }
+
   updateAudio() {
     console.log(this.queue);
     const file = this.queue[this.queueIndex].filename;
     this.audioEl.src = `http://localhost:3000/tracks/${file}`;
     this.audioEl.play();
-
-    console.log(this.audioEl);
   }
 
   next() {
-    this.queueIndex += 1;
-    if (this.queueIndex >= this.queue.length) {
-      this.queueIndex = this.queue.length - 1;
-      return;
-    }
-    this.updateAudio();
-    setQueue((prev) => ({ ...prev, index: this.queueIndex }));
+    this.setQueueIndex(this.queueIndex + 1);
+  }
+
+  prev() {
+    this.setQueueIndex(this.queueIndex - 1);
   }
 
   toggle() {

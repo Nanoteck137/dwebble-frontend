@@ -3,7 +3,8 @@ import {
   HiSolidMagnifyingGlass,
   HiSolidPlay,
 } from "solid-icons/hi";
-import { queue } from "./AudioHandler";
+import { twMerge } from "tailwind-merge";
+import { audioHandler, queue } from "./AudioHandler";
 
 const Header = () => {
   return (
@@ -12,16 +13,24 @@ const Header = () => {
         <div class="flex flex-col">
           {queue().items.map((item, i) => {
             return (
-              <div class="group flex items-center gap-2 border-b-2 border-black bg-red-600 px-2">
+              <div class="group flex items-center gap-2 border-b-2 border-black bg-red-600 px-2 py-1">
                 <div class="relative">
                   <img
-                    class="object-cover"
+                    class="rounded object-cover"
                     src={`http://localhost:3000${item.coverArt}`}
                     alt=""
                     width="48"
                   />
-                  <button class="absolute bottom-0 left-0 right-0 top-0 z-10 hidden w-full items-center justify-center bg-red-400/30 group-hover:flex">
-                    <HiSolidPlay class="text-center" size="32" />
+                  <button
+                    class={twMerge(
+                      "absolute bottom-0 left-0 right-0 top-0 z-10 hidden w-full items-center justify-center rounded bg-black/70 group-hover:flex",
+                      i === queue().index && "flex",
+                    )}
+                    onClick={() => {
+                      audioHandler?.setQueueIndex(i);
+                    }}
+                  >
+                    <HiSolidPlay class="text-white" size="32" />
                   </button>
                 </div>
                 <div class="flex flex-col gap-1">
