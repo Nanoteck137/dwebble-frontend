@@ -86,7 +86,6 @@ class AudioHandler {
   }
 
   updateAudio() {
-    console.log(this.queue);
     const file = this.queue[this.queueIndex].filename;
     this.audioEl.src = `http://localhost:3000/tracks/${file}`;
     this.audioEl.play();
