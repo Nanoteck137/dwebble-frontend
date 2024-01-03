@@ -1,9 +1,9 @@
-export interface Artist {
-  id: string;
-  name: string;
-  picture: string;
-}
+import { z } from "zod";
 
-export interface ArtistFetchResponse {
-  artists: Artist[];
-}
+export const Artist = z.object({
+  id: z.string(),
+  name: z.string(),
+  picture: z.string(),
+});
+
+export type Artist = z.infer<typeof Artist>;

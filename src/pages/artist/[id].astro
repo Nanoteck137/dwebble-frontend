@@ -1,0 +1,37 @@
+---
+import { z } from "zod";
+import Layout from "../../layouts/Layout.astro";
+import { Album } from "../../models/album";
+import { Artist } from "../../models/artist";
+
+const { id } = Astro.params;
+
+const Response = z.object({
+  artist: Artist,
+  albums: z.array(Album),
+});
+
+const j = await fetch(`http://localhost:3000/api/v1/artists/${id}`).then((d) =>
+  d.json()
+);
+console.log(j);
+const data = Response.parse(j);
+---
+
+<Layout>
+  <p>{data.artist.name}</p>
+
+  <div>
+    {
+      data.albums.map((album) => {
+        return (
+          <div>
+            <a class="hover:text-blue-400" href={`/album/${album.id}`}>
+              {album.name}
+            </a>
+          </div>
+        );
+      })
+    }
+  </div>
+</Layout>

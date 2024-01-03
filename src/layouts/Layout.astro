@@ -1,5 +1,8 @@
 ---
 import AudioPlayer from "../components/AudioPlayer";
+import Header from "../components/Header";
+
+const items = new Array(100).fill(0).map((v, i) => `Item ${i}`);
 ---
 
 <!doctype html>
@@ -12,76 +15,14 @@ import AudioPlayer from "../components/AudioPlayer";
   <body>
     <!-- <slot /> -->
 
-    <div class="flex h-screen">
-      <div
-        class="fixed left-0 right-0 z-50 h-16 border-b-2 bg-white px-4 shadow-lg dark:border-gray-600 dark:bg-gray-700"
-      >
-        <div class="flex h-full items-center justify-between">
-          <div class="flex h-full items-center gap-4 px-3">
-            <a class="text-2xl" href="/">Sewaddle</a>
-          </div>
-          <div class="flex gap-6">
-            <button>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-                class="h-8 w-8"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z"
-                  clip-rule="evenodd"
-                >
-                </path>
-              </svg>
-            </button>
-            <div class="relative flex items-center">
-              <button>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden="true"
-                  class="h-8 w-8"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M10.5 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z"
-                    clip-rule="evenodd"
-                  >
-                  </path>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="z-40 mt-16 flex-grow">
-        <div
-          class="grid grid-cols-1 place-items-center gap-4 p-2 md:grid-cols-3 lg:grid-cols-4"
-        >
-          <a
-            class="aspect-square relative flex w-full flex-col overflow-clip rounded border-2 bg-white shadow-md transition-transform hover:shadow-xl active:scale-95"
-            href="/series/k1lcqv6g"
-            ><div
-              class="absolute right-2 top-2 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-blue-600/90 text-white"
-            >
-              <p>392</p>
-            </div>
-            <div class="relative h-full w-full">
-              <div class="h-full bg-red-400"></div>
-            </div>
-            <p class="w-full p-4 text-center">Berserk</p>
-          </a>
-        </div>
-      </div>
-      <footer
-        class="fixed left-0 right-0 bottom-0 z-50 h-16 px-4 shadow-lg bg-red-300"
-      >
-        <AudioPlayer client:load />
-      </footer>
+    <Header client:load />
+    <div class="py-16 h-full">
+      <slot />
     </div>
+    <footer
+      class="fixed left-0 right-0 bottom-0 z-50 h-16 px-4 shadow-lg bg-red-300"
+    >
+      <AudioPlayer client:load />
+    </footer>
   </body>
 </html>
