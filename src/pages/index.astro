@@ -1,0 +1,15 @@
+---
+import { textSpanIntersectsWithTextSpan } from "typescript";
+import Test from "../components/Test";
+import Layout from "../layouts/Layout.astro";
+import { type ArtistFetchResponse } from "../models/artist";
+
+// const artists: ArtistFetchResponse = await fetch(
+//   "http://localhost:3000/api/v1/artists"
+// ).then((d) => d.json());
+// console.log(artists);
+---
+
+<Layout>
+  <Test artists={[]} client:visible />
+</Layout>
