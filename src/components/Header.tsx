@@ -3,10 +3,36 @@ import {
   HiSolidMagnifyingGlass,
   HiSolidPlay,
 } from "solid-icons/hi";
+import { createSignal } from "solid-js";
 import { twMerge } from "tailwind-merge";
 import { audioHandler, queue } from "./AudioHandler";
+import Slider from "./Slider";
 
 const Header = () => {
+  const [progress, setProgress] = createSignal(0);
+
+  // onMount(() => {
+  //   let frame = requestAnimationFrame(loop);
+  //   let forward = true;
+
+  //   function loop(t: number) {
+  //     let p = progress();
+  //     if (forward) {
+  //       p += 0.01;
+  //     } else {
+  //       p -= 0.01;
+  //     }
+  //     if (p >= 1.0) forward = false;
+  //     if (p < 0.0) forward = true;
+  //     setProgress(p);
+  //     frame = requestAnimationFrame(loop);
+  //   }
+
+  //   onCleanup(() => {
+  //     cancelAnimationFrame(frame);
+  //   });
+  // });
+
   return (
     <>
       <div class="fixed bottom-16 right-0 top-16 z-50 w-64 bg-red-100">
@@ -33,6 +59,7 @@ const Header = () => {
                     <HiSolidPlay class="text-white" size="32" />
                   </button>
                 </div>
+
                 <div class="flex flex-col gap-1">
                   <p class="text-sm">{item.name}</p>
                   <p class="text-xs text-gray-500">{item.artistName}</p>
@@ -50,6 +77,11 @@ const Header = () => {
               Dwebble
             </a>
           </div>
+
+          <div class="w-48">
+            <Slider progress={progress()} onInteract={(p) => setProgress(p)} />
+          </div>
+
           <div class="flex gap-6">
             <button>
               <HiSolidMagnifyingGlass size="32" />

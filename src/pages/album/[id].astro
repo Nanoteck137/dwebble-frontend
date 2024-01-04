@@ -13,7 +13,7 @@ const Response = z.object({
 });
 
 const j = await fetch(`http://localhost:3000/api/v1/albums/${id}`).then((d) =>
-  d.json()
+  d.json(),
 );
 console.log(j);
 const data = Response.parse(j);

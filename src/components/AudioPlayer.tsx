@@ -4,8 +4,9 @@ import {
   HiSolidPause,
   HiSolidPlay,
 } from "solid-icons/hi";
-import { Show } from "solid-js";
+import { Show, onCleanup, onMount } from "solid-js";
 import { audioHandler, state, time } from "./AudioHandler";
+import Slider from "./Slider";
 
 function formatTime(s: number) {
   const min = Math.floor(s / 60);
@@ -15,8 +16,23 @@ function formatTime(s: number) {
 }
 
 const AudioPlayer = () => {
+  onMount(() => {
+    function keyUp(e: KeyboardEvent) {
+      if (e.key == " ") {
+        e.preventDefault();
+        audioHandler?.toggle();
+      }
+    }
+
+    document.addEventListener("keyup", keyUp);
+
+    onCleanup(() => {
+      document.removeEventListener("keyup", keyUp);
+    });
+  });
+
   return (
-    <div class="relative  flex items-center h-full gap-4">
+    <div class="relative flex h-full items-center gap-4">
       <div class="flex gap-2">
         <HiSolidBackward size="30" />
         <button
@@ -41,7 +57,16 @@ const AudioPlayer = () => {
       <p>
         {formatTime(time().time)} / {formatTime(time().duration)}
       </p>
-      <input
+
+      <div class="absolute -left-4 -right-4 -top-2">
+        <Slider
+          progress={time().time / time().duration}
+          onInteract={(p) => {
+            audioHandler?.seek(p * time().duration);
+          }}
+        />
+      </div>
+      {/* <input
         class="w-full"
         type="range"
         value={`${
@@ -51,7 +76,7 @@ const AudioPlayer = () => {
           const n = (e.currentTarget.valueAsNumber / 100) * time().duration;
           audioHandler?.seek(n);
         }}
-      />
+      /> */}
     </div>
   );
 };
