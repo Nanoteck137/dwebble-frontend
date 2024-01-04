@@ -20,14 +20,28 @@ const AudioPlayer = () => {
     function keyUp(e: KeyboardEvent) {
       if (e.key == " ") {
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
         audioHandler?.toggle();
+        return false;
       }
     }
 
-    document.addEventListener("keyup", keyUp);
+    function stopScroll(e: KeyboardEvent) {
+      if (e.key == " ") {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }
+    }
+
+    window.addEventListener("keyup", keyUp);
+    window.addEventListener("keypress", stopScroll);
 
     onCleanup(() => {
-      document.removeEventListener("keyup", keyUp);
+      window.removeEventListener("keyup", keyUp);
+      window.removeEventListener("keypress", stopScroll);
     });
   });
 
