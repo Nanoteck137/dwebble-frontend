@@ -23,6 +23,8 @@ export const [queue, setQueue] = createSignal<{
 class AudioHandler {
   audioEl: HTMLAudioElement;
 
+  volume: number = 0;
+
   queueIndex: number;
   queue: Track[];
 
@@ -31,7 +33,8 @@ class AudioHandler {
     this.queue = [];
 
     this.audioEl = audioEl;
-    this.audioEl.volume = 0.01;
+    const volume = parseFloat(localStorage.getItem("player-volume") || "1.0");
+    this.setVolume(volume);
 
     this.audioEl.addEventListener("durationchange", () => {
       setTime((prev) => ({
@@ -61,6 +64,12 @@ class AudioHandler {
     this.audioEl.addEventListener("ended", () => {
       this.next();
     });
+  }
+
+  setVolume(vol: number) {
+    this.volume = vol;
+    this.audioEl.volume = vol;
+    localStorage.setItem("player-volume", vol.toString());
   }
 
   setQueue(newQueue: Track[]) {

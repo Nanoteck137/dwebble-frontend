@@ -5,7 +5,7 @@ import {
   HiSolidPlay,
 } from "solid-icons/hi";
 import { Show, onCleanup, onMount } from "solid-js";
-import { audioHandler, state, time } from "./AudioHandler";
+import { audioHandler, queue, state, time } from "./AudioHandler";
 import Slider from "./Slider";
 
 function formatTime(s: number) {
@@ -57,6 +57,25 @@ const AudioPlayer = () => {
       <p>
         {formatTime(time().time)} / {formatTime(time().duration)}
       </p>
+
+      <div class="flex flex-col">
+        <p class="">
+          {queue().items.length > 0 ? queue().items[queue().index].name : ""}
+        </p>
+        <p class="text-sm">
+          {queue().items.length > 0
+            ? queue().items[queue().index].artistName
+            : ""}
+        </p>
+      </div>
+
+      <Slider
+        class="w-48"
+        progress={audioHandler?.volume || 1.0}
+        onInteract={(p) => {
+          audioHandler?.setVolume(p);
+        }}
+      />
 
       <div class="absolute -left-4 -right-4 -top-2">
         <Slider
