@@ -1,14 +1,22 @@
 ---
 import { z } from "astro/zod";
 import Layout from "../layouts/Layout.astro";
-import { Artist } from "../models/artist";
 
-const ArtistResponse = z.object({
-  artists: z.array(Artist),
+const Artist = z.object({
+  id: z.string().cuid2(),
+  name: z.string(),
+  picture: z.string(),
 });
 
-const data = ArtistResponse.parse(
-  await fetch("http://localhost:3000/api/v1/artists").then((d) => d.json())
+const ArtistResponse = z.object({
+  status: z.number(),
+  data: z.object({
+    artists: z.array(Artist),
+  }),
+});
+
+const res = ArtistResponse.parse(
+  await fetch("http://localhost:3000/api/v1/artists").then((d) => d.json()),
 );
 ---
 
@@ -17,11 +25,11 @@ const data = ArtistResponse.parse(
     class="grid grid-cols-1 place-items-center gap-4 p-2 md:grid-cols-3 lg:grid-cols-4"
   >
     {
-      data.artists.map((artist) => {
+      res.data.artists.map((artist) => {
         return (
           <a
-            class="aspect-square relative flex w-full flex-col overflow-clip rounded border-2 bg-white shadow-md transition-transform hover:shadow-xl active:scale-95"
-            href={`/artist/${artist.id}`}
+            class="relative flex aspect-square w-full flex-col overflow-clip rounded border-2 bg-white shadow-md transition-transform hover:shadow-xl active:scale-95"
+            href={`#/artist/${artist.id}`}
           >
             <div class="relative h-full w-full">
               <img class="h-full" src={`${artist.picture}`} alt="" />
