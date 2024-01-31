@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@solidjs/router": "^0.10.10",
-    "solid-js": "^1.8.7"
+    "@tanstack/solid-query": "^5.18.0",
+    "solid-js": "^1.8.7",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.17",
