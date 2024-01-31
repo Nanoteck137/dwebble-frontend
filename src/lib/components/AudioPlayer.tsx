@@ -9,6 +9,7 @@ import {
 } from "solid-js";
 import { useMusicManager } from "../../context/MusicManager";
 import { formatTime } from "../utils";
+import Slider from "./Slider";
 
 function getVolume() {
   const vol = localStorage.getItem("player-volume");
@@ -80,7 +81,22 @@ const AudioPlayer = () => {
       <p>
         {formatTime(audio.currentTime)} / {formatTime(audio.duration)}
       </p>
-      <input
+      <Slider
+        initialValue={getVolume()}
+        onUpdate={(p) => {
+          setVolume(p);
+          localStorage.setItem("player-volume", p.toString());
+        }}
+      />
+      <div class="h-2"></div>
+      <Slider
+        initialValue={0}
+        value={audio.currentTime / audio.duration}
+        onUpdate={(p) => {
+          controls.seek(p * audio.duration);
+        }}
+      />
+      {/* <input
         type="range"
         value={volume() * 100}
         onInput={(e) => {
@@ -88,8 +104,8 @@ const AudioPlayer = () => {
           setVolume(p);
           localStorage.setItem("player-volume", p.toString());
         }}
-      />
-      <input
+      /> */}
+      {/* <input
         class="transparent h-[4px] w-full cursor-pointer appearance-none border-transparent bg-neutral-200"
         type="range"
         value={(audio.currentTime / audio.duration) * 100}
@@ -97,7 +113,7 @@ const AudioPlayer = () => {
           const p = e.target.valueAsNumber / 100;
           controls.seek(p * audio.duration);
         }}
-      />
+      /> */}
       <Switch>
         <Match when={audio.state == "playing"}>
           <button onClick={() => controls.pause()}>Pause</button>
