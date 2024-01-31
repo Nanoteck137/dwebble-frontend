@@ -34,6 +34,16 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
       console.log("Index", queue.index);
       setQueue((_) => ({ index: queue.index, items: [...queue.items] }));
     });
+
+    document.addEventListener("keyup", (e) => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      e.stopPropagation();
+      if (e.key === " ") {
+        musicManager.requestPlayPause();
+      }
+    });
+
     onCleanup(() => {
       unsub();
     });
@@ -41,35 +51,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
 
   return (
     <div>
-      <header class="fixed h-8">
-        <button
-          onClick={() => {
-            musicManager.addTrackToQueue({
-              name: "クラクラ",
-              artistName: "Ado",
-              source:
-                "http://localhost:3000/tracks/g1rjo1fof8ud5wc7ghw6rud99zhdscn1.mp3",
-            });
-
-            musicManager.addTrackToQueue({
-              name: "新時代",
-              artistName: "Ado",
-              source:
-                "http://localhost:3000/tracks/m8jvucxlw6sn32kpc2x5l7or4ri0el7z.mp3",
-            });
-
-            musicManager.addTrackToQueue({
-              name: "KISS OF DEATH(Produced by HYDE)",
-              artistName: "Mika Nakashima",
-              source:
-                "http://localhost:3000/tracks/h7exeqvy3ho5m2geb9kg86mk9w38nm6y.mp3",
-            });
-          }}
-        >
-          Test Queue
-        </button>
-      </header>
-      <div class="flex h-screen pb-36 pt-8">
+      <div class="flex h-screen pb-36">
         <main class="h-full flex-grow">{props.children}</main>
         <div class="w-72 bg-blue-200">
           <Index each={queue().items}>

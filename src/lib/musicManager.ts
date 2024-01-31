@@ -61,4 +61,12 @@ export class MusicManager {
   requestPlay() {
     this.emitter.emit("requestPlay");
   }
+
+  requestPause() {
+    this.emitter.emit("requestPause");
+  }
+
+  requestPlayPause() {
+    this.emitter.emit("requestPlayPause");
+  }
 }
