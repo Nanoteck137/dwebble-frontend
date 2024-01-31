@@ -10,12 +10,22 @@ import {
 import { useMusicManager } from "../../context/MusicManager";
 import { formatTime } from "../utils";
 
+function getVolume() {
+  const vol = localStorage.getItem("player-volume");
+  if (vol) {
+    return parseFloat(vol);
+  }
+
+  return 1.0;
+}
+
 const AudioPlayer = () => {
   const [trackSource, setTrackSource] = createSignal("");
   const [trackName, setTrackName] = createSignal("");
   const [updatedServer, setUpdatedServer] = createSignal(false);
 
-  const [audio, controls] = createAudio(trackSource);
+  const [volume, setVolume] = createSignal(getVolume());
+  const [audio, controls] = createAudio(trackSource, undefined, volume);
 
   const musicManager = useMusicManager();
 
@@ -58,7 +68,7 @@ const AudioPlayer = () => {
 
   createEffect(() => {
     if (!updatedServer() && audio.currentTime >= audio.duration * 0.3) {
-      console.log("Update server?");
+      musicManager.markAsListened();
       setUpdatedServer(true);
     }
   });
@@ -72,10 +82,11 @@ const AudioPlayer = () => {
       </p>
       <input
         type="range"
-        value={audio.volume * 100}
+        value={volume() * 100}
         onInput={(e) => {
           const p = e.target.valueAsNumber / 100;
-          controls.setVolume(p);
+          setVolume(p);
+          localStorage.setItem("player-volume", p.toString());
         }}
       />
       <input

@@ -69,4 +69,8 @@ export class MusicManager {
   requestPlayPause() {
     this.emitter.emit("requestPlayPause");
   }
+
+  markAsListened() {
+    console.log("Update server");
+  }
 }
