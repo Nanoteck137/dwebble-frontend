@@ -4,6 +4,7 @@ import { render } from "solid-js/web";
 import { Route, Router } from "@solidjs/router";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import "./index.css";
+import Album from "./pages/Album";
 import Artist from "./pages/Artist";
 import Home from "./pages/Home";
 
@@ -17,6 +18,7 @@ render(
       <Router>
         <Route path="/" component={Home} />
         <Route path="/artist/:id" component={Artist} />
+        <Route path="/album/:id" component={Album} />
       </Router>
     </QueryClientProvider>
   ),

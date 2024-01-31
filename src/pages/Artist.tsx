@@ -35,11 +35,13 @@ const Artist = () => {
           <p>Artist Name: {query.data?.name}</p>
           <p>Artist Picture: {query.data?.picture}</p>
 
-          <For each={albumQuery.data?.albums}>
-            {(album) => {
-              return <p>{album.name}</p>;
-            }}
-          </For>
+          <div class="flex flex-col">
+            <For each={albumQuery.data?.albums}>
+              {(album) => {
+                return <a href={`/album/${album.id}`}>{album.name}</a>;
+              }}
+            </For>
+          </div>
         </Match>
       </Switch>
     </>
