@@ -29,6 +29,10 @@ export class MusicManager {
     this.emitter.emit("onQueueUpdated");
   }
 
+  isEndOfQueue() {
+    return this.queue.index >= this.queue.items.length - 1;
+  }
+
   clearQueue() {
     this.queue.index = 0;
     this.queue.items = [];

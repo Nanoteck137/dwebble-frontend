@@ -33,8 +33,10 @@ const AudioPlayer = () => {
   function ended() {
     console.log("Ended");
 
-    musicManager.nextTrack();
-    controls.play();
+    if (!musicManager.isEndOfQueue()) {
+      musicManager.nextTrack();
+      controls.play();
+    }
   }
 
   onMount(() => {
