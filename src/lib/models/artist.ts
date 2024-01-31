@@ -14,3 +14,20 @@ export const ApiGetArtists = createApiResponse(
   }),
 );
 export type ApiGetArtists = z.infer<typeof ApiGetArtists>;
+
+export const ApiGetArtistById = createApiResponse(ApiArtist);
+export type ApiGetArtistById = z.infer<typeof ApiGetArtistById>;
+
+export const ApiGetArtistAlbumsById = createApiResponse(
+  z.object({
+    albums: z.array(
+      z.object({
+        id: z.string().cuid2(),
+        name: z.string(),
+        coverArt: z.string().url(),
+        artistId: z.string().cuid2(),
+      }),
+    ),
+  }),
+);
+export type ApiGetArtistAlbumsById = z.infer<typeof ApiGetArtistAlbumsById>;

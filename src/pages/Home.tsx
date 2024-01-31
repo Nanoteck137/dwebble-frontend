@@ -7,6 +7,7 @@ const Home = () => {
     queryKey: ["artists"],
     queryFn: getArtists,
   }));
+
   return (
     <>
       <p class="text-red-200">Home Page</p>
@@ -18,11 +19,13 @@ const Home = () => {
           <p>{query.error?.message}</p>
         </Match>
         <Match when={query.isSuccess}>
-          <For each={query.data?.artists}>
-            {(artist) => {
-              return <p>{artist.name}</p>;
-            }}
-          </For>
+          <div class="flex flex-col">
+            <For each={query.data?.artists}>
+              {(artist) => {
+                return <a href={`/artist/${artist.id}`}>{artist.name}</a>;
+              }}
+            </For>
+          </div>
         </Match>
       </Switch>
     </>
