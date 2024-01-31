@@ -33,6 +33,10 @@ const AudioPlayer = () => {
       setTrackSource(track.source);
     });
 
+    musicManager.emitter.on("requestPlay", () => {
+      controls.play();
+    });
+
     onCleanup(() => {
       audio.player.removeEventListener("ended", ended);
     });

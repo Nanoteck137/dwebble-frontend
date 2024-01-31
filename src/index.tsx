@@ -75,11 +75,21 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
           <Index each={queue().items}>
             {(item, index) => {
               return (
-                <p
-                  class={` ${queue().index == index ? "text-green-600" : ""}`}
-                >
-                  {item().name}
-                </p>
+                <div class="flex gap-2">
+                  <button
+                    onClick={() => {
+                      musicManager.setQueueIndex(index);
+                      musicManager.requestPlay();
+                    }}
+                  >
+                    Play
+                  </button>
+                  <p
+                    class={` ${queue().index == index ? "text-green-600" : ""}`}
+                  >
+                    {item().name}
+                  </p>
+                </div>
               );
             }}
           </Index>

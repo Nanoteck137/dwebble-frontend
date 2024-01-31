@@ -57,4 +57,8 @@ export class MusicManager {
   prevTrack() {
     this.setQueueIndex(this.queue.index - 1);
   }
+
+  requestPlay() {
+    this.emitter.emit("requestPlay");
+  }
 }
