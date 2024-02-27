@@ -32,6 +32,10 @@ export class MusicManager {
     return this.queue.index >= this.queue.items.length - 1;
   }
 
+  isQueueEmpty() {
+    return this.queue.items.length === 0;
+  }
+
   clearQueue() {
     this.queue.index = 0;
     this.queue.items = [];
