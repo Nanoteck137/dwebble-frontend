@@ -1,6 +1,12 @@
 import noUiSlider, { API } from "nouislider";
 import "nouislider/dist/nouislider.css";
-import { Component, createEffect, onCleanup, onMount } from "solid-js";
+import {
+  Component,
+  createEffect,
+  createSignal,
+  onCleanup,
+  onMount,
+} from "solid-js";
 
 type SliderProps = {
   initialValue: number;
@@ -10,7 +16,8 @@ type SliderProps = {
 
 const Slider: Component<SliderProps> = (props) => {
   let api: API | undefined;
-  let dragging = false;
+  let [dragging, setDragging] = createSignal(false);
+  let d = false;
   const sliderRef = (element: HTMLElement | null) => {
     if (element) {
       onMount(() => {
@@ -30,11 +37,13 @@ const Slider: Component<SliderProps> = (props) => {
         });
 
         api.on("start", () => {
-          dragging = true;
+          setDragging(true);
+          d = true;
         });
 
         api.on("end", () => {
-          dragging = false;
+          setDragging(false);
+          d = false;
         });
 
         onCleanup(() => {
@@ -45,12 +54,14 @@ const Slider: Component<SliderProps> = (props) => {
   };
 
   createEffect(() => {
-    if (props.value && api && !dragging) api.setHandle(0, props.value * 100);
+    if (props.value && api && !d) api.setHandle(0, props.value * 100);
   });
 
   return (
-    <div class="slider group absolute left-0 right-0">
-      <div id="dual-knob-slider" ref={sliderRef}></div>
+    <div class="group absolute left-0 right-0 h-4">
+      <div class={`slider ${dragging() ? "dragging" : ""}`}>
+        <div id="dual-knob-slider" ref={sliderRef}></div>
+      </div>
     </div>
   );
 };

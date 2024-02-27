@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 .noUi-target {
-    @apply border-none h-1 hover:h-2 !important
+    @apply border-none h-1 group-hover:h-2 !important
+}
+
+.dragging .noUi-target {
+    @apply h-2 !important
 }
 
 .noUi-base {
@@ -13,8 +17,9 @@
 .noUi-origin {
 
 }
+
 .noUi-horizontal .noUi-handle {
-    @apply opacity-0 translate-y-[-50%] top-1 group-hover:top-1.5 group-hover:opacity-100 !important
+    @apply opacity-0 translate-y-[-50%] translate-x-[-100%] top-1 group-hover:opacity-100 !important
 }
 
 .noUi-active .noUi-horizontal .noUi-handle {
@@ -22,7 +27,11 @@
 }
 
 .noUi-handle {
-    @apply w-6 h-6 rounded-full !important
+    @apply w-3.5 h-3.5 rounded-full !important
+}
+
+.dragging .noUi-handle {
+    @apply opacity-100 !important
 }
 
 .noUi-handle::after {
