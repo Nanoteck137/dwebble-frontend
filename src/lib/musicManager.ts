@@ -12,8 +12,8 @@ export type Queue = {
 };
 
 export class MusicManager {
-  emitter: Emitter;
   queue: Queue = { index: 0, items: [] };
+  emitter: Emitter;
 
   constructor() {
     this.emitter = createNanoEvents();
@@ -25,7 +25,6 @@ export class MusicManager {
 
   addTrackToQueue(track: Track) {
     this.queue.items.push(track);
-
     this.emitter.emit("onQueueUpdated");
   }
 

@@ -45,7 +45,7 @@ const AudioPlayer = () => {
       const track = musicManager.getCurrentTrack();
       setTrackName(track.name);
       setTrackSource(track.source);
-      controls.seek(0);
+      // controls.seek(0);
       setTimeout(() => {
         setUpdatedServer(false);
       }, 200);
