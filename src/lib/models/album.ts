@@ -20,7 +20,7 @@ export const ApiGetAlbumTracksById = createApiResponse(
         id: z.string().cuid2(),
         number: z.number(),
         name: z.string(),
-        coverArt: z.string().url(),
+        coverArt: z.string(),
         bestQualityFile: z.string().url(),
         mobileQualityFile: z.string().url(),
         albumId: z.string().cuid2(),

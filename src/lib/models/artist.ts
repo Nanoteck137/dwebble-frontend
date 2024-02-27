@@ -4,7 +4,7 @@ import { createApiResponse } from "./api";
 export const ApiArtist = z.object({
   id: z.string().cuid2(),
   name: z.string(),
-  picture: z.string().url(),
+  picture: z.string(),
 });
 export type ApiArtist = z.infer<typeof ApiArtist>;
 
@@ -24,7 +24,7 @@ export const ApiGetArtistAlbumsById = createApiResponse(
       z.object({
         id: z.string().cuid2(),
         name: z.string(),
-        coverArt: z.string().url(),
+        coverArt: z.string(),
         artistId: z.string().cuid2(),
       }),
     ),
