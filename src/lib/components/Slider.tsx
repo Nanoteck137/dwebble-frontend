@@ -49,7 +49,7 @@ const Slider: Component<SliderProps> = (props) => {
   });
 
   return (
-    <div class="slider group">
+    <div class="slider group absolute left-0 right-0">
       <div id="dual-knob-slider" ref={sliderRef}></div>
     </div>
   );

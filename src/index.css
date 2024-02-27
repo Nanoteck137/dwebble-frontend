@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .noUi-target {
-    @apply border-none h-2 hover:h-3 !important
+    @apply border-none h-1 hover:h-2 !important
 }
 
 .noUi-base {

@@ -1,4 +1,6 @@
 import { createAudio } from "@solid-primitives/audio";
+import { BiRegularSkipNext, BiRegularSkipPrevious } from "solid-icons/bi";
+import { HiSolidPause, HiSolidPlay } from "solid-icons/hi";
 import {
   Match,
   Switch,
@@ -9,6 +11,7 @@ import {
 } from "solid-js";
 import { useMusicManager } from "../../context/MusicManager";
 import { formatTime } from "../utils";
+import LoadingSpinner from "./LoadingSpinner";
 import Slider from "./Slider";
 
 function getVolume() {
@@ -23,6 +26,7 @@ function getVolume() {
 const AudioPlayer = () => {
   const [trackSource, setTrackSource] = createSignal("");
   const [trackName, setTrackName] = createSignal("");
+  const [artistName, setArtistName] = createSignal("");
   const [updatedServer, setUpdatedServer] = createSignal(false);
 
   const [volume, setVolume] = createSignal(getVolume());
@@ -45,6 +49,7 @@ const AudioPlayer = () => {
       const track = musicManager.getCurrentTrack();
       setTrackName(track.name);
       setTrackSource(track.source);
+      setArtistName(track.artistName);
       // controls.seek(0);
       setTimeout(() => {
         setUpdatedServer(false);
@@ -77,20 +82,28 @@ const AudioPlayer = () => {
   });
 
   return (
-    <>
-      <p>Audio Player</p>
-      <p>Name: {trackName()}</p>
-      <p>
+    <div class="relative h-full">
+      {/* <p>Audio Player</p>
+      <p>Name: {trackName()}</p> */}
+      {/* <p>
         {formatTime(audio.currentTime)} / {formatTime(audio.duration)}
-      </p>
-      <Slider
+      </p> */}
+      {/* <Slider
         initialValue={getVolume()}
         onUpdate={(p) => {
           setVolume(p);
           localStorage.setItem("player-volume", p.toString());
         }}
-      />
-      <div class="h-2"></div>
+      /> */}
+      {/* <div class="h-2"></div>
+      <Slider
+        initialValue={0}
+        value={audio.currentTime / audio.duration}
+        onUpdate={(p) => {
+          controls.seek(p * audio.duration);
+        }}
+      /> */}
+
       <Slider
         initialValue={0}
         value={audio.currentTime / audio.duration}
@@ -98,53 +111,75 @@ const AudioPlayer = () => {
           controls.seek(p * audio.duration);
         }}
       />
-      {/* <input
-        type="range"
-        value={volume() * 100}
-        onInput={(e) => {
-          const p = e.target.valueAsNumber / 100;
-          setVolume(p);
-          localStorage.setItem("player-volume", p.toString());
-        }}
-      /> */}
-      {/* <input
-        class="transparent h-[4px] w-full cursor-pointer appearance-none border-transparent bg-neutral-200"
-        type="range"
-        value={(audio.currentTime / audio.duration) * 100}
-        onInput={(e) => {
-          const p = e.target.valueAsNumber / 100;
-          controls.seek(p * audio.duration);
-        }}
-      /> */}
-      <Switch>
-        <Match when={audio.state == "playing"}>
-          <button onClick={() => controls.pause()}>Pause</button>
-        </Match>
-        <Match when={audio.state == "paused" || audio.state == "ready"}>
-          <button onClick={() => controls.play()}>Play</button>
-        </Match>
-        <Match when={audio.state == "paused" || audio.state == "ready"}>
-          <p>Loading...</p>
-        </Match>
-      </Switch>
 
-      <button
-        onClick={() => {
-          musicManager.prevTrack();
-          controls.play();
-        }}
-      >
-        Prev
-      </button>
-      <button
-        onClick={() => {
-          musicManager.nextTrack();
-          controls.play();
-        }}
-      >
-        Next
-      </button>
-    </>
+      <div class="grid h-full grid-cols-5">
+        <div class="flex items-center bg-cyan-600">
+          <div class="flex items-center">
+            <button
+              onClick={() => {
+                musicManager.prevTrack();
+                controls.play();
+              }}
+            >
+              <BiRegularSkipPrevious size={48} />
+            </button>
+
+            <Switch
+              fallback={
+                <>
+                  <button onClick={() => controls.play()}>
+                    <HiSolidPlay size={48} />
+                  </button>
+                </>
+              }
+            >
+              <Match when={audio.state == "playing"}>
+                <button onClick={() => controls.pause()}>
+                  <HiSolidPause size={48} />
+                </button>
+              </Match>
+              <Match when={audio.state == "paused" || audio.state == "ready"}>
+                <button onClick={() => controls.play()}>
+                  <HiSolidPlay size={48} />
+                </button>
+              </Match>
+              <Match when={audio.state == "loading"}>
+                <LoadingSpinner />
+              </Match>
+            </Switch>
+            <button
+              onClick={() => {
+                musicManager.nextTrack();
+                controls.play();
+              }}
+            >
+              <BiRegularSkipNext size={48} />
+            </button>
+          </div>
+
+          <p class="text-sm font-medium">
+            {formatTime(audio.currentTime)} /{" "}
+            {formatTime(Number.isNaN(audio.duration) ? 0 : audio.duration)}
+          </p>
+        </div>
+
+        <div class="col-span-3 flex items-center justify-center gap-2 bg-amber-600 align-middle">
+          <img
+            class="aspect-square h-12 rounded object-cover"
+            src="https://placehold.co/800x500.png"
+            alt="Cover Art"
+          />
+          <div class="flex flex-col">
+            <p class="line-clamp-1 max-w-96 text-ellipsis">{trackName()}</p>
+
+            <p class="line-clamp-1 max-w-96 text-ellipsis text-sm text-gray-800">
+              {artistName()}
+            </p>
+          </div>
+        </div>
+        <div class="bg-pink-600"></div>
+      </div>
+    </div>
   );
 };
 
