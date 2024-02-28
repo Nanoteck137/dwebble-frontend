@@ -1,6 +1,12 @@
 import { createAudio } from "@solid-primitives/audio";
 import { BiRegularSkipNext, BiRegularSkipPrevious } from "solid-icons/bi";
-import { HiSolidPause, HiSolidPlay } from "solid-icons/hi";
+import {
+  HiSolidPause,
+  HiSolidPlay,
+  HiSolidQueueList,
+  HiSolidSpeakerWave,
+  HiSolidSpeakerXMark,
+} from "solid-icons/hi";
 import {
   Match,
   Switch,
@@ -23,6 +29,11 @@ function getVolume() {
   return 1.0;
 }
 
+function getMuted() {
+  const muted = localStorage.getItem("player-muted");
+  return muted == "true";
+}
+
 const AudioPlayer = () => {
   const [trackSource, setTrackSource] = createSignal("");
   const [trackName, setTrackName] = createSignal("");
@@ -30,6 +41,7 @@ const AudioPlayer = () => {
   const [updatedServer, setUpdatedServer] = createSignal(false);
 
   const [volume, setVolume] = createSignal(getVolume());
+  const [muted, setMuted] = createSignal(getMuted());
   const [audio, controls] = createAudio(trackSource, undefined, volume);
 
   const musicManager = useMusicManager();
@@ -81,6 +93,15 @@ const AudioPlayer = () => {
     }
   });
 
+  createEffect(() => {
+    if (muted()) {
+      controls.setVolume(0);
+    } else {
+      const vol = getVolume();
+      controls.setVolume(vol);
+    }
+  });
+
   return (
     <div class="relative h-full">
       {/* <p>Audio Player</p>
@@ -112,7 +133,7 @@ const AudioPlayer = () => {
         }}
       />
 
-      <div class="grid h-full grid-cols-5">
+      <div class="grid-cols-footer grid h-full">
         <div class="flex items-center bg-cyan-600">
           <div class="flex items-center">
             <button
@@ -157,27 +178,55 @@ const AudioPlayer = () => {
             </button>
           </div>
 
-          <p class="text-sm font-medium">
+          <p class="hidden min-w-20 text-xs font-medium lg:block">
             {formatTime(audio.currentTime)} /{" "}
             {formatTime(Number.isNaN(audio.duration) ? 0 : audio.duration)}
           </p>
         </div>
 
-        <div class="col-span-3 flex items-center justify-center gap-2 bg-amber-600 align-middle">
+        <div class="flex items-center justify-center gap-2 bg-amber-600 align-middle">
           <img
             class="aspect-square h-12 rounded object-cover"
             src="https://placehold.co/800x500.png"
             alt="Cover Art"
           />
           <div class="flex flex-col">
-            <p class="line-clamp-1 max-w-96 text-ellipsis">{trackName()}</p>
+            <p class="line-clamp-1 text-ellipsis" title={trackName()}>
+              {trackName()}
+            </p>
 
-            <p class="line-clamp-1 max-w-96 text-ellipsis text-sm text-gray-800">
+            <p class="line-clamp-1 min-w-80 text-ellipsis text-sm text-gray-800">
               {artistName()}
             </p>
           </div>
         </div>
-        <div class="bg-pink-600"></div>
+        <div class="flex items-center justify-evenly bg-violet-500">
+          <div class="relative flex w-24 translate-y-1.5 items-center">
+            <Slider
+              initialValue={getVolume()}
+              onUpdate={(p) => {
+                setVolume(p);
+                localStorage.setItem("player-volume", p.toString());
+              }}
+            />
+          </div>
+          <button
+            onClick={() => {
+              const res = setMuted((prev) => !prev);
+              localStorage.setItem("player-muted", res.toString());
+            }}
+          >
+            <Switch>
+              <Match when={!muted()}>
+                <HiSolidSpeakerWave size={24} />
+              </Match>
+              <Match when={muted()}>
+                <HiSolidSpeakerXMark size={24} />
+              </Match>
+            </Switch>
+          </button>
+          <HiSolidQueueList size={24} />
+        </div>
       </div>
     </div>
   );
