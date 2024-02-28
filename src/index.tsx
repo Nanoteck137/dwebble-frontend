@@ -41,17 +41,23 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
   return (
     <div>
       <div class="flex h-screen flex-col">
-        <header class="min-h-16 w-full bg-red-400"></header>
-
         <div class="flex h-full">
           <aside class="h-full min-w-60 bg-blue-400">
-            <nav class="flex flex-col">
+            <div class="flex h-16 items-center bg-emerald-400 px-4">
+              <a class="text-3xl" href="/">
+                Sewaddle
+              </a>
+            </div>
+            <nav class="flex flex-col px-4">
               <a href="/">Home</a>
               <a href="">Albums</a>
               <a href="">Artists</a>
             </nav>
           </aside>
-          <main class="h-full flex-grow bg-green-400">{props.children}</main>
+          <div class="flex-grow overflow-scroll">
+            <header class="fixed min-h-16 w-full bg-red-400"></header>
+            <main class="flex-grow bg-green-400 pt-16">{props.children}</main>
+          </div>
         </div>
         <Show when={showPlayer()}>
           <footer class="min-h-20 bg-purple-400">
@@ -59,10 +65,6 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
           </footer>
         </Show>
       </div>
-
-      {/* <footer class="fixed bottom-0 left-0 right-0 h-36 bg-red-200">
-        <AudioPlayer />
-      </footer> */}
     </div>
   );
 };
