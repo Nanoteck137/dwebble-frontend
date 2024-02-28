@@ -20,6 +20,8 @@ export class MusicManager {
   }
 
   getCurrentTrack() {
+    if (this.queue.items.length === 0) return null;
+
     return this.queue.items[this.queue.index];
   }
 
