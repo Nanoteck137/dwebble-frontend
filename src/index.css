@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 .noUi-target {
-    @apply border-none h-1 group-hover:h-2 !important
+    @apply border-none h-1 group-hover:h-2 group-hover:-translate-y-0.5 !important
 }
 
 .dragging .noUi-target {
-    @apply h-2 !important
+    @apply h-2 -translate-y-0.5 !important
 }
 
 .noUi-base {
