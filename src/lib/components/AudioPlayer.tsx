@@ -104,27 +104,6 @@ const AudioPlayer = () => {
 
   return (
     <div class="relative h-full">
-      {/* <p>Audio Player</p>
-      <p>Name: {trackName()}</p> */}
-      {/* <p>
-        {formatTime(audio.currentTime)} / {formatTime(audio.duration)}
-      </p> */}
-      {/* <Slider
-        initialValue={getVolume()}
-        onUpdate={(p) => {
-          setVolume(p);
-          localStorage.setItem("player-volume", p.toString());
-        }}
-      /> */}
-      {/* <div class="h-2"></div>
-      <Slider
-        initialValue={0}
-        value={audio.currentTime / audio.duration}
-        onUpdate={(p) => {
-          controls.seek(p * audio.duration);
-        }}
-      /> */}
-
       <Slider
         initialValue={0}
         value={audio.currentTime / audio.duration}
