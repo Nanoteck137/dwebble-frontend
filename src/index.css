@@ -19,7 +19,7 @@
 }
 
 .noUi-horizontal .noUi-handle {
-    @apply opacity-0 translate-y-[-50%] translate-x-[-100%] top-1 group-hover:opacity-100 !important
+    @apply opacity-0 translate-y-[-50%] translate-x-[-75%] top-1 group-hover:opacity-100 !important
 }
 
 .noUi-active .noUi-horizontal .noUi-handle {
