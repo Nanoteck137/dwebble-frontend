@@ -58,7 +58,7 @@ const Slider: Component<SliderProps> = (props) => {
   });
 
   return (
-    <div class="group absolute left-0 right-0 h-4 overflow-hidden">
+    <div class="group absolute left-0 right-0 h-4">
       <div class={`slider ${dragging() ? "dragging" : ""}`}>
         <div id="dual-knob-slider" ref={sliderRef}></div>
       </div>
