@@ -18,6 +18,7 @@ import {
 import { useMusicManager } from "../../context/MusicManager";
 import { formatTime } from "../utils";
 import LoadingSpinner from "./LoadingSpinner";
+import PlayQueue from "./PlayQueue";
 import Slider from "./Slider";
 
 function getVolume() {
@@ -44,6 +45,8 @@ const AudioPlayer = () => {
   const [muted, setMuted] = createSignal(getMuted());
   const [audio, controls] = createAudio(trackSource, undefined, volume);
 
+  const [showPlayQueue, setShowPlayQueue] = createSignal(false);
+
   const musicManager = useMusicManager();
 
   function ended() {
@@ -59,9 +62,18 @@ const AudioPlayer = () => {
     audio.player.addEventListener("ended", ended);
     musicManager.emitter.on("onQueueUpdated", () => {
       const track = musicManager.getCurrentTrack();
-      setTrackName(track.name);
-      setTrackSource(track.source);
-      setArtistName(track.artistName);
+      if (track) {
+        setTrackName(track.name);
+        setTrackSource(track.source);
+        setArtistName(track.artistName);
+      } else {
+        setTrackName("");
+        setTrackSource("");
+        setArtistName("");
+
+        audio.player.removeAttribute("src");
+        audio.player.load();
+      }
       // controls.seek(0);
       setTimeout(() => {
         setUpdatedServer(false);
@@ -206,9 +218,16 @@ const AudioPlayer = () => {
               </Match>
             </Switch>
           </button>
-          <HiSolidQueueList size={24} />
+          <button onClick={() => setShowPlayQueue(true)}>
+            <HiSolidQueueList size={24} />
+          </button>
         </div>
       </div>
+
+      <PlayQueue
+        isOpen={showPlayQueue()}
+        close={() => setShowPlayQueue(false)}
+      />
     </div>
   );
 };
