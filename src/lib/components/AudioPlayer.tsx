@@ -205,7 +205,9 @@ const AudioPlayer = () => {
             <Slider
               initialValue={getVolume()}
               onUpdate={(p) => {
-                setVolume(p);
+                if (!muted()) {
+                  setVolume(p);
+                }
                 localStorage.setItem("player-volume", p.toString());
               }}
             />
