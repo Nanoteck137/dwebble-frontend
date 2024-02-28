@@ -3,7 +3,7 @@ import { render } from "solid-js/web";
 
 import { Route, Router } from "@solidjs/router";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
-import { Component, JSX, Show, createSignal, onMount } from "solid-js";
+import { Component, JSX, createSignal, onMount } from "solid-js";
 import { MusicManagerProvider, useMusicManager } from "./context/MusicManager";
 import "./index.css";
 import AudioPlayer from "./lib/components/AudioPlayer";
@@ -54,16 +54,17 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
               <a href="">Artists</a>
             </nav>
           </aside>
-          <div class="flex-grow overflow-scroll">
+          <div class="flex-grow">
             <header class="fixed min-h-16 w-full bg-red-400"></header>
             <main class="flex-grow bg-green-400 pt-16">{props.children}</main>
           </div>
         </div>
-        <Show when={showPlayer()}>
-          <footer class="min-h-20 bg-purple-400">
-            <AudioPlayer />
-          </footer>
-        </Show>
+        <footer
+          class="min-h-20 bg-purple-400"
+          classList={{ hidden: !showPlayer() }}
+        >
+          <AudioPlayer />
+        </footer>
       </div>
     </div>
   );
