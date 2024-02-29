@@ -4,8 +4,10 @@ import { render } from "solid-js/web";
 import { Route, Router } from "@solidjs/router";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { Component, JSX, createSignal, onMount } from "solid-js";
+import { ApiClientProvider } from "./context/ApiClient";
 import { MusicManagerProvider, useMusicManager } from "./context/MusicManager";
 import "./index.css";
+import ApiClient from "./lib/api/client";
 import AudioPlayer from "./lib/components/AudioPlayer";
 import { MusicManager } from "./lib/musicManager";
 import Album from "./pages/Album";
@@ -14,8 +16,18 @@ import Home from "./pages/Home";
 
 const root = document.getElementById("root");
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (_failureCount, _error) => {
+        return false;
+      },
+    },
+  },
+});
 const musicManager = new MusicManager();
+
+const apiClient = new ApiClient("http://localhost:3000");
 
 const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
   const musicManager = useMusicManager();
@@ -74,13 +86,15 @@ render(
   () => (
     <QueryClientProvider client={queryClient}>
       <MusicManagerProvider musicManager={musicManager}>
-        <Router>
-          <Route path="/" component={BasicLayout}>
-            <Route path="/" component={Home} />
-            <Route path="/artist/:id" component={Artist} />
-            <Route path="/album/:id" component={Album} />
-          </Route>
-        </Router>
+        <ApiClientProvider client={apiClient}>
+          <Router>
+            <Route path="/" component={BasicLayout}>
+              <Route path="/" component={Home} />
+              <Route path="/artist/:id" component={Artist} />
+              <Route path="/album/:id" component={Album} />
+            </Route>
+          </Router>
+        </ApiClientProvider>
       </MusicManagerProvider>
     </QueryClientProvider>
   ),

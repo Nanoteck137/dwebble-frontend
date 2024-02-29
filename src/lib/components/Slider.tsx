@@ -28,6 +28,7 @@ const Slider: Component<SliderProps> = (props) => {
             max: 100,
           },
           behaviour: "snap",
+          keyboardSupport: true,
         });
 
         api.on("change", (values) => {
@@ -59,7 +60,7 @@ const Slider: Component<SliderProps> = (props) => {
 
   return (
     <div class="group absolute left-0 right-0 h-4">
-      <div class={`slider ${dragging() ? "dragging" : ""}`}>
+      <div class={`slider active ${dragging() ? "dragging" : ""}`}>
         <div id="dual-knob-slider" ref={sliderRef}></div>
       </div>
     </div>

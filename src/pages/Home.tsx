@@ -1,11 +1,13 @@
 import { createQuery } from "@tanstack/solid-query";
 import { For, Match, Switch } from "solid-js";
-import { getArtists } from "../lib/api/artist";
+import { useApiClient } from "../context/ApiClient";
 
 const Home = () => {
+  const apiClient = useApiClient();
+
   const query = createQuery(() => ({
     queryKey: ["artists"],
-    queryFn: getArtists,
+    queryFn: () => apiClient.getArtists(),
   }));
 
   return (
