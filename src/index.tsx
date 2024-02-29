@@ -79,7 +79,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
             <header class="fixed left-0 right-0 top-0 h-16 w-full bg-red-400"></header>
 
             <main
-              class={`flex-grow bg-green-400 pl-60 pt-16 ${showPlayer() ? "pb-20" : ""}`}
+              class={`ml-60 mt-16 flex-grow bg-green-400 ${showPlayer() ? "mb-20" : ""}`}
             >
               <ErrorBoundary
                 fallback={(err) => {
