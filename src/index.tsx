@@ -3,12 +3,19 @@ import { render } from "solid-js/web";
 
 import { Route, Router } from "@solidjs/router";
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
-import { Component, JSX, createSignal, onMount } from "solid-js";
+import {
+  Component,
+  ErrorBoundary,
+  JSX,
+  createSignal,
+  onMount,
+} from "solid-js";
 import { ApiClientProvider } from "./context/ApiClient";
 import { MusicManagerProvider, useMusicManager } from "./context/MusicManager";
 import "./index.css";
 import ApiClient from "./lib/api/client";
 import AudioPlayer from "./lib/components/AudioPlayer";
+import ErrorPage from "./lib/components/Error";
 import { MusicManager } from "./lib/musicManager";
 import Album from "./pages/Album";
 import Artist from "./pages/Artist";
@@ -19,6 +26,8 @@ const root = document.getElementById("root");
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      suspense: true,
+      throwOnError: true,
       retry: (_failureCount, _error) => {
         return false;
       },
@@ -54,7 +63,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
     <div>
       <div class="flex h-screen flex-col">
         <div class="flex h-full">
-          <aside class="h-full min-w-60 bg-blue-400">
+          <aside class="fixed bottom-0 left-0 top-0 z-10 w-60 bg-blue-400">
             <div class="flex h-16 items-center bg-emerald-400 px-4">
               <a class="text-3xl" href="/">
                 Sewaddle
@@ -67,12 +76,29 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
             </nav>
           </aside>
           <div class="flex-grow">
-            <header class="fixed min-h-16 w-full bg-red-400"></header>
-            <main class="flex-grow bg-green-400 pt-16">{props.children}</main>
+            <header class="fixed left-0 right-0 top-0 h-16 w-full bg-red-400"></header>
+
+            <main
+              class={`flex-grow bg-green-400 pl-60 pt-16 ${showPlayer() ? "pb-20" : ""}`}
+            >
+              <ErrorBoundary
+                fallback={(err) => {
+                  let code = 500;
+                  let message = "Unknown Error";
+                  if (err instanceof Error) {
+                    message = err.message;
+                  }
+
+                  return <ErrorPage code={code} message={message} />;
+                }}
+              >
+                {props.children}
+              </ErrorBoundary>
+            </main>
           </div>
         </div>
         <footer
-          class="min-h-20 bg-purple-400"
+          class="fixed bottom-0 left-0 right-0 z-20 h-20 bg-purple-400"
           classList={{ hidden: !showPlayer() }}
         >
           <AudioPlayer />

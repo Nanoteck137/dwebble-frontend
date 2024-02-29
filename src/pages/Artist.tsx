@@ -1,6 +1,6 @@
 import { useParams } from "@solidjs/router";
 import { createQuery } from "@tanstack/solid-query";
-import { For, Match, Switch } from "solid-js";
+import { ErrorBoundary, For, Suspense } from "solid-js";
 import { useApiClient } from "../context/ApiClient";
 
 const Artist = () => {
@@ -9,6 +9,8 @@ const Artist = () => {
 
   const query = createQuery(() => ({
     queryKey: ["artists", params.id],
+    suspense: true,
+    throwOnError: true,
     queryFn: async () => {
       const artist = await apiClient.getArtistById(params.id);
       const albums = await apiClient.getArtistAlbumsById(artist.id);
@@ -23,14 +25,9 @@ const Artist = () => {
   return (
     <>
       <p>Artist Page: {params.id}</p>
-      <Switch>
-        <Match when={query.isError}>
-          <p>{query.error?.message}</p>
-        </Match>
-        <Match when={query.isPending}>
-          <p>Loading...</p>
-        </Match>
-        <Match when={query.isSuccess}>
+
+      <ErrorBoundary fallback={<p>Error...</p>}>
+        <Suspense fallback={<p>Loading...</p>}>
           <p>Artist Id: {query.data?.id}</p>
           <p>Artist Name: {query.data?.name}</p>
           <p>Artist Picture: {query.data?.picture}</p>
@@ -42,8 +39,8 @@ const Artist = () => {
               }}
             </For>
           </div>
-        </Match>
-      </Switch>
+        </Suspense>
+      </ErrorBoundary>
     </>
   );
 };
