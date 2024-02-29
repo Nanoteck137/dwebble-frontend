@@ -5,6 +5,7 @@ import { useMusicManager } from "../../context/MusicManager";
 import { Track } from "../musicManager";
 
 interface QueueItemProps {
+  isPlaying: boolean;
   track: Track;
   onPlayClick: () => void;
 }
@@ -26,7 +27,10 @@ const QueueItem: Component<QueueItemProps> = (props) => {
         </button>
       </div>
       <div class="flex flex-col">
-        <p class="line-clamp-1 text-ellipsis text-sm" title={props.track.name}>
+        <p
+          class={`line-clamp-1 text-ellipsis text-sm ${props.isPlaying ? "text-pink-300" : ""}`}
+          title={props.track.name}
+        >
           {props.track.name}
         </p>
         <p class="line-clamp-1 text-ellipsis text-xs">
@@ -44,12 +48,14 @@ interface PlayQueueProps {
 
 const PlayQueue: Component<PlayQueueProps> = (props) => {
   const [tracks, setTracks] = createSignal<Track[]>([]);
+  const [currentIndex, setCurrentIndex] = createSignal(0);
 
   const musicManager = useMusicManager();
 
   onMount(() => {
     let unsub = musicManager.emitter.on("onQueueUpdated", () => {
       setTracks([...musicManager.queue.items]);
+      setCurrentIndex(musicManager.queue.index);
     });
 
     onCleanup(() => {
@@ -94,6 +100,7 @@ const PlayQueue: Component<PlayQueueProps> = (props) => {
               {(track, index) => {
                 return (
                   <QueueItem
+                    isPlaying={index() === currentIndex()}
                     track={track}
                     onPlayClick={() => {
                       musicManager.setQueueIndex(index());
