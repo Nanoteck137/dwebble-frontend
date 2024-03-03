@@ -39,6 +39,7 @@ const AudioPlayer = () => {
   const [trackSource, setTrackSource] = createSignal("");
   const [trackName, setTrackName] = createSignal("");
   const [artistName, setArtistName] = createSignal("");
+  const [coverArtUrl, setCoverArtUrl] = createSignal("");
   const [updatedServer, setUpdatedServer] = createSignal(false);
 
   const [volume, setVolume] = createSignal(getVolume());
@@ -66,10 +67,12 @@ const AudioPlayer = () => {
         setTrackName(track.name);
         setTrackSource(track.source);
         setArtistName(track.artistName);
+        setCoverArtUrl(track.coverArt);
       } else {
         setTrackName("");
         setTrackSource("");
         setArtistName("");
+        setCoverArtUrl("");
 
         audio.player.removeAttribute("src");
         audio.player.load();
@@ -124,7 +127,7 @@ const AudioPlayer = () => {
         }}
       />
 
-      <div class="grid-cols-footer grid h-full">
+      <div class="grid h-full grid-cols-footer">
         <div class="flex items-center bg-cyan-600">
           <div class="flex items-center">
             <button
@@ -178,7 +181,7 @@ const AudioPlayer = () => {
         <div class="flex items-center justify-center gap-2 bg-amber-600 align-middle">
           <img
             class="aspect-square h-12 rounded object-cover"
-            src="https://placehold.co/800x500.png"
+            src={coverArtUrl()}
             alt="Cover Art"
           />
           <div class="flex flex-col">

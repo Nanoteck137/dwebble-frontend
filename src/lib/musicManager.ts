@@ -4,6 +4,7 @@ export type Track = {
   name: string;
   artistName: string;
   source: string;
+  coverArt: string;
 };
 
 export type Queue = {

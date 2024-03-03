@@ -32,6 +32,8 @@ const Artist = () => {
           <p>Artist Name: {query.data?.name}</p>
           <p>Artist Picture: {query.data?.picture}</p>
 
+          <img src={query.data?.picture} alt="Picture" />
+
           <div class="flex flex-col">
             <For each={query.data?.albums}>
               {(album) => {

@@ -4,6 +4,7 @@ import { For, Match, Switch } from "solid-js";
 import { useApiClient } from "../context/ApiClient";
 import { useMusicManager } from "../context/MusicManager";
 import { Track } from "../lib/musicManager";
+import { formatTime } from "../lib/utils";
 
 const Album = () => {
   const params = useParams<{ id: string }>();
@@ -39,12 +40,16 @@ const Album = () => {
           <p>Album Name: {query.data?.name}</p>
           <p>Album Picture: {query.data?.coverArt}</p>
           <p>Album Artist: {query.data?.artistId}</p>
+
+          <img class="h-48" src={query.data?.coverArt} alt="Cover Art" />
+
           <button
             onClick={() => {
               const tracks: Track[] = query.data!.tracks.map((t) => ({
                 name: t.name,
-                artistName: t.artistId,
+                artistName: t.artistName,
                 source: t.mobileQualityFile,
+                coverArt: t.coverArt,
               }));
               tracks.forEach((t) => musicManager.addTrackToQueue(t));
               musicManager.requestPlay();
@@ -54,7 +59,11 @@ const Album = () => {
           </button>
           <For each={query.data?.tracks}>
             {(track) => {
-              return <p>{track.name}</p>;
+              return (
+                <p>
+                  {track.number} - {track.name} - {formatTime(track.duration)}
+                </p>
+              );
             }}
           </For>
         </Match>

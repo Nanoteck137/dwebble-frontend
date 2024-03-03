@@ -16,7 +16,7 @@ const QueueItem: Component<QueueItemProps> = (props) => {
       <div class="relative aspect-square h-12">
         <img
           class="h-full w-full rounded object-cover"
-          src="https://placehold.co/800x500.png"
+          src={props.track.coverArt}
           alt="Cover Art"
         />
         <button
