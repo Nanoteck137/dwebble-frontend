@@ -1,11 +1,12 @@
 import { z } from "zod";
+import { createApiResponse } from "../models/api";
 import {
   GetAlbumById,
   GetAlbumTracksById,
   GetArtistAlbumsById,
   GetArtistById,
   GetArtists,
-} from "../models/api";
+} from "../models/apiGen";
 
 export default class ApiClient {
   baseUrl: string;
@@ -17,14 +18,16 @@ export default class ApiClient {
   async request<T extends z.ZodTypeAny>(
     endpoint: string,
     method: string,
-    schema: T,
-  ): Promise<z.infer<T>> {
+    bodySchema: T,
+  ) {
     const res = await fetch(this.baseUrl + endpoint, {
       method,
     });
 
+    const Schema = createApiResponse(bodySchema, z.undefined());
+
     const data = await res.json();
-    return await schema.parseAsync(data);
+    return await Schema.parseAsync(data);
   }
 
   async getArtists() {
