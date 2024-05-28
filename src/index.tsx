@@ -10,13 +10,13 @@ import {
   createSignal,
   onMount,
 } from "solid-js";
-import { ApiClientProvider } from "./context/ApiClient";
+import { ApiClientProvider, useApiClient } from "./context/ApiClient";
 import { MusicManagerProvider, useMusicManager } from "./context/MusicManager";
 import "./index.css";
 import ApiClient from "./lib/api/client";
 import AudioPlayer from "./lib/components/AudioPlayer";
 import ErrorPage from "./lib/components/Error";
-import { MusicManager } from "./lib/musicManager";
+import { MusicManager, Track } from "./lib/musicManager";
 import Album from "./pages/Album";
 import Artist from "./pages/Artist";
 import Home from "./pages/Home";
@@ -36,9 +36,10 @@ const queryClient = new QueryClient({
 });
 const musicManager = new MusicManager();
 
-const apiClient = new ApiClient("http://localhost:3000");
+const apiClient = new ApiClient("http://10.28.28.6:3000");
 
 const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
+  const apiClient = useApiClient();
   const musicManager = useMusicManager();
   const [showPlayer, setShowPlayer] = createSignal(
     !musicManager.isQueueEmpty(),
@@ -76,7 +77,26 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
             </nav>
           </aside>
           <div class="flex-grow">
-            <header class="fixed left-0 right-0 top-0 h-16 w-full bg-red-400"></header>
+            <header class="fixed left-0 right-0 top-0 h-16 w-full bg-red-400 pl-60">
+              <button
+                onClick={async () => {
+                  const queue = await apiClient.createRandomQueue();
+
+                  musicManager.clearQueue();
+
+                  const tracks: Track[] = queue.tracks.map((t) => ({
+                    name: t.name,
+                    artistName: t.artistName,
+                    source: t.mobileQualityFile,
+                    coverArt: t.coverArt,
+                  }));
+                  tracks.forEach((t) => musicManager.addTrackToQueue(t));
+                  musicManager.requestPlay();
+                }}
+              >
+                Random Play
+              </button>
+            </header>
 
             <main
               class={`ml-60 mt-16 flex-grow bg-green-400 ${showPlayer() ? "mb-20" : ""}`}

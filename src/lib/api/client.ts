@@ -91,4 +91,18 @@ export default class ApiClient {
 
     return res.data;
   }
+
+  async createRandomQueue() {
+    const res = await this.request(
+      "/api/v1/queue",
+      "POST",
+      GetAlbumTracksById,
+    );
+
+    if (res.status === "error") {
+      throw new Error(res.error.message);
+    }
+
+    return res.data;
+  }
 }
