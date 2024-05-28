@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url      = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url  = "github:numtide/flake-utils";
-    pyrin.url        = "github:nanoteck137/pyrin";
+    pyrin.url        = "github:nanoteck137/pyrin/v0.1.1";
   };
 
   outputs = { self, nixpkgs, flake-utils, pyrin, ... }:
