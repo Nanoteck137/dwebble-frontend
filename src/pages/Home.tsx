@@ -1,5 +1,5 @@
 import { createQuery } from "@tanstack/solid-query";
-import { For, Match, Switch } from "solid-js";
+import { For, Suspense } from "solid-js";
 import { useApiClient } from "../context/ApiClient";
 
 const Home = () => {
@@ -7,29 +7,26 @@ const Home = () => {
 
   const query = createQuery(() => ({
     queryKey: ["artists"],
-    queryFn: () => apiClient.getArtists(),
+    queryFn: async () => {
+      const artists = await apiClient.getArtists();
+      if (artists.status === "error") throw new Error(artists.error.message);
+
+      return artists.data;
+    },
   }));
 
   return (
     <>
       <p class="text-red-200">Home Page</p>
-      <Switch>
-        <Match when={query.isPending}>
-          <p>Loading...</p>
-        </Match>
-        <Match when={query.isError}>
-          <p>{query.error?.message}</p>
-        </Match>
-        <Match when={query.isSuccess}>
-          <div class="flex flex-col">
-            <For each={query.data?.artists}>
-              {(artist) => {
-                return <a href={`/artist/${artist.id}`}>{artist.name}</a>;
-              }}
-            </For>
-          </div>
-        </Match>
-      </Switch>
+      <Suspense fallback={<p class="text-blue-400">Loading...</p>}>
+        <div class="flex flex-col">
+          <For each={query.data?.artists}>
+            {(artist) => {
+              return <a href={`/artist/${artist.id}`}>{artist.name}</a>;
+            }}
+          </For>
+        </div>
+      </Suspense>
     </>
   );
 };

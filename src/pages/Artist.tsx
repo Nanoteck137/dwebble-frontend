@@ -1,6 +1,6 @@
 import { useParams } from "@solidjs/router";
 import { createQuery } from "@tanstack/solid-query";
-import { ErrorBoundary, For, Suspense } from "solid-js";
+import { For, Suspense } from "solid-js";
 import { useApiClient } from "../context/ApiClient";
 
 const Artist = () => {
@@ -9,15 +9,16 @@ const Artist = () => {
 
   const query = createQuery(() => ({
     queryKey: ["artists", params.id],
-    suspense: true,
-    throwOnError: true,
     queryFn: async () => {
       const artist = await apiClient.getArtistById(params.id);
-      const albums = await apiClient.getArtistAlbumsById(artist.id);
+      if (artist.status === "error") throw new Error(artist.error.message);
+
+      const albums = await apiClient.getArtistAlbumsById(artist.data.id);
+      if (albums.status === "error") throw new Error(albums.error.message);
 
       return {
-        ...artist,
-        albums: albums.albums,
+        ...artist.data,
+        albums: albums.data.albums,
       };
     },
   }));
@@ -26,23 +27,21 @@ const Artist = () => {
     <>
       <p>Artist Page: {params.id}</p>
 
-      <ErrorBoundary fallback={<p>Error...</p>}>
-        <Suspense fallback={<p>Loading...</p>}>
-          <p>Artist Id: {query.data?.id}</p>
-          <p>Artist Name: {query.data?.name}</p>
-          <p>Artist Picture: {query.data?.picture}</p>
+      <Suspense fallback={<p class="text-purple-400">Loading...</p>}>
+        <p>Artist Id: {query.data?.id}</p>
+        <p>Artist Name: {query.data?.name}</p>
+        <p>Artist Picture: {query.data?.picture}</p>
 
-          <img src={query.data?.picture} alt="Picture" />
+        <img src={query.data?.picture} alt="Picture" />
 
-          <div class="flex flex-col">
-            <For each={query.data?.albums}>
-              {(album) => {
-                return <a href={`/album/${album.id}`}>{album.name}</a>;
-              }}
-            </For>
-          </div>
-        </Suspense>
-      </ErrorBoundary>
+        <div class="flex flex-col">
+          <For each={query.data?.albums}>
+            {(album) => {
+              return <a href={`/album/${album.id}`}>{album.name}</a>;
+            }}
+          </For>
+        </div>
+      </Suspense>
     </>
   );
 };
