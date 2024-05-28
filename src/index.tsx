@@ -15,8 +15,7 @@ import { MusicManagerProvider, useMusicManager } from "./context/MusicManager";
 import "./index.css";
 import ApiClient from "./lib/api/client";
 import AudioPlayer from "./lib/components/AudioPlayer";
-import ErrorPage from "./lib/components/Error";
-import { MusicManager, Track } from "./lib/musicManager";
+import { MusicManager } from "./lib/musicManager";
 import Album from "./pages/Album";
 import Artist from "./pages/Artist";
 import Home from "./pages/Home";
@@ -80,18 +79,16 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
             <header class="fixed left-0 right-0 top-0 h-16 w-full bg-red-400 pl-60">
               <button
                 onClick={async () => {
-                  const queue = await apiClient.createRandomQueue();
-
-                  musicManager.clearQueue();
-
-                  const tracks: Track[] = queue.tracks.map((t) => ({
-                    name: t.name,
-                    artistName: t.artistName,
-                    source: t.mobileQualityFile,
-                    coverArt: t.coverArt,
-                  }));
-                  tracks.forEach((t) => musicManager.addTrackToQueue(t));
-                  musicManager.requestPlay();
+                  // const queue = await apiClient.createRandomQueue();
+                  // musicManager.clearQueue();
+                  // const tracks: Track[] = queue.tracks.map((t) => ({
+                  //   name: t.name,
+                  //   artistName: t.artistName,
+                  //   source: t.mobileQualityFile,
+                  //   coverArt: t.coverArt,
+                  // }));
+                  // tracks.forEach((t) => musicManager.addTrackToQueue(t));
+                  // musicManager.requestPlay();
                 }}
               >
                 Random Play
@@ -103,13 +100,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
             >
               <ErrorBoundary
                 fallback={(err) => {
-                  let code = 500;
-                  let message = "Unknown Error";
-                  if (err instanceof Error) {
-                    message = err.message;
-                  }
-
-                  return <ErrorPage code={code} message={message} />;
+                  return <p class="text-red-500">Error: {err.message}</p>;
                 }}
               >
                 {props.children}
