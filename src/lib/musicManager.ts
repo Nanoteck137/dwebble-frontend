@@ -1,6 +1,6 @@
 import { Emitter, createNanoEvents } from "nanoevents";
 
-export type Track = {
+export type MusicTrack = {
   name: string;
   artistName: string;
   source: string;
@@ -9,7 +9,7 @@ export type Track = {
 
 export type Queue = {
   index: number;
-  items: Track[];
+  items: MusicTrack[];
 };
 
 export class MusicManager {
@@ -26,7 +26,7 @@ export class MusicManager {
     return this.queue.items[this.queue.index];
   }
 
-  addTrackToQueue(track: Track) {
+  addTrackToQueue(track: MusicTrack) {
     this.queue.items.push(track);
     this.emitter.emit("onQueueUpdated");
   }

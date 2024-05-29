@@ -1,10 +1,57 @@
 import { useParams } from "@solidjs/router";
-import { createQuery } from "@tanstack/solid-query";
-import { For, Suspense } from "solid-js";
+import { createMutation, createQuery } from "@tanstack/solid-query";
+import { Component, For, Show, Suspense, createSignal } from "solid-js";
 import { useApiClient } from "../context/ApiClient";
 import { useMusicManager } from "../context/MusicManager";
-import { Track } from "../lib/musicManager";
+import { MusicTrack } from "../lib/musicManager";
 import { formatTime } from "../lib/utils";
+import { createQueryPlaylists } from "./Playlists";
+
+const AddToPlaylist: Component<{ trackId: string; close: () => void }> = (
+  props,
+) => {
+  const apiClient = useApiClient();
+  const playlists = createQueryPlaylists(apiClient);
+
+  const addToPlaylist = createMutation(() => ({
+    mutationFn: async (data: { playlistId: string; tracks: string[] }) => {
+      const res = await apiClient.addItemsToPlaylists(data.playlistId, {
+        tracks: data.tracks,
+      });
+
+      if (res.status === "error") throw new Error(res.error.message);
+
+      return res.data;
+    },
+  }));
+
+  return (
+    <div class="fixed bg-purple-300">
+      <p>Add To Playlist: {props.trackId}</p>
+
+      <div class="flex flex-col gap-1">
+        {playlists.data?.playlists.map((playlist) => {
+          return (
+            <button
+              onClick={() => {
+                addToPlaylist.mutate({
+                  playlistId: playlist.id,
+                  tracks: [props.trackId],
+                });
+
+                props.close();
+              }}
+            >
+              {playlist.name}
+            </button>
+          );
+        })}
+      </div>
+
+      <button onClick={() => props.close()}>Close</button>
+    </div>
+  );
+};
 
 const Album = () => {
   const params = useParams<{ id: string }>();
@@ -28,6 +75,8 @@ const Album = () => {
 
   const musicManager = useMusicManager();
 
+  const [addToPlaylist, setAddToPlaylist] = createSignal<string>();
+
   return (
     <>
       <p>Album Page: {params.id}</p>
@@ -42,7 +91,7 @@ const Album = () => {
 
         <button
           onClick={() => {
-            const tracks: Track[] = query.data!.tracks.map((t) => ({
+            const tracks: MusicTrack[] = query.data!.tracks.map((t) => ({
               name: t.name,
               artistName: t.artistName,
               source: t.mobileQualityFile,
@@ -57,13 +106,29 @@ const Album = () => {
         <For each={query.data?.tracks}>
           {(track) => {
             return (
-              <p>
-                {track.number} - {track.name} - {formatTime(track.duration)}
-              </p>
+              <div class="flex justify-between">
+                <p>
+                  {track.number} - {track.name} - {formatTime(track.duration)}
+                </p>
+                <button
+                  onClick={() => {
+                    setAddToPlaylist(track.id);
+                  }}
+                >
+                  Add to Playlist
+                </button>
+              </div>
             );
           }}
         </For>
       </Suspense>
+
+      <Show when={!!addToPlaylist()}>
+        <AddToPlaylist
+          trackId={addToPlaylist()!}
+          close={() => setAddToPlaylist(undefined)}
+        />
+      </Show>
     </>
   );
 };

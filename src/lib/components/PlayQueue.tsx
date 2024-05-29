@@ -2,11 +2,11 @@ import { HiSolidPlay, HiSolidXMark } from "solid-icons/hi";
 import { TbClearAll } from "solid-icons/tb";
 import { Component, For, createSignal, onCleanup, onMount } from "solid-js";
 import { useMusicManager } from "../../context/MusicManager";
-import { Track } from "../musicManager";
+import { MusicTrack } from "../musicManager";
 
 interface QueueItemProps {
   isPlaying: boolean;
-  track: Track;
+  track: MusicTrack;
   onPlayClick: () => void;
 }
 
@@ -47,7 +47,7 @@ interface PlayQueueProps {
 }
 
 const PlayQueue: Component<PlayQueueProps> = (props) => {
-  const [tracks, setTracks] = createSignal<Track[]>([]);
+  const [tracks, setTracks] = createSignal<MusicTrack[]>([]);
   const [currentIndex, setCurrentIndex] = createSignal(0);
 
   const musicManager = useMusicManager();

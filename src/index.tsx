@@ -17,13 +17,14 @@ import { MusicManagerProvider, useMusicManager } from "./context/MusicManager";
 import "./index.css";
 import ApiClient, { Auth } from "./lib/api/client";
 import AudioPlayer from "./lib/components/AudioPlayer";
-import { MusicManager } from "./lib/musicManager";
+import { MusicManager, MusicTrack } from "./lib/musicManager";
 import Album from "./pages/Album";
 import Artist from "./pages/Artist";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Playlists from "./pages/Playlists";
 import Register from "./pages/Register";
+import ViewPlaylist from "./pages/ViewPlaylist";
 
 const root = document.getElementById("root");
 
@@ -103,16 +104,19 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
               </Show>
               <button
                 onClick={async () => {
-                  // const queue = await apiClient.createRandomQueue();
-                  // musicManager.clearQueue();
-                  // const tracks: Track[] = queue.tracks.map((t) => ({
-                  //   name: t.name,
-                  //   artistName: t.artistName,
-                  //   source: t.mobileQualityFile,
-                  //   coverArt: t.coverArt,
-                  // }));
-                  // tracks.forEach((t) => musicManager.addTrackToQueue(t));
-                  // musicManager.requestPlay();
+                  const queue = await apiClient.createRandomQueue();
+                  if (queue.status === "error")
+                    throw new Error(queue.error.message);
+
+                  musicManager.clearQueue();
+                  const tracks: MusicTrack[] = queue.data.tracks.map((t) => ({
+                    name: t.name,
+                    artistName: t.artistName,
+                    source: t.mobileQualityFile,
+                    coverArt: t.coverArt,
+                  }));
+                  tracks.forEach((t) => musicManager.addTrackToQueue(t));
+                  musicManager.requestPlay();
                 }}
               >
                 Random Play
@@ -155,6 +159,7 @@ render(
                 <Route path="/artist/:id" component={Artist} />
                 <Route path="/album/:id" component={Album} />
                 <Route path="/playlists" component={Playlists} />
+                <Route path="/viewplaylist/:id" component={ViewPlaylist} />
 
                 <Route path="/login" component={Login} />
                 <Route path="/register" component={Register} />

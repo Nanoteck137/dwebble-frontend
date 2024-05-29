@@ -8,11 +8,13 @@ import {
   GetArtistById,
   GetArtists,
   GetAuthMe,
+  GetPlaylistById,
   GetPlaylists,
   PostAuthSignin,
   PostAuthSigninBody,
   PostAuthSignup,
   PostAuthSignupBody,
+  PostPlaylistItemsByIdBody,
 } from "../models/apiGen";
 
 export type User = GetAuthMe;
@@ -147,5 +149,18 @@ export default class ApiClient {
 
   getPlaylists() {
     return this.request("/api/v1/playlists", "GET", GetPlaylists);
+  }
+
+  getPlaylistById(id: string) {
+    return this.request(`/api/v1/playlists/${id}`, "GET", GetPlaylistById);
+  }
+
+  addItemsToPlaylists(playlistId: string, body: PostPlaylistItemsByIdBody) {
+    return this.request(
+      `/api/v1/playlists/${playlistId}/items`,
+      "POST",
+      z.undefined(),
+      body,
+    );
   }
 }
