@@ -76,7 +76,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
           <aside class="fixed bottom-0 left-0 top-0 z-10 w-60 bg-blue-400">
             <div class="flex h-16 items-center bg-emerald-400 px-4">
               <a class="text-3xl" href="/">
-                Sewaddle
+                Dwebble
               </a>
             </div>
             <nav class="flex flex-col px-4">
