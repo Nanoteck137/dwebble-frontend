@@ -8,6 +8,7 @@ import {
   GetArtistById,
   GetArtists,
   GetAuthMe,
+  GetPlaylists,
   PostAuthSignin,
   PostAuthSigninBody,
   PostAuthSignup,
@@ -142,5 +143,9 @@ export default class ApiClient {
 
   getMe() {
     return this.request("/api/v1/auth/me", "GET", GetAuthMe);
+  }
+
+  getPlaylists() {
+    return this.request("/api/v1/playlists", "GET", GetPlaylists);
   }
 }

@@ -22,6 +22,7 @@ import Album from "./pages/Album";
 import Artist from "./pages/Artist";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Playlists from "./pages/Playlists";
 import Register from "./pages/Register";
 
 const root = document.getElementById("root");
@@ -153,6 +154,8 @@ render(
                 <Route path="/" component={Home} />
                 <Route path="/artist/:id" component={Artist} />
                 <Route path="/album/:id" component={Album} />
+                <Route path="/playlists" component={Playlists} />
+
                 <Route path="/login" component={Login} />
                 <Route path="/register" component={Register} />
               </Route>
