@@ -27,8 +27,14 @@ export class MusicManager {
   }
 
   addTrackToQueue(track: MusicTrack) {
+    const play = this.queue.items.length === 0;
+
     this.queue.items.push(track);
     this.emitter.emit("onQueueUpdated");
+
+    if (play) {
+      this.requestPlay();
+    }
   }
 
   isEndOfQueue() {
