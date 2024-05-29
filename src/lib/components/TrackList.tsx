@@ -1,11 +1,12 @@
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
+import { HiSolidEllipsisVertical } from "solid-icons/hi";
 import { Component, Show, createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
 import { useApiClient } from "../../context/ApiClient";
 import { useMusicManager } from "../../context/MusicManager";
 import { createQueryPlaylists } from "../../pages/Playlists";
 import { Track } from "../models/apiGen";
-import { MusicTrack } from "../musicManager";
+import { trackToMusicTrack } from "../utils";
 
 const AddToPlaylist: Component<{ trackId: string; close: () => void }> = (
   props,
@@ -64,6 +65,58 @@ const AddToPlaylist: Component<{ trackId: string; close: () => void }> = (
   );
 };
 
+type ItemProps = {
+  track: Track;
+
+  onAddToQueue: () => void;
+  onAddToPlaylist: () => void;
+};
+
+const Item: Component<ItemProps> = (props) => {
+  const [menuOpen, setMenuOpen] = createSignal(false);
+
+  return (
+    <div class="relative">
+      <div class="flex justify-between">
+        <p>{props.track.name}</p>
+
+        <button
+          onClick={() => {
+            setMenuOpen(true);
+          }}
+        >
+          <HiSolidEllipsisVertical class="h-7 w-7" />
+        </button>
+      </div>
+
+      <Show when={menuOpen()}>
+        <div class="absolute right-2 z-50 flex flex-col gap-2 bg-rose-400 p-4">
+          <button
+            onClick={() => {
+              props.onAddToQueue();
+              setMenuOpen(false);
+            }}
+          >
+            Add to Queue
+          </button>
+          <button
+            onClick={() => {
+              props.onAddToPlaylist();
+              setMenuOpen(false);
+            }}
+          >
+            Add to Playlist
+          </button>
+        </div>
+        <div
+          class="fixed inset-0 z-40 opacity-0"
+          onClick={() => setMenuOpen(false)}
+        ></div>
+      </Show>
+    </div>
+  );
+};
+
 type TrackListProps = {
   name: string;
   tracks: Track[];
@@ -81,14 +134,21 @@ const TrackList: Component<TrackListProps> = (props) => {
 
         <button
           onClick={() => {
-            const tracks: MusicTrack[] = props.tracks.map((t) => ({
-              name: t.name,
-              artistName: t.artistName,
-              source: t.mobileQualityFile,
-              coverArt: t.coverArt,
-            }));
-            tracks.forEach((t) => musicManager.addTrackToQueue(t));
-            musicManager.requestPlay();
+            musicManager.clearQueue();
+
+            props.tracks.forEach((t) =>
+              musicManager.addTrackToQueue(trackToMusicTrack(t)),
+            );
+          }}
+        >
+          Play
+        </button>
+
+        <button
+          onClick={() => {
+            props.tracks.forEach((t) =>
+              musicManager.addTrackToQueue(trackToMusicTrack(t)),
+            );
           }}
         >
           Add to queue
@@ -96,17 +156,13 @@ const TrackList: Component<TrackListProps> = (props) => {
 
         {props.tracks.map((track) => {
           return (
-            <div class="flex justify-between">
-              <p>{track.name}</p>
-
-              <button
-                onClick={() => {
-                  setAddToPlaylist(track.id);
-                }}
-              >
-                Add to Playlist
-              </button>
-            </div>
+            <Item
+              track={track}
+              onAddToQueue={() => {
+                musicManager.addTrackToQueue(trackToMusicTrack(track));
+              }}
+              onAddToPlaylist={() => {}}
+            />
           );
         })}
       </div>
