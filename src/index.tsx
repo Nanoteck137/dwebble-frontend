@@ -7,18 +7,22 @@ import {
   Component,
   ErrorBoundary,
   JSX,
+  Show,
   createSignal,
   onMount,
 } from "solid-js";
-import { ApiClientProvider, useApiClient } from "./context/ApiClient";
+import { ApiClientProvider } from "./context/ApiClient";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { MusicManagerProvider, useMusicManager } from "./context/MusicManager";
 import "./index.css";
-import ApiClient from "./lib/api/client";
+import ApiClient, { Auth } from "./lib/api/client";
 import AudioPlayer from "./lib/components/AudioPlayer";
 import { MusicManager } from "./lib/musicManager";
 import Album from "./pages/Album";
 import Artist from "./pages/Artist";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 const root = document.getElementById("root");
 
@@ -33,12 +37,15 @@ const queryClient = new QueryClient({
     },
   },
 });
-const musicManager = new MusicManager();
 
+const musicManager = new MusicManager();
 const apiClient = new ApiClient("http://10.28.28.6:3000");
+const auth = new Auth(apiClient);
 
 const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
-  const apiClient = useApiClient();
+  const auth = useAuth();
+  const user = auth.user();
+
   const musicManager = useMusicManager();
   const [showPlayer, setShowPlayer] = createSignal(
     !musicManager.isQueueEmpty(),
@@ -73,10 +80,26 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
               <a href="/">Home</a>
               <a href="">Albums</a>
               <a href="">Artists</a>
+              <Show when={!!user()}>
+                <a href="/playlists">Playlists</a>
+              </Show>
             </nav>
           </aside>
           <div class="flex-grow">
             <header class="fixed left-0 right-0 top-0 h-16 w-full bg-red-400 pl-60">
+              <Show when={!!user()}>
+                <div class="flex gap-2">
+                  <p>{user()!.username}</p>
+                  <button
+                    class="text-blue-400"
+                    onClick={() => {
+                      auth.resetToken();
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </Show>
               <button
                 onClick={async () => {
                   // const queue = await apiClient.createRandomQueue();
@@ -124,13 +147,17 @@ render(
     <QueryClientProvider client={queryClient}>
       <MusicManagerProvider musicManager={musicManager}>
         <ApiClientProvider client={apiClient}>
-          <Router>
-            <Route path="/" component={BasicLayout}>
-              <Route path="/" component={Home} />
-              <Route path="/artist/:id" component={Artist} />
-              <Route path="/album/:id" component={Album} />
-            </Route>
-          </Router>
+          <AuthProvider auth={auth}>
+            <Router>
+              <Route path="/" component={BasicLayout}>
+                <Route path="/" component={Home} />
+                <Route path="/artist/:id" component={Artist} />
+                <Route path="/album/:id" component={Album} />
+                <Route path="/login" component={Login} />
+                <Route path="/register" component={Register} />
+              </Route>
+            </Router>
+          </AuthProvider>
         </ApiClientProvider>
       </MusicManagerProvider>
     </QueryClientProvider>

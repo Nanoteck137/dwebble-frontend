@@ -8,6 +8,10 @@ import {
   GetArtistById,
   GetArtists,
   GetAuthMe,
+  PostAuthSignin,
+  PostAuthSigninBody,
+  PostAuthSignup,
+  PostAuthSignupBody,
 } from "../models/apiGen";
 
 export type User = GetAuthMe;
@@ -94,6 +98,14 @@ export default class ApiClient {
     const parsedData = await Schema.parseAsync(data);
 
     return parsedData;
+  }
+
+  login(body: PostAuthSigninBody) {
+    return this.request("/api/v1/auth/signin", "POST", PostAuthSignin, body);
+  }
+
+  register(body: PostAuthSignupBody) {
+    return this.request("/api/v1/auth/signup", "POST", PostAuthSignup, body);
   }
 
   getArtists() {
