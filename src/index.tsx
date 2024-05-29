@@ -17,7 +17,8 @@ import { MusicManagerProvider, useMusicManager } from "./context/MusicManager";
 import "./index.css";
 import ApiClient, { Auth } from "./lib/api/client";
 import AudioPlayer from "./lib/components/AudioPlayer";
-import { MusicManager, MusicTrack } from "./lib/musicManager";
+import { MusicManager } from "./lib/musicManager";
+import { trackToMusicTrack } from "./lib/utils";
 import Album from "./pages/Album";
 import Artist from "./pages/Artist";
 import Home from "./pages/Home";
@@ -109,14 +110,10 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
                     throw new Error(queue.error.message);
 
                   musicManager.clearQueue();
-                  const tracks: MusicTrack[] = queue.data.tracks.map((t) => ({
-                    name: t.name,
-                    artistName: t.artistName,
-                    source: t.mobileQualityFile,
-                    coverArt: t.coverArt,
-                  }));
-                  tracks.forEach((t) => musicManager.addTrackToQueue(t));
-                  musicManager.requestPlay();
+
+                  queue.data.tracks.forEach((t) =>
+                    musicManager.addTrackToQueue(trackToMusicTrack(t)),
+                  );
                 }}
               >
                 Random Play
