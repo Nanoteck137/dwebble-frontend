@@ -144,3 +144,8 @@ export const GetPlaylists = z.object({
 });
 export type GetPlaylists = z.infer<typeof GetPlaylists>;
 
+export const DeletePlaylistItemsByIdBody = z.object({
+  trackIndices: z.array(z.number()),
+});
+export type DeletePlaylistItemsByIdBody = z.infer<typeof DeletePlaylistItemsByIdBody>;
+

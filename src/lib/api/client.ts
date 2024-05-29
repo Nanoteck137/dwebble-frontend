@@ -2,6 +2,7 @@ import { createSignal, Signal } from "solid-js";
 import { z } from "zod";
 import { createApiResponse } from "../models/api";
 import {
+  DeletePlaylistItemsByIdBody,
   GetAlbumById,
   GetAlbumTracksById,
   GetArtistAlbumsById,
@@ -156,6 +157,18 @@ export default class ApiClient {
   }
 
   addItemsToPlaylists(playlistId: string, body: PostPlaylistItemsByIdBody) {
+    return this.request(
+      `/api/v1/playlists/${playlistId}/items`,
+      "POST",
+      z.undefined(),
+      body,
+    );
+  }
+
+  deleteItemsToPlaylists(
+    playlistId: string,
+    body: DeletePlaylistItemsByIdBody,
+  ) {
     return this.request(
       `/api/v1/playlists/${playlistId}/items`,
       "POST",
