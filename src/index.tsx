@@ -70,7 +70,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
   });
 
   return (
-    <div>
+    <div class="">
       <div class="flex h-screen flex-col">
         <div class="flex h-full">
           <aside class="fixed bottom-0 left-0 top-0 z-10 w-60 bg-blue-400">
@@ -121,14 +121,14 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
             </header>
 
             <main
-              class={`ml-60 mt-16 flex-grow bg-green-400 ${showPlayer() ? "mb-20" : ""}`}
+              class={`ml-60 mt-16 bg-green-400 ${showPlayer() ? "mb-20" : ""}`}
             >
               <ErrorBoundary
                 fallback={(err) => {
                   return <p class="text-red-500">Error: {err.message}</p>;
                 }}
               >
-                {props.children}
+                <div class="overflow-y-scroll">{props.children}</div>
               </ErrorBoundary>
             </main>
           </div>

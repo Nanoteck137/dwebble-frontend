@@ -1,6 +1,6 @@
 import { useParams } from "@solidjs/router";
 import { createQuery } from "@tanstack/solid-query";
-import { Suspense } from "solid-js";
+import { createSignal, Suspense } from "solid-js";
 import { useApiClient } from "../context/ApiClient";
 import { TrackList } from "../lib/components/TrackList";
 
@@ -19,12 +19,17 @@ const ViewPlaylist = () => {
     },
   }));
 
+  const [editMode, setEditMode] = createSignal(false);
+
   return (
     <Suspense fallback={<p>Loading...</p>}>
       <TrackList
-        type="playlist"
+        type={editMode() ? "playlist_edit" : "playlist"}
         name={playlist.data?.name || ""}
         tracks={playlist.data?.items || []}
+        onEditClicked={() => setEditMode(true)}
+        onSaveClicked={() => setEditMode(false)}
+        onCancelClicked={() => setEditMode(false)}
       />
     </Suspense>
   );
