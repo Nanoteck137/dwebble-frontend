@@ -73,7 +73,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
     <div class="">
       <div class="flex h-screen flex-col">
         <div class="flex h-full">
-          <aside class="fixed bottom-0 left-0 top-0 z-10 w-60 bg-blue-400">
+          <aside class="fixed bottom-0 left-0 top-0 z-30 w-60 bg-blue-400">
             <div class="flex h-16 items-center bg-emerald-400 px-4">
               <a class="text-3xl" href="/">
                 Dwebble
@@ -89,7 +89,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
             </nav>
           </aside>
           <div class="flex-grow">
-            <header class="fixed left-0 right-0 top-0 h-16 w-full bg-red-400 pl-60">
+            <header class="fixed left-0 right-0 top-0 z-20 h-16 w-full bg-red-400 pl-60">
               <Show when={!!user()}>
                 <div class="flex gap-2">
                   <p>{user()!.username}</p>
@@ -125,6 +125,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
             >
               <ErrorBoundary
                 fallback={(err) => {
+                  console.error(err);
                   return <p class="text-red-500">Error: {err.message}</p>;
                 }}
               >
@@ -134,7 +135,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
           </div>
         </div>
         <footer
-          class="fixed bottom-0 left-0 right-0 z-20 h-20 bg-purple-400"
+          class="fixed bottom-0 left-0 right-0 z-30 h-20 bg-purple-400"
           classList={{ hidden: !showPlayer() }}
         >
           <AudioPlayer />

@@ -149,3 +149,9 @@ export const DeletePlaylistItemsByIdBody = z.object({
 });
 export type DeletePlaylistItemsByIdBody = z.infer<typeof DeletePlaylistItemsByIdBody>;
 
+export const PostPlaylistsItemMoveByIdBody = z.object({
+  itemIndex: z.number(),
+  beforeIndex: z.number(),
+});
+export type PostPlaylistsItemMoveByIdBody = z.infer<typeof PostPlaylistsItemMoveByIdBody>;
+

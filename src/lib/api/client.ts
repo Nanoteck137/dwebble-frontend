@@ -16,6 +16,7 @@ import {
   PostAuthSignup,
   PostAuthSignupBody,
   PostPlaylistItemsByIdBody,
+  PostPlaylistsItemMoveByIdBody,
 } from "../models/apiGen";
 
 export type User = GetAuthMe;
@@ -171,6 +172,15 @@ export default class ApiClient {
   ) {
     return this.request(
       `/api/v1/playlists/${playlistId}/items`,
+      "POST",
+      z.undefined(),
+      body,
+    );
+  }
+
+  movePlaylistItem(playlistId: string, body: PostPlaylistsItemMoveByIdBody) {
+    return this.request(
+      `/api/v1/playlists/${playlistId}/items/move`,
       "POST",
       z.undefined(),
       body,

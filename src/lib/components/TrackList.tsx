@@ -4,27 +4,19 @@ import {
   Component,
   For,
   Show,
+  createEffect,
   createSignal,
   onCleanup,
-  onMount,
 } from "solid-js";
 import { Portal } from "solid-js/web";
-import Sortable from "sortablejs";
+import Sortable, { MultiDrag } from "sortablejs";
 import { useApiClient } from "../../context/ApiClient";
 import { useMusicManager } from "../../context/MusicManager";
 import { createQueryPlaylists } from "../../pages/Playlists";
 import { Track } from "../models/apiGen";
 import { trackToMusicTrack } from "../utils";
 
-// Sortable.mount(new AutoScroll());
-
-declare module "solid-js" {
-  namespace JSX {
-    interface Directives {
-      sortable: boolean;
-    }
-  }
-}
+Sortable.mount(new MultiDrag());
 
 const AddToPlaylist: Component<{ trackId: string; close: () => void }> = (
   props,
@@ -108,7 +100,7 @@ const TrackItem: Component<TrackItemProps> = (props) => {
       </div>
 
       <Show when={menuOpen()}>
-        <div class="absolute right-2 z-50 flex flex-col gap-2 bg-rose-400 p-4">
+        <div class="absolute right-2 z-10 flex flex-col gap-2 bg-rose-400 p-4">
           <button
             onClick={() => {
               props.onAddToQueue();
@@ -137,31 +129,53 @@ const TrackItem: Component<TrackItemProps> = (props) => {
 
 type SortableTrackListProps = {
   tracks: Track[];
+
+  onMoveItem?: (fromIndex: number, toIndex: number) => void;
 };
 
 const SortableTrackList: Component<SortableTrackListProps> = (props) => {
-  var el: HTMLDivElement | undefined;
-  var sortable: Sortable;
+  var sortable: Sortable | undefined;
 
-  onMount(() => {
+  console.log("Sort");
+
+  const [tracks, setTracks] = createSignal<Track[]>();
+
+  createEffect(() => {
+    if (sortable) sortable.destroy();
+    console.log(props.tracks);
+
+    setTracks([...props.tracks]);
+  });
+
+  function createSort(el: HTMLElement) {
     sortable = Sortable.create(el!, {
       forceFallback: true,
       scrollSensitivity: 50.0,
       handle: ".handle",
-      // onEnd: (event) => {
-      //   // console.log(event);
-      //   // event.oldIndex
-      // },
+      multiDrag: true,
+      selectedClass: "selected",
+      onEnd: (event) => {
+        event.preventDefault();
+        props.onMoveItem?.(event.oldIndex!, event.newIndex!);
+        console.log(event);
+      },
     });
+  }
 
-    onCleanup(() => {
-      sortable.destroy();
-    });
+  onCleanup(() => {
+    sortable?.destroy();
   });
 
   return (
-    <div class="flex flex-col gap-2" ref={el}>
-      <For each={props.tracks}>
+    <div
+      class="flex flex-col gap-2"
+      ref={(el) => {
+        console.log("HELLO");
+        sortable?.destroy();
+        createSort(el);
+      }}
+    >
+      <For each={tracks()}>
         {(track, index) => {
           return (
             <div class="flex">
@@ -187,6 +201,7 @@ type TrackListProps = {
   onEditClicked?: () => void;
   onSaveClicked?: () => void;
   onCancelClicked?: () => void;
+  onMoveItem?: (fromIndex: number, toIndex: number) => void;
 };
 
 export const TrackList: Component<TrackListProps> = (props) => {
@@ -265,7 +280,10 @@ export const TrackList: Component<TrackListProps> = (props) => {
             );
           })}
         >
-          <SortableTrackList tracks={props.tracks} />
+          <SortableTrackList
+            tracks={props.tracks}
+            onMoveItem={props.onMoveItem}
+          />
         </Show>
       </div>
 
