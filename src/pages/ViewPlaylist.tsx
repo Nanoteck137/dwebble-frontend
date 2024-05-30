@@ -2,7 +2,7 @@ import { useParams } from "@solidjs/router";
 import { createQuery } from "@tanstack/solid-query";
 import { Suspense } from "solid-js";
 import { useApiClient } from "../context/ApiClient";
-import TrackList from "../lib/components/TrackList";
+import { TrackList } from "../lib/components/TrackList";
 
 const ViewPlaylist = () => {
   const params = useParams<{ id: string }>();
@@ -22,6 +22,7 @@ const ViewPlaylist = () => {
   return (
     <Suspense fallback={<p>Loading...</p>}>
       <TrackList
+        type="playlist"
         name={playlist.data?.name || ""}
         tracks={playlist.data?.items || []}
       />

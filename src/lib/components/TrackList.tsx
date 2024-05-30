@@ -1,12 +1,31 @@
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
+import {
+  DragDropProvider,
+  DragDropSensors,
+  DragEvent,
+  DragOverlay,
+  Id,
+  SortableProvider,
+  closestCenter,
+  createSortable,
+  useDragDropContext,
+} from "@thisbeyond/solid-dnd";
 import { HiSolidEllipsisVertical } from "solid-icons/hi";
-import { Component, Show, createSignal } from "solid-js";
+import { Component, For, Show, createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
 import { useApiClient } from "../../context/ApiClient";
 import { useMusicManager } from "../../context/MusicManager";
 import { createQueryPlaylists } from "../../pages/Playlists";
 import { Track } from "../models/apiGen";
 import { trackToMusicTrack } from "../utils";
+
+declare module "solid-js" {
+  namespace JSX {
+    interface Directives {
+      sortable: boolean;
+    }
+  }
+}
 
 const AddToPlaylist: Component<{ trackId: string; close: () => void }> = (
   props,
@@ -65,14 +84,14 @@ const AddToPlaylist: Component<{ trackId: string; close: () => void }> = (
   );
 };
 
-type ItemProps = {
+type TrackItemProps = {
   track: Track;
 
   onAddToQueue: () => void;
   onAddToPlaylist: () => void;
 };
 
-const Item: Component<ItemProps> = (props) => {
+const TrackItem: Component<TrackItemProps> = (props) => {
   const [menuOpen, setMenuOpen] = createSignal(false);
 
   return (
@@ -117,15 +136,55 @@ const Item: Component<ItemProps> = (props) => {
   );
 };
 
+const Sortable: Component<{ track: Track; index: number }> = (props) => {
+  const sortable = createSortable(props.index + 1);
+  const [state] = useDragDropContext()!;
+  return (
+    <div
+      use:sortable
+      class="sortable"
+      classList={{
+        "opacity-25": sortable.isActiveDraggable,
+        "transition-transform": !!state.active.draggable,
+      }}
+    >
+      {props.index} - {props.track.name}
+    </div>
+  );
+};
+
+type TrackListType = "album" | "playlist";
+
 type TrackListProps = {
+  type: TrackListType;
   name: string;
   tracks: Track[];
 };
 
-const TrackList: Component<TrackListProps> = (props) => {
+export const TrackList: Component<TrackListProps> = (props) => {
   const musicManager = useMusicManager();
 
   const [addToPlaylist, setAddToPlaylist] = createSignal<string | null>(null);
+
+  const [activeItem, setActiveItem] = createSignal<Id | null>(null);
+  const ids = () => props.tracks.map((_, i) => i + 1);
+
+  const onDragStart = ({ draggable }: DragEvent) =>
+    setActiveItem(draggable.id);
+
+  const onDragEnd = ({ draggable, droppable }: DragEvent) => {
+    if (draggable && droppable) {
+      const currentItems = ids();
+      const fromIndex = currentItems.indexOf(draggable.id as number);
+      const toIndex = currentItems.indexOf(droppable.id as number);
+      if (fromIndex !== toIndex) {
+        console.log("From", fromIndex, "To", toIndex);
+        // const updatedItems = currentItems.slice();
+        // updatedItems.splice(toIndex, 0, ...updatedItems.splice(fromIndex, 1));
+        // setItems(updatedItems);
+      }
+    }
+  };
 
   return (
     <>
@@ -154,9 +213,32 @@ const TrackList: Component<TrackListProps> = (props) => {
           Add to queue
         </button>
 
-        {props.tracks.map((track) => {
+        <Show when={props.type === "playlist"}>
+          <button onClick={() => {}}>Edit Playlist</button>
+        </Show>
+
+        <DragDropProvider
+          onDragStart={onDragStart}
+          onDragEnd={onDragEnd}
+          collisionDetector={closestCenter}
+        >
+          <DragDropSensors />
+          <div class="column self-stretch">
+            <SortableProvider ids={ids()}>
+              <For each={props.tracks}>
+                {(track, index) => <Sortable track={track} index={index()} />}
+              </For>
+            </SortableProvider>
+          </div>
+          <DragOverlay>
+            <div class="sortable">
+              {props.tracks[((activeItem() || 1) as number) - 1].name}
+            </div>
+          </DragOverlay>
+        </DragDropProvider>
+        {/* {props.tracks.map((track) => {
           return (
-            <Item
+            <TrackItem
               track={track}
               onAddToQueue={() => {
                 musicManager.addTrackToQueue(trackToMusicTrack(track));
@@ -164,7 +246,7 @@ const TrackList: Component<TrackListProps> = (props) => {
               onAddToPlaylist={() => {}}
             />
           );
-        })}
+        })} */}
       </div>
 
       <Show when={!!addToPlaylist()}>
@@ -176,5 +258,3 @@ const TrackList: Component<TrackListProps> = (props) => {
     </>
   );
 };
-
-export default TrackList;
