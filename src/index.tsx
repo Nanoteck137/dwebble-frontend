@@ -6,12 +6,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import {
   Component,
   ErrorBoundary,
+  For,
   JSX,
   Show,
+  Suspense,
+  createEffect,
   createSignal,
   onMount,
 } from "solid-js";
-import { ApiClientProvider } from "~/context/ApiClient";
+import { ApiClientProvider, useApiClient } from "~/context/ApiClient";
 import { AuthProvider, useAuth } from "~/context/AuthContext";
 import { MusicManagerProvider, useMusicManager } from "~/context/MusicManager";
 import "~/index.css";
@@ -24,7 +27,7 @@ import Album from "~/pages/Album";
 import Artist from "~/pages/Artist";
 import Home from "~/pages/Home";
 import Login from "~/pages/Login";
-import Playlists from "~/pages/Playlists";
+import Playlists, { createQueryPlaylists } from "~/pages/Playlists";
 import Register from "~/pages/Register";
 import ViewPlaylist from "~/pages/ViewPlaylist";
 
@@ -55,6 +58,9 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
     !musicManager.isQueueEmpty(),
   );
 
+  const apiClient = useApiClient();
+  const playlists = createQueryPlaylists(apiClient);
+
   onMount(() => {
     musicManager.emitter.on("onQueueUpdated", () => {
       setShowPlayer(!musicManager.isQueueEmpty());
@@ -68,6 +74,13 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
         musicManager.requestPlayPause();
       }
     });
+  });
+
+  // TODO(patrik): I don't like this
+  createEffect(() => {
+    user();
+
+    playlists.refetch();
   });
 
   return (
@@ -84,8 +97,23 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
               <a href="/">Home</a>
               <a href="">Albums</a>
               <a href="">Artists</a>
+
+              <div class="h-10"></div>
+
               <Show when={!!user()}>
-                <a href="/playlists">Playlists</a>
+                <div class="flex flex-col">
+                  <Suspense>
+                    <For each={playlists.data}>
+                      {(playlist) => {
+                        return (
+                          <a href={`/viewplaylist/${playlist.id}`}>
+                            {playlist.name}
+                          </a>
+                        );
+                      }}
+                    </For>
+                  </Suspense>
+                </div>
               </Show>
             </nav>
           </aside>
