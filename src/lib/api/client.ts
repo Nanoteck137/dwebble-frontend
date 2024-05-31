@@ -1,70 +1,23 @@
-import { createSignal, Signal } from "solid-js";
 import { z } from "zod";
-import { createApiResponse } from "~/lib/models/api";
-import {
-  DeletePlaylistItemsByIdBody,
-  GetAlbumById,
-  GetAlbumTracksById,
-  GetArtistAlbumsById,
-  GetArtistById,
-  GetArtists,
-  GetAuthMe,
-  GetPlaylistById,
-  GetPlaylists,
-  PostAuthSignin,
-  PostAuthSigninBody,
-  PostAuthSignup,
-  PostAuthSignupBody,
-  PostPlaylistItemsByIdBody,
-  PostPlaylistsItemMoveByIdBody,
-} from "~/lib/models/apiGen";
+import * as api from "~/lib/api/types";
 
-export type User = GetAuthMe;
+function createApiResponse<
+  Data extends z.ZodTypeAny,
+  Errors extends z.ZodTypeAny,
+>(data: Data, errors: Errors) {
+  const error = z.object({
+    code: z.number(),
+    message: z.string(),
+    errors,
+  });
 
-export class Auth {
-  apiClient: ApiClient;
-  token?: string;
-  userSignal: Signal<User | undefined>;
-
-  constructor(apiClient: ApiClient) {
-    this.apiClient = apiClient;
-    this.userSignal = createSignal();
-
-    const token = localStorage.getItem("user-token");
-    if (token) {
-      this.setToken(token);
-    }
-  }
-
-  async resetToken() {
-    this.token = undefined;
-    this.userSignal[1](undefined);
-    this.apiClient.setToken(undefined);
-
-    localStorage.removeItem("user-token");
-    // this.events.emit("onTokenChanged", this.token, this.user);
-  }
-
-  async setToken(newToken: string) {
-    this.token = newToken;
-    this.apiClient.setToken(this.token);
-
-    const res = await this.apiClient.getMe();
-    if (res.status === "error") {
-      this.resetToken();
-      return;
-    }
-
-    this.userSignal[1](res.data);
-    localStorage.setItem("user-token", newToken);
-  }
-
-  user() {
-    return this.userSignal[0];
-  }
+  return z.discriminatedUnion("status", [
+    z.object({ status: z.literal("success"), data }),
+    z.object({ status: z.literal("error"), error }),
+  ]);
 }
 
-export default class ApiClient {
+export class ApiClient {
   baseUrl: string;
   token?: string;
 
@@ -105,59 +58,72 @@ export default class ApiClient {
     return parsedData;
   }
 
-  login(body: PostAuthSigninBody) {
-    return this.request("/api/v1/auth/signin", "POST", PostAuthSignin, body);
+  login(body: api.PostAuthSigninBody) {
+    return this.request(
+      "/api/v1/auth/signin",
+      "POST",
+      api.PostAuthSignin,
+      body,
+    );
   }
 
-  register(body: PostAuthSignupBody) {
-    return this.request("/api/v1/auth/signup", "POST", PostAuthSignup, body);
+  register(body: api.PostAuthSignupBody) {
+    return this.request(
+      "/api/v1/auth/signup",
+      "POST",
+      api.PostAuthSignup,
+      body,
+    );
   }
 
   getArtists() {
-    return this.request("/api/v1/artists", "GET", GetArtists);
+    return this.request("/api/v1/artists", "GET", api.GetArtists);
   }
 
   getArtistById(id: string) {
-    return this.request(`/api/v1/artists/${id}`, "GET", GetArtistById);
+    return this.request(`/api/v1/artists/${id}`, "GET", api.GetArtistById);
   }
 
   getArtistAlbumsById(id: string) {
     return this.request(
       `/api/v1/artists/${id}/albums`,
       "GET",
-      GetArtistAlbumsById,
+      api.GetArtistAlbumsById,
     );
   }
 
   getAlbumById(id: string) {
-    return this.request(`/api/v1/albums/${id}`, "GET", GetAlbumById);
+    return this.request(`/api/v1/albums/${id}`, "GET", api.GetAlbumById);
   }
 
   getAlbumTracksById(id: string) {
     return this.request(
       `/api/v1/albums/${id}/tracks`,
       "GET",
-      GetAlbumTracksById,
+      api.GetAlbumTracksById,
     );
   }
 
   createRandomQueue() {
-    return this.request("/api/v1/queue", "POST", GetAlbumTracksById);
+    return this.request("/api/v1/queue", "POST", api.GetAlbumTracksById);
   }
 
   getMe() {
-    return this.request("/api/v1/auth/me", "GET", GetAuthMe);
+    return this.request("/api/v1/auth/me", "GET", api.GetAuthMe);
   }
 
   getPlaylists() {
-    return this.request("/api/v1/playlists", "GET", GetPlaylists);
+    return this.request("/api/v1/playlists", "GET", api.GetPlaylists);
   }
 
   getPlaylistById(id: string) {
-    return this.request(`/api/v1/playlists/${id}`, "GET", GetPlaylistById);
+    return this.request(`/api/v1/playlists/${id}`, "GET", api.GetPlaylistById);
   }
 
-  addItemsToPlaylists(playlistId: string, body: PostPlaylistItemsByIdBody) {
+  addItemsToPlaylists(
+    playlistId: string,
+    body: api.PostPlaylistItemsByIdBody,
+  ) {
     return this.request(
       `/api/v1/playlists/${playlistId}/items`,
       "POST",
@@ -168,7 +134,7 @@ export default class ApiClient {
 
   deleteItemsToPlaylists(
     playlistId: string,
-    body: DeletePlaylistItemsByIdBody,
+    body: api.DeletePlaylistItemsByIdBody,
   ) {
     return this.request(
       `/api/v1/playlists/${playlistId}/items`,
@@ -178,7 +144,10 @@ export default class ApiClient {
     );
   }
 
-  movePlaylistItem(playlistId: string, body: PostPlaylistsItemMoveByIdBody) {
+  movePlaylistItem(
+    playlistId: string,
+    body: api.PostPlaylistsItemMoveByIdBody,
+  ) {
     return this.request(
       `/api/v1/playlists/${playlistId}/items/move`,
       "POST",
