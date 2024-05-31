@@ -5,8 +5,8 @@ import {
   useQueryClient,
 } from "@tanstack/solid-query";
 import { Suspense, createSignal } from "solid-js";
-import { useApiClient } from "../context/ApiClient";
-import { TrackList } from "../lib/components/TrackList";
+import { useApiClient } from "~/context/ApiClient";
+import { TrackList } from "~/lib/components/TrackList";
 
 const ViewPlaylist = () => {
   const params = useParams<{ id: string }>();

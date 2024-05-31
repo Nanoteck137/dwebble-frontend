@@ -1,7 +1,7 @@
 import { useParams } from "@solidjs/router";
 import { createQuery } from "@tanstack/solid-query";
 import { For, Suspense } from "solid-js";
-import { useApiClient } from "../context/ApiClient";
+import { useApiClient } from "~/context/ApiClient";
 
 const Artist = () => {
   const params = useParams<{ id: string }>();

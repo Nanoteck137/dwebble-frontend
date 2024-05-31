@@ -7,11 +7,11 @@ import {
 } from "solid-icons/hi";
 import { Component, Show, createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
-import { useApiClient } from "../../context/ApiClient";
-import { useMusicManager } from "../../context/MusicManager";
-import { createQueryPlaylists } from "../../pages/Playlists";
-import { Track } from "../models/apiGen";
-import { trackToMusicTrack } from "../utils";
+import { useApiClient } from "~/context/ApiClient";
+import { useMusicManager } from "~/context/MusicManager";
+import { Track } from "~/lib/models/apiGen";
+import { trackToMusicTrack } from "~/lib/utils";
+import { createQueryPlaylists } from "~/pages/Playlists";
 
 const AddToPlaylist: Component<{ trackId: string; close: () => void }> = (
   props,

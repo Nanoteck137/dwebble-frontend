@@ -1,8 +1,8 @@
 import { Navigate, useNavigate } from "@solidjs/router";
 import { Show, createSignal } from "solid-js";
 import { z } from "zod";
-import { useApiClient } from "../context/ApiClient";
-import { useAuth } from "../context/AuthContext";
+import { useApiClient } from "~/context/ApiClient";
+import { useAuth } from "~/context/AuthContext";
 
 const schema = z.object({
   username: z.string().min(1),

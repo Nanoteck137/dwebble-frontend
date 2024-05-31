@@ -11,21 +11,21 @@ import {
   createSignal,
   onMount,
 } from "solid-js";
-import { ApiClientProvider } from "./context/ApiClient";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import { MusicManagerProvider, useMusicManager } from "./context/MusicManager";
-import "./index.css";
-import ApiClient, { Auth } from "./lib/api/client";
-import AudioPlayer from "./lib/components/AudioPlayer";
-import { MusicManager } from "./lib/musicManager";
-import { trackToMusicTrack } from "./lib/utils";
-import Album from "./pages/Album";
-import Artist from "./pages/Artist";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Playlists from "./pages/Playlists";
-import Register from "./pages/Register";
-import ViewPlaylist from "./pages/ViewPlaylist";
+import { ApiClientProvider } from "~/context/ApiClient";
+import { AuthProvider, useAuth } from "~/context/AuthContext";
+import { MusicManagerProvider, useMusicManager } from "~/context/MusicManager";
+import "~/index.css";
+import ApiClient, { Auth } from "~/lib/api/client";
+import AudioPlayer from "~/lib/components/AudioPlayer";
+import { MusicManager } from "~/lib/musicManager";
+import { trackToMusicTrack } from "~/lib/utils";
+import Album from "~/pages/Album";
+import Artist from "~/pages/Artist";
+import Home from "~/pages/Home";
+import Login from "~/pages/Login";
+import Playlists from "~/pages/Playlists";
+import Register from "~/pages/Register";
+import ViewPlaylist from "~/pages/ViewPlaylist";
 
 const root = document.getElementById("root");
 

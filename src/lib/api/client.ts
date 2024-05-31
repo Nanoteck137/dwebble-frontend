@@ -1,6 +1,6 @@
 import { createSignal, Signal } from "solid-js";
 import { z } from "zod";
-import { createApiResponse } from "../models/api";
+import { createApiResponse } from "~/lib/models/api";
 import {
   DeletePlaylistItemsByIdBody,
   GetAlbumById,
@@ -17,7 +17,7 @@ import {
   PostAuthSignupBody,
   PostPlaylistItemsByIdBody,
   PostPlaylistsItemMoveByIdBody,
-} from "../models/apiGen";
+} from "~/lib/models/apiGen";
 
 export type User = GetAuthMe;
 

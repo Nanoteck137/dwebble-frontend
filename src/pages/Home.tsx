@@ -1,6 +1,6 @@
 import { createQuery } from "@tanstack/solid-query";
 import { For, Suspense } from "solid-js";
-import { useApiClient } from "../context/ApiClient";
+import { useApiClient } from "~/context/ApiClient";
 
 const Home = () => {
   const apiClient = useApiClient();

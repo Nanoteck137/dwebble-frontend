@@ -1,10 +1,11 @@
 import { Navigate } from "@solidjs/router";
 import { createQuery } from "@tanstack/solid-query";
 import { Show, Suspense } from "solid-js";
-import { useApiClient } from "../context/ApiClient";
-import { useAuth } from "../context/AuthContext";
-import ApiClient from "../lib/api/client";
+import { useApiClient } from "~/context/ApiClient";
+import { useAuth } from "~/context/AuthContext";
+import ApiClient from "~/lib/api/client";
 
+// TODO(patrik): Move
 export const createQueryPlaylists = (apiClient: ApiClient) =>
   createQuery(() => ({
     queryKey: ["playlists"],

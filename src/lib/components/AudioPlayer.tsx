@@ -15,11 +15,11 @@ import {
   onCleanup,
   onMount,
 } from "solid-js";
-import { useMusicManager } from "../../context/MusicManager";
-import { formatTime } from "../utils";
-import LoadingSpinner from "./LoadingSpinner";
-import PlayQueue from "./PlayQueue";
-import Slider from "./Slider";
+import { useMusicManager } from "~/context/MusicManager";
+import LoadingSpinner from "~/lib/components/LoadingSpinner";
+import PlayQueue from "~/lib/components/PlayQueue";
+import Slider from "~/lib/components/Slider";
+import { formatTime } from "~/lib/utils";
 
 function getVolume() {
   const vol = localStorage.getItem("player-volume");
