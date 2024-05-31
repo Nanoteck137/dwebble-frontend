@@ -1,18 +1,22 @@
-import { useParams } from "@solidjs/router";
+import { Navigate, useParams } from "@solidjs/router";
 import {
   createMutation,
   createQuery,
   useQueryClient,
 } from "@tanstack/solid-query";
-import { Suspense, createSignal } from "solid-js";
+import { Show, Suspense, createSignal } from "solid-js";
 import { useApiClient } from "~/context/ApiClient";
+import { useAuth } from "~/context/AuthContext";
 import { TrackList } from "~/lib/components/TrackList";
 
 const ViewPlaylist = () => {
   const params = useParams<{ id: string }>();
 
   const apiClient = useApiClient();
+  const auth = useAuth();
   const queryClient = useQueryClient();
+
+  const user = auth.user();
 
   const playlist = createQuery(() => ({
     queryKey: ["playlists", params.id],
@@ -22,6 +26,7 @@ const ViewPlaylist = () => {
 
       return playlist.data;
     },
+    enabled: !!user(),
   }));
 
   const movePlaylistItem = createMutation(() => ({
@@ -51,33 +56,35 @@ const ViewPlaylist = () => {
   const [editMode, setEditMode] = createSignal(false);
 
   return (
-    <Suspense fallback={<p>Loading...</p>}>
-      <TrackList
-        type={editMode() ? "playlist_edit" : "playlist"}
-        name={playlist.data?.name || ""}
-        tracks={playlist.data?.items || []}
-        disableMove={movePlaylistItem.isPending}
-        onEditClicked={() => setEditMode(true)}
-        onSaveClicked={() => setEditMode(false)}
-        onCancelClicked={() => setEditMode(false)}
-        onMoveItem={(from, to) => {
-          if (!playlist.data) return;
+    <Show when={!!user()} fallback={<Navigate href="/" />}>
+      <Suspense fallback={<p>Loading...</p>}>
+        <TrackList
+          type={editMode() ? "playlist_edit" : "playlist"}
+          name={playlist.data?.name || ""}
+          tracks={playlist.data?.items || []}
+          disableMove={movePlaylistItem.isPending}
+          onEditClicked={() => setEditMode(true)}
+          onSaveClicked={() => setEditMode(false)}
+          onCancelClicked={() => setEditMode(false)}
+          onMoveItem={(from, to) => {
+            if (!playlist.data) return;
 
-          console.log("OnMoveitem", playlist.data.items);
+            console.log("OnMoveitem", playlist.data.items);
 
-          const fromItem = playlist.data.items[from];
-          const toItem = playlist.data.items[to];
+            const fromItem = playlist.data.items[from];
+            const toItem = playlist.data.items[to];
 
-          console.log(from, to);
+            console.log(from, to);
 
-          movePlaylistItem.mutate({
-            playlistId: playlist.data.id,
-            itemIndex: fromItem.number,
-            beforeIndex: toItem.number,
-          });
-        }}
-      />
-    </Suspense>
+            movePlaylistItem.mutate({
+              playlistId: playlist.data.id,
+              itemIndex: fromItem.number,
+              beforeIndex: toItem.number,
+            });
+          }}
+        />
+      </Suspense>
+    </Show>
   );
 };
 
