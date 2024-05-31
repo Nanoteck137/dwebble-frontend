@@ -111,7 +111,7 @@ const TrackItem: Component<TrackItemProps> = (props) => {
       </div>
 
       <Show when={menuOpen()}>
-        <div class="absolute right-2 z-10 flex flex-col gap-2 bg-rose-400 p-4">
+        <div class="absolute right-2 z-[100] flex flex-col gap-2 bg-rose-400 p-4">
           <button
             onClick={() => {
               props.onAddToQueue();
@@ -239,7 +239,9 @@ export const TrackList: Component<TrackListProps> = (props) => {
                 onAddToQueue={() => {
                   musicManager.addTrackToQueue(trackToMusicTrack(track));
                 }}
-                onAddToPlaylist={() => {}}
+                onAddToPlaylist={() => {
+                  setAddToPlaylist(track.id);
+                }}
               />
             );
           })}
