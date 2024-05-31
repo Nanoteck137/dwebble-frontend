@@ -1,5 +1,5 @@
 import { Component, JSX, createContext, useContext } from "solid-js";
-import ApiClient from "../lib/api/client";
+import { ApiClient } from "~/lib/api/client";
 
 const ApiClientContext = createContext<ApiClient>();
 
