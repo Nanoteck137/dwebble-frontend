@@ -1,22 +1,17 @@
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
-import { HiSolidEllipsisVertical } from "solid-icons/hi";
 import {
-  Component,
-  For,
-  Show,
-  createEffect,
-  createSignal,
-  onCleanup,
-} from "solid-js";
+  HiSolidArrowDown,
+  HiSolidArrowUp,
+  HiSolidEllipsisVertical,
+  HiSolidPencil,
+} from "solid-icons/hi";
+import { Component, Show, createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
-import Sortable, { MultiDrag } from "sortablejs";
 import { useApiClient } from "../../context/ApiClient";
 import { useMusicManager } from "../../context/MusicManager";
 import { createQueryPlaylists } from "../../pages/Playlists";
 import { Track } from "../models/apiGen";
 import { trackToMusicTrack } from "../utils";
-
-Sortable.mount(new MultiDrag());
 
 const AddToPlaylist: Component<{ trackId: string; close: () => void }> = (
   props,
@@ -78,6 +73,9 @@ const AddToPlaylist: Component<{ trackId: string; close: () => void }> = (
 type TrackItemProps = {
   track: Track;
 
+  disableMove: boolean;
+
+  onEdit: () => void;
   onAddToQueue: () => void;
   onAddToPlaylist: () => void;
 };
@@ -90,13 +88,26 @@ const TrackItem: Component<TrackItemProps> = (props) => {
       <div class="flex justify-between">
         <p>{props.track.name}</p>
 
-        <button
-          onClick={() => {
-            setMenuOpen(true);
-          }}
-        >
-          <HiSolidEllipsisVertical class="h-7 w-7" />
-        </button>
+        <div class="flex items-center">
+          <button
+            onClick={() => {
+              setMenuOpen(true);
+            }}
+          >
+            <HiSolidEllipsisVertical class="h-7 w-7" />
+          </button>
+
+          <Show when={!props.disableMove}>
+            <button
+              title="Move Item"
+              onClick={() => {
+                props.onEdit?.();
+              }}
+            >
+              <HiSolidPencil class="h-5 w-5" />
+            </button>
+          </Show>
+        </div>
       </div>
 
       <Show when={menuOpen()}>
@@ -127,66 +138,30 @@ const TrackItem: Component<TrackItemProps> = (props) => {
   );
 };
 
-type SortableTrackListProps = {
-  tracks: Track[];
+type EditItemProps = {
+  track: Track;
+  isMoving: boolean;
 
-  onMoveItem?: (fromIndex: number, toIndex: number) => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
 };
 
-const SortableTrackList: Component<SortableTrackListProps> = (props) => {
-  var sortable: Sortable | undefined;
-
-  console.log("Sort");
-
-  const [tracks, setTracks] = createSignal<Track[]>();
-
-  createEffect(() => {
-    if (sortable) sortable.destroy();
-    console.log(props.tracks);
-
-    setTracks([...props.tracks]);
-  });
-
-  function createSort(el: HTMLElement) {
-    sortable = Sortable.create(el!, {
-      forceFallback: true,
-      scrollSensitivity: 50.0,
-      handle: ".handle",
-      multiDrag: true,
-      selectedClass: "selected",
-      onEnd: (event) => {
-        event.preventDefault();
-        props.onMoveItem?.(event.oldIndex!, event.newIndex!);
-        console.log(event);
-      },
-    });
-  }
-
-  onCleanup(() => {
-    sortable?.destroy();
-  });
-
+const EditItem: Component<EditItemProps> = (props) => {
   return (
-    <div
-      class="flex flex-col gap-2"
-      ref={(el) => {
-        console.log("HELLO");
-        sortable?.destroy();
-        createSort(el);
-      }}
-    >
-      <For each={tracks()}>
-        {(track, index) => {
-          return (
-            <div class="flex">
-              <div class="handle h-10 w-10 bg-red-400"></div>
-              <p>
-                {index()} - {track.number} - {track.name}
-              </p>
-            </div>
-          );
-        }}
-      </For>
+    <div class="flex justify-between">
+      <p>{props.track.name}</p>
+
+      <div>
+        <Show when={!props.isMoving}>
+          <button onClick={() => props.onMoveUp()}>
+            <HiSolidArrowUp class="h-6 w-6" />
+          </button>
+
+          <button onClick={() => props.onMoveDown()}>
+            <HiSolidArrowDown class="h-6 w-6" />
+          </button>
+        </Show>
+      </div>
     </div>
   );
 };
@@ -197,6 +172,7 @@ type TrackListProps = {
   type: TrackListType;
   name: string;
   tracks: Track[];
+  disableMove?: boolean;
 
   onEditClicked?: () => void;
   onSaveClicked?: () => void;
@@ -209,12 +185,14 @@ export const TrackList: Component<TrackListProps> = (props) => {
 
   const [addToPlaylist, setAddToPlaylist] = createSignal<string | null>(null);
 
+  const [editItem, setEditItem] = createSignal<number | null>(null);
+
   return (
     <>
       <div>
         <p class="text-2xl">{props.name}</p>
 
-        <Show when={props.type !== "playlist_edit"}>
+        <Show when={editItem() === null}>
           <button
             onClick={() => {
               musicManager.clearQueue();
@@ -238,40 +216,26 @@ export const TrackList: Component<TrackListProps> = (props) => {
           </button>
         </Show>
 
-        <Show when={props.type === "playlist"}>
+        <Show when={editItem() !== null}>
           <button
             onClick={() => {
-              props.onEditClicked?.();
+              setEditItem(null);
             }}
           >
-            Edit Playlist
-          </button>
-        </Show>
-
-        <Show when={props.type === "playlist_edit"}>
-          <button
-            onClick={() => {
-              props.onSaveClicked?.();
-            }}
-          >
-            Save Edit
-          </button>
-
-          <button
-            onClick={() => {
-              props.onCancelClicked?.();
-            }}
-          >
-            Cancel Edit
+            Exit Edit Mode
           </button>
         </Show>
 
         <Show
-          when={props.type === "playlist_edit"}
-          fallback={props.tracks.map((track) => {
+          when={editItem() !== null}
+          fallback={props.tracks.map((track, index) => {
             return (
               <TrackItem
                 track={track}
+                disableMove={!!props.disableMove}
+                onEdit={() => {
+                  setEditItem(index);
+                }}
                 onAddToQueue={() => {
                   musicManager.addTrackToQueue(trackToMusicTrack(track));
                 }}
@@ -280,10 +244,21 @@ export const TrackList: Component<TrackListProps> = (props) => {
             );
           })}
         >
-          <SortableTrackList
-            tracks={props.tracks}
-            onMoveItem={props.onMoveItem}
-          />
+          {props.tracks.map((track, index) => {
+            return (
+              <EditItem
+                track={track}
+                isMoving={index === editItem()}
+                onMoveUp={() => {
+                  setEditItem(null);
+                }}
+                onMoveDown={() => {
+                  props.onMoveItem?.(editItem()!, index);
+                  setEditItem(null);
+                }}
+              />
+            );
+          })}
         </Show>
       </div>
 

@@ -4,10 +4,9 @@ import {
   createQuery,
   useQueryClient,
 } from "@tanstack/solid-query";
-import { Suspense, createEffect, createSignal } from "solid-js";
+import { Suspense, createSignal } from "solid-js";
 import { useApiClient } from "../context/ApiClient";
 import { TrackList } from "../lib/components/TrackList";
-import { Track } from "../lib/models/apiGen";
 
 const ViewPlaylist = () => {
   const params = useParams<{ id: string }>();
@@ -31,26 +30,23 @@ const ViewPlaylist = () => {
       itemIndex: number;
       beforeIndex: number;
     }) => {
-      apiClient.movePlaylistItem(data.playlistId, {
+      console.log("Hello");
+      const res = await apiClient.movePlaylistItem(data.playlistId, {
         itemIndex: data.itemIndex,
         beforeIndex: data.beforeIndex,
       });
+
+      if (res.status === "error") throw new Error(res.error.message);
+
+      return res.data;
     },
 
-    onSuccess: () => {
-      // queryClient.invalidateQueries({
-      //   queryKey: ["playlists"],
-      // });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["playlists", params.id],
+      });
     },
   }));
-
-  const [tracks, setTracks] = createSignal<Track[]>([]);
-
-  createEffect(() => {
-    if (!playlist.data) return;
-
-    setTracks(playlist.data.items);
-  });
 
   const [editMode, setEditMode] = createSignal(false);
 
@@ -60,11 +56,14 @@ const ViewPlaylist = () => {
         type={editMode() ? "playlist_edit" : "playlist"}
         name={playlist.data?.name || ""}
         tracks={playlist.data?.items || []}
+        disableMove={movePlaylistItem.isPending}
         onEditClicked={() => setEditMode(true)}
         onSaveClicked={() => setEditMode(false)}
         onCancelClicked={() => setEditMode(false)}
         onMoveItem={(from, to) => {
           if (!playlist.data) return;
+
+          console.log("OnMoveitem", playlist.data.items);
 
           const fromItem = playlist.data.items[from];
           const toItem = playlist.data.items[to];
@@ -76,8 +75,6 @@ const ViewPlaylist = () => {
             itemIndex: fromItem.number,
             beforeIndex: toItem.number,
           });
-
-          playlist.refetch();
         }}
       />
     </Suspense>

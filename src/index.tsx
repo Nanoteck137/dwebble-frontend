@@ -125,11 +125,10 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
             >
               <ErrorBoundary
                 fallback={(err) => {
-                  console.error(err);
-                  return <p class="text-red-500">Error: {err.message}</p>;
+                  return <p class="text-red-500">Error: {err?.message}</p>;
                 }}
               >
-                <div class="overflow-y-scroll">{props.children}</div>
+                <div class="">{props.children}</div>
               </ErrorBoundary>
             </main>
           </div>
