@@ -2,7 +2,12 @@
 import { render } from "solid-js/web";
 
 import { Route, Router } from "@solidjs/router";
-import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  createMutation,
+  useQueryClient,
+} from "@tanstack/solid-query";
 import {
   Component,
   ErrorBoundary,
@@ -59,7 +64,21 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
   );
 
   const apiClient = useApiClient();
+  const queryClient = useQueryClient();
   const playlists = createQueryPlaylists(apiClient);
+
+  const createPlaylist = createMutation(() => ({
+    mutationFn: async (data: { name: string }) => {
+      const res = await apiClient.createPlaylist(data);
+      if (res.status === "error") throw new Error(res.error.message);
+
+      return res.data;
+    },
+
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["playlists"] });
+    },
+  }));
 
   onMount(() => {
     musicManager.emitter.on("onQueueUpdated", () => {
@@ -101,6 +120,16 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
               <div class="h-10"></div>
 
               <Show when={!!user()}>
+                <button
+                  onClick={() => {
+                    const name = prompt("Playlist Name");
+                    if (name) {
+                      createPlaylist.mutate({ name: name });
+                    }
+                  }}
+                >
+                  New Playlist
+                </button>
                 <div class="flex flex-col">
                   <Suspense>
                     <For each={playlists.data}>
