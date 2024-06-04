@@ -159,4 +159,12 @@ export class ApiClient {
       body,
     );
   }
+
+  getSystemInfo() {
+    return this.request("/api/v1/system/info", "GET", api.GetSystemInfo);
+  }
+
+  setup(body: api.PostSystemSetupBody) {
+    return this.request("/api/v1/system/setup", "POST", z.undefined(), body);
+  }
 }
