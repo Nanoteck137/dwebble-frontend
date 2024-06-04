@@ -252,10 +252,21 @@ export const TrackList: Component<TrackListProps> = (props) => {
                 track={track}
                 isMoving={index === editItem()}
                 onMoveUp={() => {
+                  const from = editItem()!;
+                  if (from < index) {
+                    props.onMoveItem?.(from, index - 1);
+                  } else {
+                    props.onMoveItem?.(from, index);
+                  }
                   setEditItem(null);
                 }}
                 onMoveDown={() => {
-                  props.onMoveItem?.(editItem()!, index);
+                  const from = editItem()!;
+                  if (from > index) {
+                    props.onMoveItem?.(from, index + 1);
+                  } else {
+                    props.onMoveItem?.(from, index);
+                  }
                   setEditItem(null);
                 }}
               />
