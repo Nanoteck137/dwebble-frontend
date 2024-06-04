@@ -167,4 +167,12 @@ export class ApiClient {
   setup(body: api.PostSystemSetupBody) {
     return this.request("/api/v1/system/setup", "POST", z.undefined(), body);
   }
+
+  getLibrarySyncStatus() {
+    return this.request("/api/v1/sync", "GET", api.GetSync);
+  }
+
+  librarySync() {
+    return this.request("/api/v1/sync", "POST", z.undefined());
+  }
 }
