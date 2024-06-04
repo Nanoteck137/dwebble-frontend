@@ -98,10 +98,11 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
       if (res.status === "error") throw new Error(res.error.message);
       return res.data;
     },
-    refetchInterval: 1000,
+    // refetchInterval: 1000,
   }));
 
   onMount(() => {
+    // TODO(patrik): Unsub
     musicManager.emitter.on("onQueueUpdated", () => {
       setShowPlayer(!musicManager.isQueueEmpty());
     });
