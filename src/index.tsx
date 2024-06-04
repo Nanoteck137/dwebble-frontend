@@ -34,6 +34,7 @@ import Home from "~/pages/Home";
 import Login from "~/pages/Login";
 import Playlists, { createQueryPlaylists } from "~/pages/Playlists";
 import Register from "~/pages/Register";
+import Setup from "~/pages/Setup";
 import ViewPlaylist from "~/pages/ViewPlaylist";
 
 const root = document.getElementById("root");
@@ -202,24 +203,48 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
   );
 };
 
+const AppRouter = () => {
+  const apiClient = useApiClient();
+
+  onMount(async () => {
+    const systemInfo = await apiClient.getSystemInfo();
+    // TODO(patrik): What to do here?
+    if (systemInfo.status === "error") return;
+
+    if (!systemInfo.data.isSetup && window.location.pathname !== "/setup") {
+      window.location.href = "/setup";
+    }
+
+    if (systemInfo.data.isSetup && window.location.pathname === "/setup") {
+      window.location.href = "/";
+    }
+  });
+
+  return (
+    <Router>
+      <Route path="/" component={BasicLayout}>
+        <Route path="/" component={Home} />
+        <Route path="/artist/:id" component={Artist} />
+        <Route path="/album/:id" component={Album} />
+        <Route path="/playlists" component={Playlists} />
+        <Route path="/viewplaylist/:id" component={ViewPlaylist} />
+
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+      </Route>
+
+      <Route path="/setup" component={Setup} />
+    </Router>
+  );
+};
+
 render(
   () => (
     <QueryClientProvider client={queryClient}>
       <MusicManagerProvider musicManager={musicManager}>
         <ApiClientProvider client={apiClient}>
           <AuthProvider auth={auth}>
-            <Router>
-              <Route path="/" component={BasicLayout}>
-                <Route path="/" component={Home} />
-                <Route path="/artist/:id" component={Artist} />
-                <Route path="/album/:id" component={Album} />
-                <Route path="/playlists" component={Playlists} />
-                <Route path="/viewplaylist/:id" component={ViewPlaylist} />
-
-                <Route path="/login" component={Login} />
-                <Route path="/register" component={Register} />
-              </Route>
-            </Router>
+            <AppRouter />
           </AuthProvider>
         </ApiClientProvider>
       </MusicManagerProvider>
