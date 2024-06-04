@@ -6,6 +6,7 @@ import {
   QueryClient,
   QueryClientProvider,
   createMutation,
+  createQuery,
   useQueryClient,
 } from "@tanstack/solid-query";
 import {
@@ -26,6 +27,7 @@ import "~/index.css";
 import { Auth } from "~/lib/api/auth";
 import { ApiClient } from "~/lib/api/client";
 import AudioPlayer from "~/lib/components/AudioPlayer";
+import LoadingSpinner from "~/lib/components/LoadingSpinner";
 import { MusicManager } from "~/lib/musicManager";
 import { trackToMusicTrack } from "~/lib/utils";
 import Album from "~/pages/Album";
@@ -81,6 +83,24 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
     },
   }));
 
+  const librarySync = createMutation(() => ({
+    mutationFn: async () => {
+      const res = await apiClient.librarySync();
+      if (res.status === "error") throw new Error(res.error.message);
+      return res.data;
+    },
+  }));
+
+  const libraryStatus = createQuery(() => ({
+    queryKey: ["library"],
+    queryFn: async () => {
+      const res = await apiClient.getLibrarySyncStatus();
+      if (res.status === "error") throw new Error(res.error.message);
+      return res.data;
+    },
+    refetchInterval: 1000,
+  }));
+
   onMount(() => {
     musicManager.emitter.on("onQueueUpdated", () => {
       setShowPlayer(!musicManager.isQueueEmpty());
@@ -114,6 +134,21 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
               </a>
             </div>
             <nav class="flex flex-col px-4">
+              <Show when={libraryStatus.data?.isSyncing}>
+                <div class="flex items-center justify-center">
+                  <LoadingSpinner />
+                  <p>Library Syncing</p>
+                </div>
+              </Show>
+
+              <button
+                onClick={() => {
+                  librarySync.mutate();
+                }}
+              >
+                Sync Library
+              </button>
+
               <a href="/">Home</a>
               <a href="">Albums</a>
               <a href="">Artists</a>

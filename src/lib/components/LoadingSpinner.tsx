@@ -3,7 +3,7 @@ const LoadingSpinner = () => {
     <div role="status">
       <svg
         aria-hidden="true"
-        class="h-8 w-8 animate-spin fill-blue-600 text-gray-200 dark:text-gray-600"
+        class="h-8 w-8 animate-spin fill-blue-600 text-gray-200"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
