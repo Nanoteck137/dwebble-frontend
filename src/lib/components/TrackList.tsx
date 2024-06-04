@@ -9,7 +9,7 @@ import { Component, Show, createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
 import { useApiClient } from "~/context/ApiClient";
 import { useMusicManager } from "~/context/MusicManager";
-import { Track } from "~/lib/models/apiGen";
+import { Track } from "~/lib/api/types";
 import { trackToMusicTrack } from "~/lib/utils";
 import { createQueryPlaylists } from "~/pages/Playlists";
 
@@ -45,7 +45,7 @@ const AddToPlaylist: Component<{ trackId: string; close: () => void }> = (
           <p>Add To Playlist: {props.trackId}</p>
 
           <div class="flex flex-col gap-1">
-            {playlists.data?.playlists.map((playlist) => {
+            {playlists.data?.map((playlist) => {
               return (
                 <button
                   onClick={() => {
