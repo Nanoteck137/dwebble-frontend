@@ -32,12 +32,12 @@ const ViewPlaylist = () => {
   const movePlaylistItem = createMutation(() => ({
     mutationFn: async (data: {
       playlistId: string;
-      itemIndex: number;
+      trackId: string;
       toIndex: number;
     }) => {
       console.log("Hello");
       const res = await apiClient.movePlaylistItem(data.playlistId, {
-        itemIndex: data.itemIndex,
+        trackId: data.trackId,
         toIndex: data.toIndex,
       });
 
@@ -78,7 +78,7 @@ const ViewPlaylist = () => {
 
             movePlaylistItem.mutate({
               playlistId: playlist.data.id,
-              itemIndex: fromItem.number,
+              trackId: fromItem.id,
               toIndex: toItem.number,
             });
           }}
