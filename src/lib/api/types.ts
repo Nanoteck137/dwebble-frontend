@@ -122,6 +122,9 @@ export const GetAuthMe = z.object({
 });
 export type GetAuthMe = z.infer<typeof GetAuthMe>;
 
+export const PostPlaylist = Playlist;
+export type PostPlaylist = z.infer<typeof PostPlaylist>;
+
 export const PostPlaylistBody = z.object({
   name: z.string(),
 });

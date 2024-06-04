@@ -112,6 +112,10 @@ export class ApiClient {
     return this.request("/api/v1/auth/me", "GET", api.GetAuthMe);
   }
 
+  createPlaylist(body: api.PostPlaylistBody) {
+    return this.request("/api/v1/playlists", "POST", api.PostPlaylist, body);
+  }
+
   getPlaylists() {
     return this.request("/api/v1/playlists", "GET", api.GetPlaylists);
   }
