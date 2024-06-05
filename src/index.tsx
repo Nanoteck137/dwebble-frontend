@@ -53,9 +53,14 @@ const queryClient = new QueryClient({
   },
 });
 
-const musicManager = new MusicManager();
-const apiClient = new ApiClient("http://10.28.28.6:3000");
+const apiBaseUrl = import.meta.env.PROD
+  ? ""
+  : import.meta.env.VITE_API_URL == undefined
+    ? ""
+    : import.meta.env.VITE_API_URL;
+const apiClient = new ApiClient(apiBaseUrl);
 const auth = new Auth(apiClient);
+const musicManager = new MusicManager();
 
 const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
   const auth = useAuth();
