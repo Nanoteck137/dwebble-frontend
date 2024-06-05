@@ -1,4 +1,4 @@
-import { Track } from "./models/apiGen";
+import { Track } from "~/lib/api/types";
 import { MusicTrack } from "./musicManager";
 
 export function formatTime(s: number) {
