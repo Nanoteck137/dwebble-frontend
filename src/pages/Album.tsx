@@ -14,7 +14,7 @@ const Album = () => {
       const album = await apiClient.getAlbumById(params.id);
       if (album.status === "error") throw new Error(album.error.message);
 
-      const tracks = await apiClient.getAlbumTracksById(album.data.id);
+      const tracks = await apiClient.getAlbumTracks(album.data.id);
       if (tracks.status === "error") throw new Error(tracks.error.message);
 
       return {

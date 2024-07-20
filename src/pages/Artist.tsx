@@ -13,7 +13,7 @@ const Artist = () => {
       const artist = await apiClient.getArtistById(params.id);
       if (artist.status === "error") throw new Error(artist.error.message);
 
-      const albums = await apiClient.getArtistAlbumsById(artist.data.id);
+      const albums = await apiClient.getArtistAlbums(artist.data.id);
       if (albums.status === "error") throw new Error(albums.error.message);
 
       return {

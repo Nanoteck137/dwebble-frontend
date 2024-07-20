@@ -90,7 +90,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
 
   const librarySync = createMutation(() => ({
     mutationFn: async () => {
-      const res = await apiClient.librarySync();
+      const res = await apiClient.runSync();
       if (res.status === "error") throw new Error(res.error.message);
       return res.data;
     },
@@ -99,7 +99,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
   const libraryStatus = createQuery(() => ({
     queryKey: ["library"],
     queryFn: async () => {
-      const res = await apiClient.getLibrarySyncStatus();
+      const res = await apiClient.getSyncStatus();
       if (res.status === "error") throw new Error(res.error.message);
       return res.data;
     },
@@ -205,7 +205,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
               </Show>
               <button
                 onClick={async () => {
-                  const queue = await apiClient.createRandomQueue();
+                  const queue = await apiClient.createQueue();
                   if (queue.status === "error")
                     throw new Error(queue.error.message);
 
