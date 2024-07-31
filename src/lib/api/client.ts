@@ -55,12 +55,12 @@ export class ApiClient extends BaseApiClient {
     return this.request("/api/v1/tags", "GET", api.GetTags)
   }
   
-  signup() {
-    return this.request("/api/v1/auth/signup", "POST", api.PostAuthSignupBody)
+  signup(body: api.PostAuthSignupBody) {
+    return this.request("/api/v1/auth/signup", "POST", api.PostAuthSignup, body)
   }
   
-  signin() {
-    return this.request("/api/v1/auth/signin", "POST", api.PostAuthSigninBody)
+  signin(body: api.PostAuthSigninBody) {
+    return this.request("/api/v1/auth/signin", "POST", api.PostAuthSignin, body)
   }
   
   getMe() {
@@ -71,32 +71,32 @@ export class ApiClient extends BaseApiClient {
     return this.request("/api/v1/playlists", "GET", api.GetPlaylists)
   }
   
-  createPlaylist() {
-    return this.request("/api/v1/playlists", "POST", api.PostPlaylistBody)
+  createPlaylist(body: api.PostPlaylistBody) {
+    return this.request("/api/v1/playlists", "POST", api.PostPlaylist, body)
   }
   
   getPlaylistById(id: string) {
     return this.request(`/api/v1/playlists/${id}`, "GET", api.GetPlaylistById)
   }
   
-  addItemsToPlaylist(id: string) {
-    return this.request(`/api/v1/playlists/${id}/items`, "POST", api.PostPlaylistItemsByIdBody)
+  addItemsToPlaylist(id: string, body: api.PostPlaylistItemsByIdBody) {
+    return this.request(`/api/v1/playlists/${id}/items`, "POST", z.undefined(), body)
   }
   
-  deletePlaylistItems(id: string) {
-    return this.request(`/api/v1/playlists/${id}/items`, "DELETE", api.DeletePlaylistItemsByIdBody)
+  deletePlaylistItems(id: string, body: api.DeletePlaylistItemsByIdBody) {
+    return this.request(`/api/v1/playlists/${id}/items`, "DELETE", z.undefined(), body)
   }
   
-  movePlaylistItem(id: string) {
-    return this.request(`/api/v1/playlists/${id}/items/move`, "POST", api.PostPlaylistsItemMoveByIdBody)
+  movePlaylistItem(id: string, body: api.PostPlaylistsItemMoveByIdBody) {
+    return this.request(`/api/v1/playlists/${id}/items/move`, "POST", z.undefined(), body)
   }
   
   getSystemInfo() {
     return this.request("/api/v1/system/info", "GET", api.GetSystemInfo)
   }
   
-  runSystemSetup() {
-    return this.request("/api/v1/system/setup", "POST", api.PostSystemSetupBody)
+  runSystemSetup(body: api.PostSystemSetupBody) {
+    return this.request("/api/v1/system/setup", "POST", z.undefined(), body)
   }
   
   systemExport() {

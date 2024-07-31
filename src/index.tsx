@@ -31,6 +31,7 @@ import LoadingSpinner from "~/lib/components/LoadingSpinner";
 import { MusicManager } from "~/lib/musicManager";
 import { trackToMusicTrack } from "~/lib/utils";
 import Album from "~/pages/Album";
+import AllAlbums from "~/pages/AllAlbums";
 import Artist from "~/pages/Artist";
 import Home from "~/pages/Home";
 import Login from "~/pages/Login";
@@ -156,7 +157,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
               </button>
 
               <a href="/">Home</a>
-              <a href="">Albums</a>
+              <a href="/albums">Albums</a>
               <a href="">Artists</a>
 
               <div class="h-10"></div>
@@ -265,6 +266,7 @@ const AppRouter = () => {
     <Router>
       <Route path="/" component={BasicLayout}>
         <Route path="/" component={Home} />
+        <Route path="/albums" component={AllAlbums} />
         <Route path="/artist/:id" component={Artist} />
         <Route path="/album/:id" component={Album} />
         <Route path="/playlists" component={Playlists} />
