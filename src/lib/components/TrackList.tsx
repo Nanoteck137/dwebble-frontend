@@ -23,7 +23,7 @@ const AddToPlaylist: Component<{ trackId: string; close: () => void }> = (
 
   const addToPlaylist = createMutation(() => ({
     mutationFn: async (data: { playlistId: string; tracks: string[] }) => {
-      const res = await apiClient.addItemsToPlaylists(data.playlistId, {
+      const res = await apiClient.addItemsToPlaylist(data.playlistId, {
         tracks: data.tracks,
       });
 
