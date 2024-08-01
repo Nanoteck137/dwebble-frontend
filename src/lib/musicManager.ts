@@ -26,13 +26,13 @@ export class MusicManager {
     return this.queue.items[this.queue.index];
   }
 
-  addTrackToQueue(track: MusicTrack) {
+  addTrackToQueue(track: MusicTrack, requestPlay: boolean = true) {
     const play = this.queue.items.length === 0;
 
     this.queue.items.push(track);
     this.emitter.emit("onQueueUpdated");
 
-    if (play) {
+    if (play && requestPlay) {
       this.requestPlay();
     }
   }

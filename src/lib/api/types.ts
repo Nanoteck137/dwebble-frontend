@@ -21,6 +21,7 @@ export const Album = z.object({
   name: z.string(),
   coverArt: z.string(),
   artistId: z.string(),
+  artistName: z.string(),
 });
 export type Album = z.infer<typeof Album>;
 

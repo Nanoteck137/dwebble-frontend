@@ -4,13 +4,14 @@ import {
   HiSolidArrowUp,
   HiSolidEllipsisVertical,
   HiSolidPencil,
+  HiSolidPlay,
 } from "solid-icons/hi";
-import { Component, Show, createSignal } from "solid-js";
+import { Component, For, Show, createSignal } from "solid-js";
 import { Portal } from "solid-js/web";
 import { useApiClient } from "~/context/ApiClient";
 import { useMusicManager } from "~/context/MusicManager";
 import { Track } from "~/lib/api/types";
-import { trackToMusicTrack } from "~/lib/utils";
+import { formatTime, trackToMusicTrack } from "~/lib/utils";
 import { createQueryPlaylists } from "~/pages/Playlists";
 
 const AddToPlaylist: Component<{ trackId: string; close: () => void }> = (
@@ -86,7 +87,9 @@ const TrackItem: Component<TrackItemProps> = (props) => {
   return (
     <div class="relative">
       <div class="flex justify-between">
-        <p>{props.track.name}</p>
+        <p>
+          {props.track.number} - {props.track.name}
+        </p>
 
         <div class="flex items-center">
           <button
@@ -166,11 +169,44 @@ const EditItem: Component<EditItemProps> = (props) => {
   );
 };
 
+type HeaderProps = {
+  name: string;
+  cover: string;
+
+  onPlay: () => void;
+};
+
+const Header: Component<HeaderProps> = (props) => {
+  return (
+    // <div class="fixed h-full w-80 bg-purple-400 px-4 py-11">
+    <div class="w-80">
+      <img
+        class="aspect-square rounded object-cover"
+        src={props.cover}
+        alt=""
+      />
+      <p class="line-clamp-2 text-center font-bold">{props.name}</p>
+      <div class="h-2" />
+      <div class="flex justify-center">
+        <button
+          class="rounded-full bg-white p-2 hover:brightness-75 active:scale-95"
+          onClick={props.onPlay}
+          title="Play"
+        >
+          <HiSolidPlay class="h-8 w-8" />
+        </button>
+      </div>
+      <div class="h-2" />
+    </div>
+  );
+};
+
 type TrackListType = "album" | "playlist" | "playlist_edit";
 
 type TrackListProps = {
   type: TrackListType;
   name: string;
+  cover: string;
   tracks: Track[];
   disableMove?: boolean;
 
@@ -183,104 +219,89 @@ type TrackListProps = {
 export const TrackList: Component<TrackListProps> = (props) => {
   const musicManager = useMusicManager();
 
-  const [addToPlaylist, setAddToPlaylist] = createSignal<string | null>(null);
+  // const [addToPlaylist, setAddToPlaylist] = createSignal<string | null>(null);
 
-  const [editItem, setEditItem] = createSignal<number | null>(null);
+  // const [editItem, setEditItem] = createSignal<number | null>(null);
+
+  // <div class="fixed h-full w-80 px-4 py-11"></div>
 
   return (
     <>
-      <div>
-        <p class="text-2xl">{props.name}</p>
-
-        <Show when={editItem() === null}>
-          <button
-            onClick={() => {
+      <div class="flex flex-col gap-2 px-10 md:px-5">
+        <div class="flex justify-center md:fixed md:h-full">
+          <Header
+            name={props.name}
+            cover={props.cover}
+            onPlay={() => {
               musicManager.clearQueue();
 
               props.tracks.forEach((t) =>
                 musicManager.addTrackToQueue(trackToMusicTrack(t)),
               );
             }}
-          >
-            Play
-          </button>
+          />
+        </div>
+        <div class="md:ml-2 md:pl-80">
+          <div class="flex flex-col gap-2">
+            <For each={props.tracks}>
+              {(track) => {
+                return (
+                  <div class="group flex items-center gap-2 border-b pb-1 pr-4">
+                    <p class="w-10 text-right font-medium group-hover:hidden">
+                      {track.number}.
+                    </p>
+                    <button
+                      class="hidden h-10 w-10 items-center justify-end group-hover:flex"
+                      onClick={() => {
+                        musicManager.clearQueue();
 
-          <button
-            onClick={() => {
-              props.tracks.forEach((t) =>
-                musicManager.addTrackToQueue(trackToMusicTrack(t)),
-              );
-            }}
-          >
-            Add to queue
-          </button>
-        </Show>
+                        props.tracks.forEach((t) =>
+                          musicManager.addTrackToQueue(
+                            trackToMusicTrack(t),
+                            false,
+                          ),
+                        );
 
-        <Show when={editItem() !== null}>
-          <button
-            onClick={() => {
-              setEditItem(null);
-            }}
-          >
-            Exit Edit Mode
-          </button>
-        </Show>
+                        const index = props.tracks.findIndex(
+                          (t) => t.id == track.id,
+                        );
+                        musicManager.setQueueIndex(index);
 
-        <Show
-          when={editItem() !== null}
-          fallback={props.tracks.map((track, index) => {
-            return (
-              <TrackItem
-                track={track}
-                disableMove={!!props.disableMove}
-                onEdit={() => {
-                  setEditItem(index);
-                }}
-                onAddToQueue={() => {
-                  musicManager.addTrackToQueue(trackToMusicTrack(track));
-                }}
-                onAddToPlaylist={() => {
-                  setAddToPlaylist(track.id);
-                }}
-              />
-            );
-          })}
-        >
-          {props.tracks.map((track, index) => {
-            return (
-              <EditItem
-                track={track}
-                isMoving={index === editItem()}
-                onMoveUp={() => {
-                  const from = editItem()!;
-                  if (from < index) {
-                    props.onMoveItem?.(from, index - 1);
-                  } else {
-                    props.onMoveItem?.(from, index);
-                  }
-                  setEditItem(null);
-                }}
-                onMoveDown={() => {
-                  const from = editItem()!;
-                  if (from > index) {
-                    props.onMoveItem?.(from, index + 1);
-                  } else {
-                    props.onMoveItem?.(from, index);
-                  }
-                  setEditItem(null);
-                }}
-              />
-            );
-          })}
-        </Show>
+                        musicManager.requestPlay();
+                      }}
+                    >
+                      <HiSolidPlay class="h-6 w-6" />
+                    </button>
+                    <div class="flex flex-grow flex-col">
+                      <p
+                        class="line-clamp-1 font-medium group-hover:underline"
+                        title={track.name}
+                      >
+                        {track.name}
+                      </p>
+                      <a
+                        class="line-clamp-1 w-fit text-sm hover:underline"
+                        title={track.artistName}
+                        href={`/artist/${track.artistId}`}
+                      >
+                        {track.artistName}
+                      </a>
+                    </div>
+                    <div>
+                      <p class="group-hover:hidden">
+                        {formatTime(track.duration)}
+                      </p>
+                      <button class="hidden rounded-full p-1 hover:bg-black/20 group-hover:block">
+                        <HiSolidEllipsisVertical class="h-8 w-8" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              }}
+            </For>
+          </div>
+        </div>
       </div>
-
-      <Show when={!!addToPlaylist()}>
-        <AddToPlaylist
-          trackId={addToPlaylist()!}
-          close={() => setAddToPlaylist(null)}
-        />
-      </Show>
     </>
   );
 };

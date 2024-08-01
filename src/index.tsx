@@ -12,10 +12,7 @@ import {
 import {
   Component,
   ErrorBoundary,
-  For,
   JSX,
-  Show,
-  Suspense,
   createEffect,
   createSignal,
   onMount,
@@ -27,9 +24,7 @@ import "~/index.css";
 import { Auth } from "~/lib/api/auth";
 import { ApiClient } from "~/lib/api/client";
 import AudioPlayer from "~/lib/components/AudioPlayer";
-import LoadingSpinner from "~/lib/components/LoadingSpinner";
 import { MusicManager } from "~/lib/musicManager";
-import { trackToMusicTrack } from "~/lib/utils";
 import Album from "~/pages/Album";
 import AllAlbums from "~/pages/AllAlbums";
 import Artist from "~/pages/Artist";
@@ -134,96 +129,8 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
     <div class="">
       <div class="flex h-screen flex-col">
         <div class="flex h-full">
-          <aside class="fixed bottom-0 left-0 top-0 z-30 w-60 bg-blue-400">
-            <div class="flex h-16 items-center bg-emerald-400 px-4">
-              <a class="text-3xl" href="/">
-                Dwebble
-              </a>
-            </div>
-            <nav class="flex flex-col px-4">
-              <Show when={libraryStatus.data?.isSyncing}>
-                <div class="flex items-center justify-center">
-                  <LoadingSpinner />
-                  <p>Library Syncing</p>
-                </div>
-              </Show>
-
-              <button
-                onClick={() => {
-                  librarySync.mutate();
-                }}
-              >
-                Sync Library
-              </button>
-
-              <a href="/">Home</a>
-              <a href="/albums">Albums</a>
-              <a href="">Artists</a>
-
-              <div class="h-10"></div>
-
-              <Show when={!!user()}>
-                <button
-                  onClick={() => {
-                    const name = prompt("Playlist Name");
-                    if (name) {
-                      createPlaylist.mutate({ name: name });
-                    }
-                  }}
-                >
-                  New Playlist
-                </button>
-                <div class="flex flex-col">
-                  <Suspense>
-                    <For each={playlists.data}>
-                      {(playlist) => {
-                        return (
-                          <a href={`/viewplaylist/${playlist.id}`}>
-                            {playlist.name}
-                          </a>
-                        );
-                      }}
-                    </For>
-                  </Suspense>
-                </div>
-              </Show>
-            </nav>
-          </aside>
           <div class="flex-grow">
-            <header class="fixed left-0 right-0 top-0 z-20 h-16 w-full bg-red-400 pl-60">
-              <Show when={!!user()}>
-                <div class="flex gap-2">
-                  <p>{user()!.username}</p>
-                  <button
-                    class="text-blue-400"
-                    onClick={() => {
-                      auth.resetToken();
-                    }}
-                  >
-                    Logout
-                  </button>
-                </div>
-              </Show>
-              <button
-                onClick={async () => {
-                  const queue = await apiClient.createQueue();
-                  if (queue.status === "error")
-                    throw new Error(queue.error.message);
-
-                  musicManager.clearQueue();
-
-                  queue.data.tracks.forEach((t) =>
-                    musicManager.addTrackToQueue(trackToMusicTrack(t)),
-                  );
-                }}
-              >
-                Random Play
-              </button>
-            </header>
-
-            <main
-              class={`ml-60 mt-16 bg-green-400 ${showPlayer() ? "mb-20" : ""}`}
-            >
+            <main class={`${showPlayer() ? "mb-20" : ""}`}>
               <ErrorBoundary
                 fallback={(err) => {
                   return <p class="text-red-500">Error: {err?.message}</p>;

@@ -29,6 +29,7 @@ const Album = () => {
       <TrackList
         type="album"
         name={query.data?.name || ""}
+        cover={query.data?.coverArt || ""}
         tracks={query.data?.tracks || []}
       />
     </Suspense>
