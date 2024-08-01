@@ -125,6 +125,8 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
     playlists.refetch();
   });
 
+  // class="fixed bottom-0 left-0 right-0 z-30 h-20 bg-purple-400"
+
   return (
     <div class="">
       <div class="flex h-screen flex-col">
@@ -141,10 +143,8 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
             </main>
           </div>
         </div>
-        <footer
-          class="fixed bottom-0 left-0 right-0 z-30 h-20 bg-purple-400"
-          classList={{ hidden: !showPlayer() }}
-        >
+
+        <footer classList={{ hidden: !showPlayer() }}>
           <AudioPlayer />
         </footer>
       </div>
