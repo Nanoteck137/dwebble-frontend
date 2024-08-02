@@ -181,15 +181,16 @@ const Header: Component<HeaderProps> = (props) => {
     // <div class="fixed h-full w-80 bg-purple-400 px-4 py-11">
     <div class="w-80">
       <img
-        class="aspect-square rounded object-cover"
+        class="aspect-square w-80 rounded object-cover"
         src={props.cover}
         alt=""
       />
+      <div class="h-2" />
       <p class="line-clamp-2 text-center font-bold">{props.name}</p>
       <div class="h-2" />
       <div class="flex justify-center">
         <button
-          class="rounded-full bg-white p-2 hover:brightness-75 active:scale-95"
+          class="action-button rounded-full bg-white p-2 hover:brightness-75 active:scale-95"
           onClick={props.onPlay}
           title="Play"
         >

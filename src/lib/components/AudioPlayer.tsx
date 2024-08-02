@@ -1,8 +1,18 @@
-import { createAudio } from "@solid-primitives/audio";
+import { AudioState, createAudio } from "@solid-primitives/audio";
 import { BiRegularSkipNext, BiRegularSkipPrevious } from "solid-icons/bi";
-import { HiSolidChevronDown, HiSolidPause, HiSolidPlay } from "solid-icons/hi";
 import {
+  HiSolidChevronDown,
+  HiSolidChevronUp,
+  HiSolidPause,
+  HiSolidPlay,
+  HiSolidQueueList,
+  HiSolidSpeakerWave,
+  HiSolidSpeakerXMark,
+} from "solid-icons/hi";
+import {
+  Component,
   Match,
+  Show,
   Switch,
   createEffect,
   createSignal,
@@ -13,6 +23,277 @@ import { useMusicManager } from "~/context/MusicManager";
 import LoadingSpinner from "~/lib/components/LoadingSpinner";
 import Slider from "~/lib/components/Slider";
 import { formatTime } from "~/lib/utils";
+
+type PlayerProps = {
+  state: AudioState;
+  currentTime: number;
+  duration: number;
+
+  audioMuted: boolean;
+
+  coverArt: string;
+  trackName: string;
+  artistName: string;
+
+  onSeek: (n: number) => void;
+  onPrevTrack: () => void;
+  onNextTrack: () => void;
+
+  onPlay: () => void;
+  onPause: () => void;
+};
+
+const LargePlayer: Component<PlayerProps> = (props) => {
+  return (
+    <div class="fixed bottom-0 left-0 right-0 z-30 hidden h-20 bg-purple-400 md:block">
+      <div class="relative">
+        <Slider
+          initialValue={0}
+          value={props.currentTime / props.duration}
+          onUpdate={(p) => {
+            props.onSeek(p * props.duration);
+          }}
+        />
+      </div>
+
+      <div class="grid h-full grid-cols-footer">
+        <div class="flex items-center bg-cyan-600">
+          <div class="flex items-center">
+            <button
+              onClick={() => {
+                props.onPrevTrack();
+                // musicManager.prevTrack();
+                // controls.play();
+              }}
+            >
+              <BiRegularSkipPrevious size={48} />
+            </button>
+
+            <Switch
+              fallback={
+                <>
+                  <button onClick={() => props.onPlay()}>
+                    <HiSolidPlay size={48} />
+                  </button>
+                </>
+              }
+            >
+              <Match when={props.state == "playing"}>
+                <button onClick={() => props.onPause()}>
+                  <HiSolidPause size={48} />
+                </button>
+              </Match>
+              <Match when={props.state == "paused" || props.state == "ready"}>
+                <button onClick={() => props.onPlay()}>
+                  <HiSolidPlay size={48} />
+                </button>
+              </Match>
+              <Match when={props.state == "loading"}>
+                <LoadingSpinner />
+              </Match>
+            </Switch>
+            <button
+              onClick={() => {
+                props.onNextTrack();
+              }}
+            >
+              <BiRegularSkipNext size={48} />
+            </button>
+          </div>
+
+          <p class="hidden min-w-20 text-xs font-medium lg:block">
+            {formatTime(props.currentTime)} /{" "}
+            {formatTime(Number.isNaN(props.duration) ? 0 : props.duration)}
+          </p>
+        </div>
+
+        <div class="flex items-center justify-center gap-2 bg-amber-600 align-middle">
+          <img
+            class="aspect-square h-12 rounded object-cover"
+            src={props.coverArt}
+            alt="Cover Art"
+          />
+          <div class="flex flex-col">
+            <p class="line-clamp-1 text-ellipsis" title={props.trackName}>
+              {props.trackName}
+            </p>
+
+            <p class="line-clamp-1 min-w-80 text-ellipsis text-sm text-gray-800">
+              {props.artistName}
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center justify-evenly bg-violet-500">
+          <div class="relative flex w-24 translate-y-1.5 items-center">
+            <Slider
+              initialValue={getVolume()}
+              onUpdate={(p) => {
+                // if (!muted()) {
+                //   setVolume(p);
+                // }
+                // localStorage.setItem("player-volume", p.toString());
+              }}
+            />
+          </div>
+          <button
+            onClick={() => {
+              // const res = setMuted((prev) => !prev);
+              // localStorage.setItem("player-muted", res.toString());
+            }}
+          >
+            <Show
+              when={props.audioMuted}
+              fallback={<HiSolidSpeakerWave size={24} />}
+            >
+              <HiSolidSpeakerXMark size={24} />
+            </Show>
+          </button>
+          {/* <button onClick={() => setShowPlayQueue(true)}> */}
+          <button>
+            <HiSolidQueueList size={24} />
+          </button>
+        </div>
+      </div>
+
+      {/* <PlayQueue
+        isOpen={showPlayQueue()}
+        close={() => setShowPlayQueue(false)}
+      /> */}
+    </div>
+  );
+};
+
+const SmallPlayer: Component<PlayerProps> = (props) => {
+  const [open, setOpen] = createSignal(false);
+
+  return (
+    <>
+      <div
+        class={`fixed bottom-0 left-0 right-0 z-30 h-16 bg-gray-200 transition-transform duration-300 md:hidden ${open() ? "translate-y-[100%]" : ""}`}
+      >
+        <div class="flex items-center">
+          <Show
+            when={props.state === "playing"}
+            fallback={
+              <button class="p-4" onClick={() => props.onPlay()}>
+                <HiSolidPlay class="h-8 w-8" />
+              </button>
+            }
+          >
+            <button class="p-4" onClick={() => props.onPause()}>
+              <HiSolidPause class="h-8 w-8" />
+            </button>
+          </Show>
+          <div class="flex grow items-center" onClick={() => setOpen(true)}>
+            <img
+              class="aspect-square h-16 rounded object-cover p-1"
+              src={props.coverArt}
+              alt="Cover Art"
+            />
+            <div class="flex flex-col justify-center px-2">
+              <p class="line-clamp-1">{props.trackName}</p>
+              <p class="line-clamp-1">{props.artistName}</p>
+            </div>
+            <div class="flex-grow"></div>
+            <div class="flex h-16 min-w-16 items-center justify-center">
+              <HiSolidChevronUp class="h-8 w-8" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class={`fixed left-0 right-0 top-0 h-screen bg-white transition-transform duration-300 md:hidden ${open() ? "" : "translate-y-[100%]"}`}
+      >
+        <div class="relative flex flex-col items-center justify-center gap-2">
+          <div
+            class="flex h-12 w-full items-center bg-gray-200"
+            onClick={() => setOpen(false)}
+          >
+            <div class="w-2"></div>
+            <button
+              class="rounded-full p-2 hover:bg-black/70"
+              onClick={() => setOpen(false)}
+            >
+              <HiSolidChevronDown class="h-6 w-6" />
+            </button>
+          </div>
+          <img
+            class="aspect-square w-80 rounded object-cover"
+            src={props.coverArt}
+            alt="Track Cover Art"
+          />
+          <p class="text-lg font-medium">{props.trackName}</p>
+          <p class="">{props.artistName}</p>
+          <div class="flex items-center gap-4">
+            <button
+              onClick={() => {
+                props.onPrevTrack();
+              }}
+            >
+              <BiRegularSkipPrevious class="h-12 w-12" />
+            </button>
+
+            <Switch
+              fallback={
+                <>
+                  <button
+                    class="rounded-full bg-white p-3"
+                    onClick={() => props.onPlay()}
+                  >
+                    <HiSolidPlay class="h-12 w-12" />
+                  </button>
+                </>
+              }
+            >
+              <Match when={props.state == "playing"}>
+                <button
+                  class="rounded-full bg-white p-3"
+                  onClick={() => props.onPause()}
+                >
+                  <HiSolidPause class="h-12 w-12" />
+                </button>
+              </Match>
+              <Match when={props.state == "paused" || props.state == "ready"}>
+                <button
+                  class="rounded-full bg-white p-3"
+                  onClick={() => props.onPlay()}
+                >
+                  <HiSolidPlay class="h-12 w-12" />
+                </button>
+              </Match>
+              <Match when={props.state == "loading"}>
+                <LoadingSpinner />
+              </Match>
+            </Switch>
+
+            <button
+              onClick={() => {
+                props.onNextTrack();
+              }}
+            >
+              <BiRegularSkipNext class="h-12 w-12" />
+            </button>
+          </div>
+
+          <div class="relative h-4 w-full">
+            <Slider
+              initialValue={0}
+              value={props.currentTime / props.duration}
+              onUpdate={(p) => {
+                props.onSeek(p * props.duration);
+              }}
+            />
+          </div>
+
+          <p>
+            {formatTime(props.currentTime)} /{" "}
+            {formatTime(Number.isNaN(props.duration) ? 0 : props.duration)}
+          </p>
+        </div>
+      </div>
+    </>
+  );
+};
 
 function getVolume() {
   const vol = localStorage.getItem("player-volume");
@@ -110,232 +391,62 @@ const AudioPlayer = () => {
     }
   });
 
-  const [open, setOpen] = createSignal(false);
-
   return (
     <>
-      <div
-        class="fixed bottom-0 left-0 right-0 z-30 h-16 bg-purple-600"
-        classList={{
-          hidden: open(),
+      <LargePlayer
+        state={audio.state}
+        currentTime={audio.currentTime}
+        duration={audio.duration}
+        audioMuted={muted()}
+        coverArt={coverArtUrl()}
+        trackName={trackName()}
+        artistName={artistName()}
+        onSeek={(n: number) => {
+          controls.seek(n);
         }}
-        onClick={() => {
-          setOpen(true);
+        onPrevTrack={() => {
+          musicManager.prevTrack();
+          controls.play();
         }}
-      >
-        <div class="flex">
-          <img
-            class="aspect-square w-12 object-cover"
-            src={coverArtUrl()}
-            alt="Cover Art"
-          />
-          <div class="flex flex-col">
-            <p>{trackName()}</p>
-            <p>{artistName()}</p>
-          </div>
-        </div>
-      </div>
-      <div
-        class={`fixed left-0 right-0 top-0 h-screen bg-purple-400 transition-transform duration-300 ${open() ? "" : "translate-y-[100%]"}`}
-      >
-        <div class="relative flex flex-col items-center justify-center">
-          <button
-            class="absolute left-4 top-4 rounded-full p-2 hover:bg-black/70"
-            onClick={() => setOpen(false)}
-          >
-            <HiSolidChevronDown class="h-10 w-10" />
-          </button>
-          <img
-            class="aspect-square w-80 rounded object-cover"
-            src={coverArtUrl()}
-            alt="Track Cover Art"
-          />
-          <p class="text-lg font-medium">{trackName()}</p>
-          <p class="">{artistName()}</p>
-          <div class="flex items-center gap-4">
-            <button
-              onClick={() => {
-                musicManager.prevTrack();
-                controls.play();
-              }}
-            >
-              <BiRegularSkipPrevious class="h-12 w-12" />
-            </button>
+        onNextTrack={() => {
+          musicManager.nextTrack();
+          controls.play();
+        }}
+        onPlay={() => {
+          controls.play();
+        }}
+        onPause={() => {
+          controls.pause();
+        }}
+      />
 
-            <Switch
-              fallback={
-                <>
-                  <button
-                    class="rounded-full bg-white p-3"
-                    onClick={() => controls.play()}
-                  >
-                    <HiSolidPlay class="h-12 w-12" />
-                  </button>
-                </>
-              }
-            >
-              <Match when={audio.state == "playing"}>
-                <button
-                  class="rounded-full bg-white p-3"
-                  onClick={() => controls.pause()}
-                >
-                  <HiSolidPause class="h-12 w-12" />
-                </button>
-              </Match>
-              <Match when={audio.state == "paused" || audio.state == "ready"}>
-                <button
-                  class="rounded-full bg-white p-3"
-                  onClick={() => controls.play()}
-                >
-                  <HiSolidPlay class="h-12 w-12" />
-                </button>
-              </Match>
-              <Match when={audio.state == "loading"}>
-                <LoadingSpinner />
-              </Match>
-            </Switch>
-
-            <button
-              onClick={() => {
-                musicManager.nextTrack();
-                controls.play();
-              }}
-            >
-              <BiRegularSkipNext class="h-12 w-12" />
-            </button>
-          </div>
-
-          <div class="relative h-4 w-full">
-            <Slider
-              initialValue={0}
-              value={audio.currentTime / audio.duration}
-              onUpdate={(p) => {
-                controls.seek(p * audio.duration);
-              }}
-            />
-          </div>
-
-          <p>
-            {formatTime(audio.currentTime)} /{" "}
-            {formatTime(Number.isNaN(audio.duration) ? 0 : audio.duration)}
-          </p>
-        </div>
-      </div>
+      <SmallPlayer
+        state={audio.state}
+        currentTime={audio.currentTime}
+        duration={audio.duration}
+        audioMuted={muted()}
+        coverArt={coverArtUrl()}
+        trackName={trackName()}
+        artistName={artistName()}
+        onSeek={(n: number) => {
+          controls.seek(n);
+        }}
+        onPrevTrack={() => {
+          musicManager.prevTrack();
+          controls.play();
+        }}
+        onNextTrack={() => {
+          musicManager.nextTrack();
+          controls.play();
+        }}
+        onPlay={() => {
+          controls.play();
+        }}
+        onPause={() => {
+          controls.pause();
+        }}
+      />
     </>
-    // <div class="relative h-full">
-    //   <Slider
-    //     initialValue={0}
-    //     value={audio.currentTime / audio.duration}
-    //     onUpdate={(p) => {
-    //       controls.seek(p * audio.duration);
-    //     }}
-    //   />
-
-    //   <div class="grid h-full grid-cols-footer">
-    //     <div class="flex items-center bg-cyan-600">
-    //       <div class="flex items-center">
-    //         <button
-    //           onClick={() => {
-    //             musicManager.prevTrack();
-    //             controls.play();
-    //           }}
-    //         >
-    //           <BiRegularSkipPrevious size={48} />
-    //         </button>
-
-    //         <Switch
-    //           fallback={
-    //             <>
-    //               <button onClick={() => controls.play()}>
-    //                 <HiSolidPlay size={48} />
-    //               </button>
-    //             </>
-    //           }
-    //         >
-    //           <Match when={audio.state == "playing"}>
-    //             <button onClick={() => controls.pause()}>
-    //               <HiSolidPause size={48} />
-    //             </button>
-    //           </Match>
-    //           <Match when={audio.state == "paused" || audio.state == "ready"}>
-    //             <button onClick={() => controls.play()}>
-    //               <HiSolidPlay size={48} />
-    //             </button>
-    //           </Match>
-    //           <Match when={audio.state == "loading"}>
-    //             <LoadingSpinner />
-    //           </Match>
-    //         </Switch>
-    //         <button
-    //           onClick={() => {
-    //             musicManager.nextTrack();
-    //             controls.play();
-    //           }}
-    //         >
-    //           <BiRegularSkipNext size={48} />
-    //         </button>
-    //       </div>
-
-    //       <p class="hidden min-w-20 text-xs font-medium lg:block">
-    //         {formatTime(audio.currentTime)} /{" "}
-    //         {formatTime(Number.isNaN(audio.duration) ? 0 : audio.duration)}
-    //       </p>
-    //     </div>
-
-    //     <div class="flex items-center justify-center gap-2 bg-amber-600 align-middle">
-    //       <img
-    //         class="aspect-square h-12 rounded object-cover"
-    //         src={coverArtUrl()}
-    //         alt="Cover Art"
-    //       />
-    //       <div class="flex flex-col">
-    //         <p class="line-clamp-1 text-ellipsis" title={trackName()}>
-    //           {trackName()}
-    //         </p>
-
-    //         <p class="line-clamp-1 min-w-80 text-ellipsis text-sm text-gray-800">
-    //           {artistName()}
-    //         </p>
-    //       </div>
-    //     </div>
-    //     <div class="flex items-center justify-evenly bg-violet-500">
-    //       <div class="relative flex w-24 translate-y-1.5 items-center">
-    //         <Slider
-    //           initialValue={getVolume()}
-    //           onUpdate={(p) => {
-    //             if (!muted()) {
-    //               setVolume(p);
-    //             }
-    //             localStorage.setItem("player-volume", p.toString());
-    //           }}
-    //         />
-    //       </div>
-    //       <button
-    //         onClick={() => {
-    //           const res = setMuted((prev) => !prev);
-    //           localStorage.setItem("player-muted", res.toString());
-    //         }}
-    //       >
-    //         <Switch>
-    //           <Match when={!muted()}>
-    //             <HiSolidSpeakerWave size={24} />
-    //           </Match>
-    //           <Match when={muted()}>
-    //             <HiSolidSpeakerXMark size={24} />
-    //           </Match>
-    //         </Switch>
-    //       </button>
-    //       <button onClick={() => setShowPlayQueue(true)}>
-    //         <HiSolidQueueList size={24} />
-    //       </button>
-    //     </div>
-    //   </div>
-
-    //   <PlayQueue
-    //     isOpen={showPlayQueue()}
-    //     close={() => setShowPlayQueue(false)}
-    //   />
-    // </div>
   );
 };
 

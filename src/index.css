@@ -2,6 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --bg-color: #24283b;
+    --fg-color: #c0caf5;
+
+    --header-bg-color: #1d202f;
+    --header-fg-color: #c0caf5;
+    --header-logo-color: #e0af68;
+
+    --action-button-bg-color: #587539;
+}
+
+.action-button {
+    background-color: var(--action-button-bg-color);
+    color: var(--fg-color);
+}
+
+.header {
+    background-color: var(--header-bg-color);
+    color: var(--header-fg-color);
+
+    .logo {
+        color: var(--header-logo-color);
+    }
+}
+
+body {
+    background-color: var(--bg-color) !important;
+    color: var(--fg-color);
+    color-scheme: dark;
+}
+
 .noUi-target {
     @apply border-none h-1 group-hover:h-2 group-hover:-translate-y-0.5 !important
 }

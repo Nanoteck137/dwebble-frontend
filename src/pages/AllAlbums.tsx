@@ -21,7 +21,7 @@ const AllAlbums = () => {
       <Suspense fallback={<p class="text-blue-400">Loading...</p>}>
         <div class="flex flex-col">
           <p>Num Albums: {query.data?.albums.length}</p>
-          <div class="grid grid-cols-2 gap-2">
+          <div class="grid grid-cols-2 gap-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
             <For each={query.data?.albums}>
               {(album) => {
                 //<a href={`/album/${album.id}`}>{album.name}</a>

@@ -9,6 +9,7 @@ import {
   createQuery,
   useQueryClient,
 } from "@tanstack/solid-query";
+import { HiSolidBars3 } from "solid-icons/hi";
 import {
   Component,
   ErrorBoundary,
@@ -125,30 +126,31 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
     playlists.refetch();
   });
 
-  // class="fixed bottom-0 left-0 right-0 z-30 h-20 bg-purple-400"
-
   return (
-    <div class="">
-      <div class="flex h-screen flex-col">
-        <div class="flex h-full">
-          <div class="flex-grow">
-            <main class={`${showPlayer() ? "mb-20" : ""}`}>
-              <ErrorBoundary
-                fallback={(err) => {
-                  return <p class="text-red-500">Error: {err?.message}</p>;
-                }}
-              >
-                <div class="">{props.children}</div>
-              </ErrorBoundary>
-            </main>
-          </div>
-        </div>
+    <>
+      <header class="header flex h-16 items-center gap-4 px-4 py-2">
+        <button>
+          <HiSolidBars3 class="h-10 w-10" />
+        </button>
+        <a class="logo text-3xl font-medium" href="/">
+          Dwebble
+        </a>
+      </header>
 
-        <footer classList={{ hidden: !showPlayer() }}>
-          <AudioPlayer />
-        </footer>
-      </div>
-    </div>
+      <main class={`${showPlayer() ? "mb-20" : ""}`}>
+        <ErrorBoundary
+          fallback={(err) => {
+            return <p class="text-red-500">Error: {err?.message}</p>;
+          }}
+        >
+          <div class="">{props.children}</div>
+        </ErrorBoundary>
+      </main>
+
+      <footer classList={{ hidden: !showPlayer() }}>
+        <AudioPlayer />
+      </footer>
+    </>
   );
 };
 
