@@ -1,5 +1,5 @@
 /* @refresh reload */
-import { render } from "solid-js/web";
+import { Portal, render } from "solid-js/web";
 
 import { Route, Router } from "@solidjs/router";
 import {
@@ -9,11 +9,13 @@ import {
   createQuery,
   useQueryClient,
 } from "@tanstack/solid-query";
-import { HiSolidBars3 } from "solid-icons/hi";
+import { HiSolidBars3, HiSolidUser } from "solid-icons/hi";
+import { OcSignin2, OcSignout2 } from "solid-icons/oc";
 import {
   Component,
   ErrorBoundary,
   JSX,
+  Show,
   createEffect,
   createSignal,
   onMount,
@@ -126,15 +128,71 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
     playlists.refetch();
   });
 
+  const [showSideMenu, setShowSideMenu] = createSignal(false);
+
+  createEffect(() => {
+    if (showSideMenu()) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  });
+
   return (
     <>
       <header class="header flex h-16 items-center gap-4 px-4 py-2">
-        <button>
+        <button onClick={() => setShowSideMenu(true)}>
           <HiSolidBars3 class="h-10 w-10" />
         </button>
+
         <a class="logo text-3xl font-medium" href="/">
           Dwebble
         </a>
+
+        <Portal>
+          <Show when={showSideMenu()}>
+            <div
+              class="absolute inset-0 bg-[--side-menu-overlay]"
+              onClick={() => setShowSideMenu(false)}
+            ></div>
+          </Show>
+          <aside
+            class={`absolute bottom-0 top-0 w-80 bg-[--side-menu-bg-color] text-[--side-menu-fg-color] transition-transform duration-300 ${showSideMenu() ? "translate-x-0" : "-translate-x-[100%]"}`}
+          >
+            <Show
+              when={!!user()}
+              fallback={
+                <a
+                  class="flex items-center justify-center gap-2"
+                  href="/login"
+                  onClick={() => setShowSideMenu(false)}
+                >
+                  <OcSignin2 class="h-8 w-8" />
+                  <p class="text-xl">Login</p>
+                </a>
+              }
+            >
+              <div class="flex items-center justify-center gap-2">
+                <HiSolidUser class="h-8 w-8" />
+                <p class="text-xl">{user()?.username}</p>
+              </div>
+            </Show>
+
+            <Show when={!!user()}>
+              <div class="flex items-center justify-center gap-2">
+                <OcSignout2 class="h-8 w-8" />
+                <button
+                  class="text-xl"
+                  onClick={() => {
+                    auth.resetToken();
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
+            </Show>
+          </aside>
+        </Portal>
       </header>
 
       <main class={`${showPlayer() ? "mb-20" : ""}`}>

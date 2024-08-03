@@ -11,6 +11,10 @@
     --header-logo-color: #e0af68;
 
     --action-button-bg-color: #587539;
+
+    --side-menu-bg-color: var(--header-bg-color);
+    --side-menu-fg-color: var(--header-fg-color);
+    --side-menu-overlay: #00000083;
 }
 
 .action-button {
