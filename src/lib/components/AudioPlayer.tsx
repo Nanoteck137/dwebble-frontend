@@ -169,7 +169,7 @@ const SmallPlayer: Component<PlayerProps> = (props) => {
   return (
     <>
       <div
-        class={`fixed bottom-0 left-0 right-0 z-30 h-16 bg-gray-200 transition-transform duration-300 md:hidden ${open() ? "translate-y-[100%]" : ""}`}
+        class={`fixed bottom-0 left-0 right-0 z-30 h-16 bg-[--bg-color-alt] text-[--fg-color] transition-transform duration-300 md:hidden ${open() ? "translate-y-[100%]" : ""}`}
       >
         <div class="flex items-center">
           <Show
@@ -202,11 +202,11 @@ const SmallPlayer: Component<PlayerProps> = (props) => {
         </div>
       </div>
       <div
-        class={`fixed left-0 right-0 top-0 h-screen bg-white transition-transform duration-300 md:hidden ${open() ? "" : "translate-y-[100%]"}`}
+        class={`fixed left-0 right-0 top-0 h-screen bg-[--bg-color] transition-transform duration-300 md:hidden ${open() ? "" : "translate-y-[100%]"}`}
       >
         <div class="relative flex flex-col items-center justify-center gap-2">
           <div
-            class="flex h-12 w-full items-center bg-gray-200"
+            class="flex h-12 w-full items-center"
             onClick={() => setOpen(false)}
           >
             <div class="w-2"></div>
@@ -237,7 +237,7 @@ const SmallPlayer: Component<PlayerProps> = (props) => {
               fallback={
                 <>
                   <button
-                    class="rounded-full bg-white p-3"
+                    class="button-primary rounded-full p-3"
                     onClick={() => props.onPlay()}
                   >
                     <HiSolidPlay class="h-12 w-12" />
@@ -247,7 +247,7 @@ const SmallPlayer: Component<PlayerProps> = (props) => {
             >
               <Match when={props.state == "playing"}>
                 <button
-                  class="rounded-full bg-white p-3"
+                  class="button-primary rounded-full p-3"
                   onClick={() => props.onPause()}
                 >
                   <HiSolidPause class="h-12 w-12" />
@@ -255,7 +255,7 @@ const SmallPlayer: Component<PlayerProps> = (props) => {
               </Match>
               <Match when={props.state == "paused" || props.state == "ready"}>
                 <button
-                  class="rounded-full bg-white p-3"
+                  class="button-primary rounded-full p-3"
                   onClick={() => props.onPlay()}
                 >
                   <HiSolidPlay class="h-12 w-12" />

@@ -2,15 +2,9 @@
 import { Portal, render } from "solid-js/web";
 
 import { Route, Router } from "@solidjs/router";
-import {
-  QueryClient,
-  QueryClientProvider,
-  createMutation,
-  createQuery,
-  useQueryClient,
-} from "@tanstack/solid-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { HiSolidBars3, HiSolidUser } from "solid-icons/hi";
-import { OcSignin2, OcSignout2 } from "solid-icons/oc";
+import { OcHome2, OcSignin2, OcSignout2 } from "solid-icons/oc";
 import {
   Component,
   ErrorBoundary,
@@ -71,39 +65,39 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
   );
 
   const apiClient = useApiClient();
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   const playlists = createQueryPlaylists(apiClient);
 
-  const createPlaylist = createMutation(() => ({
-    mutationFn: async (data: { name: string }) => {
-      const res = await apiClient.createPlaylist(data);
-      if (res.status === "error") throw new Error(res.error.message);
+  // const createPlaylist = createMutation(() => ({
+  //   mutationFn: async (data: { name: string }) => {
+  //     const res = await apiClient.createPlaylist(data);
+  //     if (res.status === "error") throw new Error(res.error.message);
 
-      return res.data;
-    },
+  //     return res.data;
+  //   },
 
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["playlists"] });
-    },
-  }));
+  //   onSuccess: async () => {
+  //     await queryClient.invalidateQueries({ queryKey: ["playlists"] });
+  //   },
+  // }));
 
-  const librarySync = createMutation(() => ({
-    mutationFn: async () => {
-      const res = await apiClient.runSync();
-      if (res.status === "error") throw new Error(res.error.message);
-      return res.data;
-    },
-  }));
+  // const librarySync = createMutation(() => ({
+  //   mutationFn: async () => {
+  //     const res = await apiClient.runSync();
+  //     if (res.status === "error") throw new Error(res.error.message);
+  //     return res.data;
+  //   },
+  // }));
 
-  const libraryStatus = createQuery(() => ({
-    queryKey: ["library"],
-    queryFn: async () => {
-      const res = await apiClient.getSyncStatus();
-      if (res.status === "error") throw new Error(res.error.message);
-      return res.data;
-    },
-    // refetchInterval: 1000,
-  }));
+  // const libraryStatus = createQuery(() => ({
+  //   queryKey: ["library"],
+  //   queryFn: async () => {
+  //     const res = await apiClient.getSyncStatus();
+  //     if (res.status === "error") throw new Error(res.error.message);
+  //     return res.data;
+  //   },
+  //   // refetchInterval: 1000,
+  // }));
 
   onMount(() => {
     // TODO(patrik): Unsub
@@ -140,12 +134,12 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
 
   return (
     <>
-      <header class="header flex h-16 items-center gap-4 px-4 py-2">
+      <header class="flex h-16 items-center gap-4 bg-[--bg-color] px-4 py-2">
         <button onClick={() => setShowSideMenu(true)}>
           <HiSolidBars3 class="h-10 w-10" />
         </button>
 
-        <a class="logo text-3xl font-medium" href="/">
+        <a class="text-3xl font-medium text-[--logo-color]" href="/">
           Dwebble
         </a>
 
@@ -157,7 +151,7 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
             ></div>
           </Show>
           <aside
-            class={`absolute bottom-0 top-0 w-80 bg-[--side-menu-bg-color] text-[--side-menu-fg-color] transition-transform duration-300 ${showSideMenu() ? "translate-x-0" : "-translate-x-[100%]"}`}
+            class={`absolute bottom-0 top-0 w-80 bg-[--bg-color] text-[--fg-color] transition-transform duration-300 ${showSideMenu() ? "translate-x-0" : "-translate-x-[100%]"}`}
           >
             <Show
               when={!!user()}
@@ -191,6 +185,17 @@ const BasicLayout: Component<{ children?: JSX.Element }> = (props) => {
                 </button>
               </div>
             </Show>
+
+            <div class="flex items-center justify-center gap-2">
+              <OcHome2 class="h-8 w-8" />
+              <a
+                class="text-xl"
+                href="/albums"
+                onClick={() => setShowSideMenu(false)}
+              >
+                Albums
+              </a>
+            </div>
           </aside>
         </Portal>
       </header>

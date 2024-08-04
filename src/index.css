@@ -3,39 +3,159 @@
 @tailwind utilities;
 
 :root {
-    --bg-color: #24283b;
-    --fg-color: #c0caf5;
+    --default-color: #ff00ff;
 
-    --header-bg-color: #1d202f;
-    --header-fg-color: #c0caf5;
-    --header-logo-color: #e0af68;
+    --bg-color: var(--default-color);
+    --fg-color: var(--default-color);
 
-    --action-button-bg-color: #587539;
+    --header-bg-color: var(--default-color);
+    --header-fg-color: var(--default-color);
+    --logo-color: var(--default-color);
 
-    --side-menu-bg-color: var(--header-bg-color);
-    --side-menu-fg-color: var(--header-fg-color);
+    --action-button-bg-color: var(--default-color);
+
+    --side-menu-bg-color: var(--default-color);
+    --side-menu-fg-color: var(--default-color);
     --side-menu-overlay: #00000083;
+
+    --input-bg-color: var(--default-color);
+    --input-fg-color: var(--default-color);
+    --input-placeholder-color: var(--default-color);
+    --input-label-color: var(--default-color);
+    --input-border-color: var(--default-color);
+    --input-focus-border-color: var(--default-color);
+
+    --login-header-color: var(--default-color);
+    --login-button-bg-color: var(--default-color);
+    --login-button-fg-color: var(--default-color);
+
+    --login-side-color-from: var(--default-color);
+    --login-side-color-to: var(--default-color);
+    --login-side-fg-color: var(--default-color);
+    --login-register-button-border-color: var(--default-color);
+    --login-register-button-fg-color: var(--default-color);
+    --login-register-button-hover-bg-color: var(--default-color);
+    --login-register-button-hover-fg-color: var(--default-color);
 }
 
-.action-button {
-    background-color: var(--action-button-bg-color);
-    color: var(--fg-color);
-}
+html[data-theme="tokyonight-storm"] {
+    /* From: https://github.com/folke/tokyonight.nvim/blob/main/extras/alacritty/tokyonight_storm.toml */
+    --color-bg: #24283b;
+    --color-fg: #c0caf5;
 
-.header {
-    background-color: var(--header-bg-color);
-    color: var(--header-fg-color);
+    --color-black: #1d202f;
+    --color-red: #f7768e;
+    --color-green: #9ece6a;
+    --color-yellow: #e0af68;
+    --color-blue: #7aa2f7;
+    --color-magenta: #bb9af7;
+    --color-cyan: #7dcfff;
+    --color-white: #a9b1d6;
 
-    .logo {
-        color: var(--header-logo-color);
-    }
-}
+    --color-bright-black: #414868;
+    --color-bright-red: #f7768e;
+    --color-bright-green: #9ece6a;
+    --color-bright-yellow: #e0af68;
+    --color-bright-blue: #7aa2f7;
+    --color-bright-magenta: #bb9af7;
+    --color-bright-cyan: #7dcfff;
+    --color-bright-white: #c0caf5;
 
-body {
-    background-color: var(--bg-color) !important;
-    color: var(--fg-color);
+    --bg-color: var(--color-bg);
+    --fg-color: var(--color-fg);
+    --bg-color-alt: var(--color-black);
+
+    --primary: var(--color-blue);
+    --primary-alt: var(--color-cyan);
+    --on-primary: var(--color-black);
+    --secondary: var(--color-white);
+    --secondary-alt: var(--color-bright-white);
+    --on-secondary: var(--color-black);
+    --accent: var(--color-yellow);
+
+    --card-bg-color: var(--color-black);
+    --card-fg-color: var(--color-fg);
+
+    --header-bg-color: var(--bg-color);
+    --header-fg-color: var(--fg-color);
+    --logo-color: var(--color-yellow);
+
+    --input-bg-color: var(--color-bright-black);
+    --input-fg-color: var(--color-bright-white);
+    --input-placeholder-color: var(--color-white);
+    --input-label-color: var(--color-magenta);
+    --input-border-color: var(--color-bright-black);
+    --input-focus-border-color: var(--color-bright-magenta);
+
     color-scheme: dark;
 }
+
+html[data-theme="light"] {
+    --bg-color: #fff;
+    --fg-color: #000;
+
+    --primary: #4785ff;
+    --primary-alt: #226bfd;
+    --on-primary: #fff;
+    --secondary: #f2f2f2;
+    --secondary-alt: #f2f2f2;
+    --on-secondary: #000;
+    --accent: #ffaf85;
+
+    --card-bg-color: #fcfcfc;
+    --card-fg-color: #171717;
+
+    --header-bg-color: var(--bg-color);
+    --header-fg-color: var(--fg-color);
+    --logo-color: #FF8225;
+
+    --input-bg-color: var(--bg-color);
+    --input-fg-color: var(--fg-color);
+    --input-placeholder-color: #ccc;
+    --input-border-color: #ccc;
+    --input-focus-border-color: #666;
+
+    color-scheme: light;
+}
+
+.button-primary {
+    @apply bg-[--primary] text-[--on-primary] hover:bg-[--primary-alt]
+}
+
+.button-secondary {
+    @apply bg-[--secondary] text-[--on-secondary] hover:bg-[--secondary-alt]
+}
+
+.button-primary-outline {
+    @apply border border-[--primary] text-[--primary] hover:bg-[--primary] hover:text-[--on-primary]
+}
+
+.button-secondary-outline {
+    @apply border border-[--secondary] text-[--secondary] hover:bg-[--secondary] hover:text-[--on-secondary]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .noUi-target {
     @apply border-none h-1 group-hover:h-2 group-hover:-translate-y-0.5 !important
