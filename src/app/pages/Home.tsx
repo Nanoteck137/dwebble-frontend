@@ -22,7 +22,7 @@ const Home = () => {
         <div class="flex flex-col">
           <For each={query.data?.artists}>
             {(artist) => {
-              return <a href={`/artist/${artist.id}`}>{artist.name}</a>;
+              return <a href={`/artists/${artist.id}`}>{artist.name}</a>;
             }}
           </For>
         </div>

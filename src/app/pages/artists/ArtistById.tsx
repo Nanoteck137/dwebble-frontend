@@ -37,7 +37,7 @@ const ArtistById = () => {
         <div class="flex flex-col">
           <For each={query.data?.albums}>
             {(album) => {
-              return <a href={`/album/${album.id}`}>{album.name}</a>;
+              return <a href={`/albums/${album.id}`}>{album.name}</a>;
             }}
           </For>
         </div>
