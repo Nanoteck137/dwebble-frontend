@@ -9,6 +9,8 @@ import { Auth } from "~/lib/api/auth";
 import { ApiClient } from "~/lib/api/client";
 import { MusicManager } from "~/lib/music-manager";
 
+import Account from "~/app/pages/Account";
+import Dashboard from "~/app/pages/Dashboard";
 import Home from "~/app/pages/Home";
 import Login from "~/app/pages/Login";
 import Register from "~/app/pages/Register";
@@ -73,6 +75,9 @@ const AppRouter = () => {
 
         <Route path="/playlists" component={Playlists} />
         <Route path="/playlists/:id" component={PlaylistById} />
+
+        <Route path="/account" component={Account} />
+        <Route path="/dashboard" component={Dashboard} />
 
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />

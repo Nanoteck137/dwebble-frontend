@@ -116,6 +116,7 @@ export type PostAuthSigninBody = z.infer<typeof PostAuthSigninBody>;
 export const GetAuthMe = z.object({
   id: z.string(),
   username: z.string(),
+  isOwner: z.boolean(),
 });
 export type GetAuthMe = z.infer<typeof GetAuthMe>;
 

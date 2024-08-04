@@ -1,4 +1,4 @@
-import { BiSolidPlaylist } from "solid-icons/bi";
+import { BiSolidDashboard, BiSolidPlaylist } from "solid-icons/bi";
 import {
   HiSolidBars3,
   HiSolidHome,
@@ -6,7 +6,7 @@ import {
   HiSolidUser,
   HiSolidUserGroup,
 } from "solid-icons/hi";
-import { OcSignout2 } from "solid-icons/oc";
+import { OcSignin2, OcSignout2 } from "solid-icons/oc";
 import { RiDocumentFolderMusicFill } from "solid-icons/ri";
 import {
   Component,
@@ -18,12 +18,13 @@ import {
   onMount,
 } from "solid-js";
 import { Dynamic, Portal } from "solid-js/web";
+import { useAuth } from "~/context/AuthContext";
 import { useMusicManager } from "~/context/MusicManager";
 import AudioPlayer from "~/lib/components/AudioPlayer";
 
 const DefaultLayout: Component<{ children?: JSX.Element }> = (props) => {
-  // const auth = useAuth();
-  // const user = auth.user();
+  const auth = useAuth();
+  const user = auth.user();
 
   const musicManager = useMusicManager();
   const [showPlayer, setShowPlayer] = createSignal(
@@ -127,7 +128,7 @@ const DefaultLayout: Component<{ children?: JSX.Element }> = (props) => {
 
               <Link
                 title="Artists"
-                href=""
+                href="/artists"
                 icon={<HiSolidUserGroup class="h-8 w-8" />}
               />
 
@@ -139,28 +140,52 @@ const DefaultLayout: Component<{ children?: JSX.Element }> = (props) => {
 
               <Link
                 title="Tracks"
-                href=""
+                href="/tracks"
                 icon={<HiSolidMusicalNote class="h-8 w-8" />}
               />
 
-              <Link
-                title="Playlists"
-                href=""
-                icon={<BiSolidPlaylist class="h-8 w-8" />}
-              />
+              <Show when={!!user()}>
+                <Link
+                  title="Playlists"
+                  href="/playlists"
+                  icon={<BiSolidPlaylist class="h-8 w-8" />}
+                />
+              </Show>
             </div>
             <div class="flex-grow"></div>
             <div class="flex flex-col gap-2 py-4">
-              <Link
-                title="Playlists"
-                href=""
-                icon={<BiSolidPlaylist class="h-8 w-8" />}
-              />
-              <Link
-                title="nanoteck137"
-                icon={<HiSolidUser class="h-8 w-8" />}
-              />
-              <Link title="Logout" icon={<OcSignout2 class="h-8 w-8" />} />
+              <Show
+                when={!!user()}
+                fallback={
+                  <Link
+                    title="Login"
+                    href="/login"
+                    icon={<OcSignin2 class="h-8 w-8" />}
+                  />
+                }
+              >
+                <Link
+                  title={user()!.username}
+                  href="/account"
+                  icon={<HiSolidUser class="h-8 w-8" />}
+                />
+
+                <Show when={user()!.isOwner}>
+                  <Link
+                    title="Dashboard"
+                    href="/dashboard"
+                    icon={<BiSolidDashboard class="h-8 w-8" />}
+                  />
+                </Show>
+
+                <Link
+                  title="Logout"
+                  onClick={() => {
+                    auth.resetToken();
+                  }}
+                  icon={<OcSignout2 class="h-8 w-8" />}
+                />
+              </Show>
             </div>
           </aside>
         </Portal>
