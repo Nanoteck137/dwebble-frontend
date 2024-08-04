@@ -1,5 +1,5 @@
 import { ApiClient } from "$lib/api/client";
-import type { Handle } from "@sveltejs/kit";
+import { redirect, type Handle } from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {
   const client = new ApiClient("http://10.28.28.6:3000");
@@ -13,6 +13,12 @@ export const handle: Handle = async ({ event, resolve }) => {
   }
 
   event.locals.apiClient = client;
+
+  const url = new URL(event.request.url);
+
+  if (url.pathname === "/login" && event.locals.user) {
+    throw redirect(303, "/");
+  }
 
   const response = await resolve(event);
   return response;
