@@ -9,16 +9,17 @@ import { Auth } from "~/lib/api/auth";
 import { ApiClient } from "~/lib/api/client";
 import { MusicManager } from "~/lib/musicManager";
 
+import Home from "~/app/pages/Home";
+import Login from "~/app/pages/Login";
+import Register from "~/app/pages/Register";
+import Setup from "~/app/pages/Setup";
 import AlbumById from "~/app/pages/albums/AlbumById";
 import Albums from "~/app/pages/albums/Albums";
-
-import Artist from "~/pages/Artist";
-import Home from "~/pages/Home";
-import Login from "~/pages/Login";
-import Playlists from "~/pages/Playlists";
-import Register from "~/pages/Register";
-import Setup from "~/pages/Setup";
-import ViewPlaylist from "~/pages/ViewPlaylist";
+import ArtistById from "~/app/pages/artists/ArtistById";
+import Artists from "~/app/pages/artists/Artists";
+import PlaylistById from "~/app/pages/playlists/PlaylistById";
+import Playlists from "~/app/pages/playlists/Playlists";
+import Tracks from "~/app/pages/tracks/Tracks";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,9 +66,13 @@ const AppRouter = () => {
         <Route path="/albums" component={Albums} />
         <Route path="/albums/:id" component={AlbumById} />
 
-        <Route path="/artist/:id" component={Artist} />
+        <Route path="/artists" component={Artists} />
+        <Route path="/artists/:id" component={ArtistById} />
+
+        <Route path="/tracks" component={Tracks} />
+
         <Route path="/playlists" component={Playlists} />
-        <Route path="/viewplaylist/:id" component={ViewPlaylist} />
+        <Route path="/playlists/:id" component={PlaylistById} />
 
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />

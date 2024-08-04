@@ -29,6 +29,9 @@ const Login = () => {
     navigate("/");
   };
 
+  {
+  }
+
   return (
     <>
       <Show when={!user()} fallback={<Navigate href="/" />}>
