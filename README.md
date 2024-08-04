@@ -1,5 +1,0 @@
-# Dwebble Frontend
-
-- [IconKitchen](https://icon.kitchen)
-
-- [Icon](https://icon.kitchen/i/H4sIAAAAAAAAAzWPuw7CMAxF%2F8WsDBTx7AqIFQk2xJAmThqR1ihNeQj137GDmiHyPbGvb77wVKHHDsovGBXvlxobhDLFHqdg3eXzYAUJ3wmylqKEPYtqfHRRGY%2BtNFTuOAr20xQoFtwxsVYXszU3ZDQXhLPVtrCMVOsC2yyWg8yfa5VNtY%2BasezcyczfRU5mB2tRJ04NXa0MvTI8KWN862R1ogeUmylE72rOwlVFKVGTy4BW2MALGzJ9kN9fOYeJ5A07eer4fmEFt%2BEHrRx8QCABAAA%3D)
