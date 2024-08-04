@@ -10,8 +10,8 @@
     Users,
   } from "lucide-svelte";
   import "../app.css";
-  import AudioPlayer from "../components/AudioPlayer.svelte";
-  import Link from "../components/Link.svelte";
+  import AudioPlayer from "$lib/components/AudioPlayer.svelte";
+  import Link from "$lib/components/Link.svelte";
 
   let { children, data } = $props();
 
