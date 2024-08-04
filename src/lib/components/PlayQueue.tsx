@@ -2,7 +2,7 @@ import { HiSolidPlay, HiSolidXMark } from "solid-icons/hi";
 import { TbClearAll } from "solid-icons/tb";
 import { Component, For, createSignal, onCleanup, onMount } from "solid-js";
 import { useMusicManager } from "~/context/MusicManager";
-import { MusicTrack } from "~/lib/musicManager";
+import { MusicTrack } from "~/lib/music-manager";
 
 interface QueueItemProps {
   isPlaying: boolean;

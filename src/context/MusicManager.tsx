@@ -1,5 +1,5 @@
 import { Component, JSX, createContext, useContext } from "solid-js";
-import { MusicManager } from "../lib/musicManager";
+import { MusicManager } from "../lib/music-manager";
 
 const MusicManagerContext = createContext<MusicManager>();
 

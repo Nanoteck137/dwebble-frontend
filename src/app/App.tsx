@@ -7,7 +7,7 @@ import { AuthProvider } from "~/context/AuthContext";
 import { MusicManagerProvider } from "~/context/MusicManager";
 import { Auth } from "~/lib/api/auth";
 import { ApiClient } from "~/lib/api/client";
-import { MusicManager } from "~/lib/musicManager";
+import { MusicManager } from "~/lib/music-manager";
 
 import Home from "~/app/pages/Home";
 import Login from "~/app/pages/Login";

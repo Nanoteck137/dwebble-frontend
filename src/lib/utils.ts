@@ -1,5 +1,5 @@
 import { Track } from "~/lib/api/types";
-import { MusicTrack } from "./musicManager";
+import { MusicTrack } from "./music-manager";
 
 export function formatTime(s: number) {
   const min = Math.floor(s / 60);
