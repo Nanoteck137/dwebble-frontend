@@ -21,6 +21,7 @@
     --card-fg-color: var(--default-color);
 
     --modal-overlay-bg: #000000d1;
+    --overlay-bg: #00000079;
 
     --header-bg-color: var(--default-color);
     --header-fg-color: var(--default-color);
@@ -73,6 +74,7 @@ html[data-theme="tokyonight-storm"] {
     --card-fg-color: var(--color-fg);
 
     --modal-overlay-bg: #000000d1;
+    --overlay-bg: #00000079;
 
     --header-bg-color: var(--bg-color);
     --header-fg-color: var(--fg-color);
@@ -104,6 +106,7 @@ html[data-theme="light"] {
     --card-fg-color: #171717;
     
     --modal-overlay-bg: #000000d1;
+    --overlay-bg: #00000079;
 
     --header-bg-color: var(--bg-color);
     --header-fg-color: var(--fg-color);

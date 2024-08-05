@@ -1,12 +1,27 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
+  import Slider from "$lib/components/Slider.svelte";
+  import { musicManager, type MusicTrack } from "$lib/music-manager";
   import { formatTime } from "$lib/utils";
-  import { Logs, Pause, Play, SkipBack, SkipForward } from "lucide-svelte";
+  import {
+    ListMusic,
+    ListX,
+    Logs,
+    Pause,
+    Play,
+    SkipBack,
+    SkipForward,
+    Volume2,
+    VolumeX,
+  } from "lucide-svelte";
+  import { onMount } from "svelte";
 
   export let loading: boolean;
   export let playing: boolean;
   export let currentTime: number;
   export let duration: number;
   export let volume: number;
+  export let audioMuted: boolean;
   export let trackName: string;
   export let artistName: string;
   export let coverArt: string;
@@ -17,22 +32,47 @@
   export let onPrevTrack: () => void;
   export let onSeek: (e: number) => void;
   export let onVolumeChanged: (e: number) => void;
+  export let onToggleMuted: () => void;
+
+  let open = false;
+  let tracks: MusicTrack[] = [];
+  let currentTrack = 0;
+
+  onMount(() => {
+    let unsub = musicManager.emitter.on("onQueueUpdated", () => {
+      tracks = musicManager.queue.items;
+      currentTrack = musicManager.queue.index;
+    });
+
+    return () => {
+      unsub();
+    };
+  });
+
+  $: console.log(tracks);
+  $: console.log(currentTrack);
+  $: {
+    if (open) {
+      if (browser) document.body.style.overflow = "hidden";
+    } else {
+      if (browser) document.body.style.overflow = "";
+    }
+  }
 </script>
 
 <div
   class="fixed bottom-0 left-0 right-0 z-30 hidden h-20 bg-purple-400 md:block"
 >
   <div class="relative">
-    <!-- <Slider
-          initialValue={0}
-          value={props.currentTime / props.duration}
-          onUpdate={(p) => {
-            props.onSeek(p * props.duration);
-          }}
-        /> -->
+    <Slider
+      value={currentTime / duration}
+      onValue={(p) => {
+        onSeek(p * duration);
+      }}
+    />
   </div>
 
-  <div class="grid-cols-footer grid h-full">
+  <div class="grid h-full grid-cols-footer">
     <div class="flex items-center bg-cyan-600">
       <div class="flex items-center">
         <button
@@ -89,31 +129,94 @@
       </div>
     </div>
     <div class="flex items-center justify-evenly bg-violet-500">
-      <div class="relative flex w-24 translate-y-1.5 items-center">
-        <!-- <Slider
-          initialValue={getVolume()}
-          onUpdate={(p) => {
-            // if (!muted()) {
-            //   setVolume(p);
-            // }
-            // localStorage.setItem("player-volume", p.toString());
+      <div class="flex w-full items-center gap-4 p-4">
+        <Slider
+          value={volume}
+          onValue={(p) => {
+            onVolumeChanged(p);
           }}
-        /> -->
+        />
+        <button
+          onclick={() => {
+            onToggleMuted();
+          }}
+        >
+          {#if audioMuted}
+            <VolumeX size="25" />
+          {:else}
+            <Volume2 size="25" />
+          {/if}
+        </button>
+        <button
+          onclick={() => {
+            open = true;
+          }}
+        >
+          <Logs size="24" />
+        </button>
       </div>
-      <button
-        onclick={() => {
-          // const res = setMuted((prev) => !prev);
-          // localStorage.setItem("player-muted", res.toString());
-        }}
-      >
-        <!-- <HiSolidSpeakerWave size={24} /> -->
-        <!-- <Show when={props.audioMuted}>
-          <HiSolidSpeakerXMark size={24} />
-        </Show> -->
-      </button>
-      <button>
-        <Logs size="24" />
-      </button>
     </div>
   </div>
 </div>
+
+{#if open}
+  <button
+    class="absolute inset-0 z-50 bg-[--modal-overlay-bg]"
+    onclick={() => {
+      open = false;
+    }}
+  ></button>
+{/if}
+
+<aside
+  class={`fixed bottom-0 right-0 top-0 z-50 flex w-96 flex-col gap-2 overflow-y-scroll bg-[--bg-color] p-4 text-[--fg-color] transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-[100%]"}`}
+>
+  <div class="flex items-center gap-2">
+    <ListMusic size="32" />
+    <p class="text-3xl font-semibold">Queue</p>
+    <div class="flex-grow"></div>
+
+    <button
+      title="Clear Queue"
+      onclick={() => {
+        musicManager.clearQueue();
+      }}
+    >
+      <ListX size="32" />
+    </button>
+  </div>
+  <div class="flex flex-col gap-2">
+    {#each tracks as track, i}
+      <div class="flex gap-2">
+        <div class="group relative">
+          <img
+            class="aspect-square w-12 rounded object-cover"
+            src={track.coverArt}
+            alt={`${track.name} Cover Art`}
+          />
+          {#if i == currentTrack}
+            <div
+              class="absolute bottom-0 left-0 right-0 top-0 flex items-center justify-center bg-[--overlay-bg]"
+            >
+              <Play size="25" />
+            </div>
+          {:else}
+            <button
+              class={`absolute bottom-0 left-0 right-0 top-0 hidden items-center justify-center bg-[--overlay-bg] group-hover:flex`}
+              onclick={() => {
+                musicManager.setQueueIndex(i);
+                musicManager.requestPlay();
+              }}
+            >
+              <Play size="25" />
+            </button>
+          {/if}
+        </div>
+        <div class="flex flex-col">
+          <p>{track.name}</p>
+          <p>{track.artistName}</p>
+        </div>
+      </div>
+    {/each}
+  </div>
+</aside>

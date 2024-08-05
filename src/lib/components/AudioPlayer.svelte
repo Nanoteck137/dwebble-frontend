@@ -75,23 +75,15 @@
         trackName = track.name;
         artistName = track.artistName;
         coverArt = track.coverArt;
-        // setTrackName(track.name);
-        // setTrackSource(track.source);
-        // setArtistName(track.artistName);
-        // setCoverArtUrl(track.coverArt);
+
         audio.src = track.source;
       } else {
         trackName = "";
         artistName = "";
+        coverArt = "";
 
         audio.removeAttribute("src");
         audio.load();
-        // setTrackName("");
-        // setTrackSource("");
-        // setArtistName("");
-        // setCoverArtUrl("");
-        // audio.player.removeAttribute("src");
-        // audio.player.load();
       }
     });
 
@@ -122,6 +114,7 @@
   {currentTime}
   {duration}
   {volume}
+  audioMuted={false}
   onPlay={() => {
     audio.play();
   }}
@@ -142,6 +135,7 @@
   onVolumeChanged={(e) => {
     audio.volume = e;
   }}
+  onToggleMuted={() => {}}
 />
 
 <SmallPlayer
