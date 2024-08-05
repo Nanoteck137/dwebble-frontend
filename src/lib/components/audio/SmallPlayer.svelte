@@ -8,6 +8,8 @@
     Play,
     SkipBack,
     SkipForward,
+    Volume2,
+    VolumeX,
   } from "lucide-svelte";
 
   let open = false;
@@ -37,9 +39,6 @@
   class={`fixed bottom-0 left-0 right-0 z-30 h-16 bg-[--bg-color-alt] text-[--fg-color] transition-transform duration-300 md:hidden ${open || !showPlayer ? "translate-y-[100%]" : "translate-y-0"}`}
 >
   <div class="flex items-center">
-    <!-- <button class="p-4" onClick={() => props.onPlay()}>
-                <HiSolidPlay class="h-8 w-8" />
-              </button> -->
     {#if playing}
       <button class="p-4" onclick={() => onPause()}>
         <Pause size="28" />
@@ -94,67 +93,71 @@
     />
     <p class="text-lg font-medium">{trackName}</p>
     <p class="">{artistName}</p>
-    <div class="flex items-center gap-4">
-      <button
-        onclick={() => {
-          onPrevTrack();
-        }}
-      >
-        <SkipBack size="30" />
-      </button>
 
-      <!-- <button
-                    class="button-primary rounded-full p-3"
-                    onClick={() => props.onPlay()}
-                  >
-                    <HiSolidPlay class="h-12 w-12" />
-                  </button> -->
+    <div class="flex w-full flex-col gap-1 px-4">
+      <Slider
+        value={currentTime / duration}
+        onValue={(e) => onSeek(e * duration)}
+      />
 
-      {#if loading}
-        <p>Loading...</p>
-      {:else if playing}
-        <button onclick={onPause}>
-          <Pause size={38} />
-        </button>
-      {:else}
-        <button onclick={onPlay}>
-          <Play size={38} />
-        </button>
-      {/if}
+      <div class="flex justify-between">
+        <p class="text-sm">
+          {formatTime(currentTime)}
+        </p>
 
-      <button
-        onclick={() => {
-          onNextTrack();
-        }}
-      >
-        <SkipForward size="30" />
-      </button>
-    </div>
-
-    <div class="relative h-4 w-full">
-      <!-- <Slider
-        initialValue={0}
-        value={props.currentTime / props.duration}
-        onUpdate={(p) => {
-          props.onSeek(p * props.duration);
-        }}
-      /> -->
-
-      <div class="w-1/2">
-        <Slider
-          value={currentTime / duration}
-          onValue={(e) => onSeek(e * duration)}
-        />
+        <p class="text-sm">
+          {formatTime(Number.isNaN(duration) ? 0 : duration)}
+        </p>
       </div>
     </div>
 
-    <p>
-      {formatTime(currentTime)} /{" "}
-      {formatTime(Number.isNaN(duration) ? 0 : duration)}
-    </p>
+    <div class="flex w-full items-center gap-4 px-4">
+      <div class="flex gap-4">
+        <button
+          onclick={() => {
+            onPrevTrack();
+          }}
+        >
+          <SkipBack size="38" />
+        </button>
 
-    <div class="w-1/2">
-      <Slider value={volume} onValue={(e) => onVolumeChanged(e)} />
+        {#if loading}
+          <p>Loading...</p>
+        {:else if playing}
+          <button onclick={onPause}>
+            <Pause size={46} />
+          </button>
+        {:else}
+          <button onclick={onPlay}>
+            <Play size={46} />
+          </button>
+        {/if}
+
+        <button
+          onclick={() => {
+            onNextTrack();
+          }}
+        >
+          <SkipForward size="38" />
+        </button>
+      </div>
+
+      <div class="flex-grow"></div>
+
+      <div class="flex w-full max-w-56 items-center gap-4">
+        <Slider value={volume} onValue={(e) => onVolumeChanged(e)} />
+        <button
+          onclick={() => {
+            onToggleMuted();
+          }}
+        >
+          {#if audioMuted}
+            <VolumeX size="30" />
+          {:else}
+            <Volume2 size="30" />
+          {/if}
+        </button>
+      </div>
     </div>
   </div>
 </div>
