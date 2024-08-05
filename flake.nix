@@ -25,11 +25,12 @@
           inherit version;
 
           src = gitignore.lib.gitignoreSource ./.;
-          npmDepsHash = "sha256-3hDm1/M3vgLgREyteMX+dKveW2j7x0dpJZfXSuuNqoE=";
+          npmDepsHash = "sha256-+lWfe52MGdvMHcGs7gta+VPr5o2eWhuzLZcglRUrt1E=";
 
           installPhase = ''
             runHook preInstall
-            cp -r dist $out/
+            cp -r build $out/
+            echo '{ "type": "module" }' > $out/package.json
             runHook postInstall
           '';
         };
