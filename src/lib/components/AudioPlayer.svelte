@@ -2,6 +2,8 @@
   import { onMount } from "svelte";
   import { formatTime } from "$lib/utils";
   import { musicManager } from "$lib/music-manager";
+  import LargePlayer from "$lib/components/audio/LargePlayer.svelte";
+  import SmallPlayer from "$lib/components/audio/SmallPlayer.svelte";
 
   let loading = $state(false);
   let playing = $state(false);
@@ -10,6 +12,7 @@
 
   let trackName = $state("");
   let artistName = $state("");
+  let coverArt = $state("");
 
   let audio: HTMLAudioElement;
 
@@ -65,6 +68,7 @@
       if (track) {
         trackName = track.name;
         artistName = track.artistName;
+        coverArt = track.coverArt;
         // setTrackName(track.name);
         // setTrackSource(track.source);
         // setArtistName(track.artistName);
@@ -103,7 +107,55 @@
   });
 </script>
 
-<div
+<LargePlayer
+  {playing}
+  {loading}
+  {trackName}
+  {artistName}
+  {coverArt}
+  {currentTime}
+  {duration}
+  onPlay={() => {
+    audio.play();
+  }}
+  onPause={() => {
+    audio.pause();
+  }}
+  onNextTrack={() => {
+    musicManager.nextTrack();
+    audio.play();
+  }}
+  onPrevTrack={() => {
+    musicManager.prevTrack();
+    audio.play();
+  }}
+/>
+
+<SmallPlayer
+  {playing}
+  {loading}
+  {trackName}
+  {artistName}
+  {coverArt}
+  {currentTime}
+  {duration}
+  onPlay={() => {
+    audio.play();
+  }}
+  onPause={() => {
+    audio.pause();
+  }}
+  onNextTrack={() => {
+    musicManager.nextTrack();
+    audio.play();
+  }}
+  onPrevTrack={() => {
+    musicManager.prevTrack();
+    audio.play();
+  }}
+/>
+
+<!-- <div
   class="fixed bottom-0 left-0 right-0 flex h-14 items-center gap-4 bg-red-300 px-2"
 >
   <div class="flex gap-2">
@@ -144,4 +196,4 @@
   </div>
 
   <p>{formatTime(currentTime)} / {formatTime(duration)}</p>
-</div>
+</div> -->

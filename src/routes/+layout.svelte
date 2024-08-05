@@ -12,6 +12,7 @@
   import "../app.css";
   import AudioPlayer from "$lib/components/AudioPlayer.svelte";
   import Link from "$lib/components/Link.svelte";
+  import Slider from "$lib/components/Slider.svelte";
 
   let { children, data } = $props();
 
@@ -32,6 +33,10 @@
   </button>
 
   <a class="text-3xl font-medium text-[--logo-color]" href="/">Dwebble</a>
+
+  <div class="w-1/2">
+    <Slider />
+  </div>
 </header>
 
 <main>
@@ -44,7 +49,7 @@
 
 {#if showSideMenu}
   <button
-    class="absolute inset-0 bg-[--modal-overlay-bg]"
+    class="absolute inset-0 z-50 bg-[--modal-overlay-bg]"
     onclick={() => {
       showSideMenu = false;
     }}
@@ -52,7 +57,7 @@
 {/if}
 
 <aside
-  class={`fixed bottom-0 top-0 flex w-80 flex-col bg-[--bg-color] px-4 text-[--fg-color] transition-transform duration-300 ${showSideMenu ? "translate-x-0" : "-translate-x-[100%]"}`}
+  class={`fixed bottom-0 top-0 z-50 flex w-80 flex-col bg-[--bg-color] px-4 text-[--fg-color] transition-transform duration-300 ${showSideMenu ? "translate-x-0" : "-translate-x-[100%]"}`}
 >
   <div class="flex h-16 items-center gap-4 px-2 py-2">
     <button
