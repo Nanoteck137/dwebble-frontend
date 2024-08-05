@@ -12,6 +12,7 @@
   import "../app.css";
   import AudioPlayer from "$lib/components/AudioPlayer.svelte";
   import Link from "$lib/components/Link.svelte";
+  import { browser } from "$app/environment";
 
   let { children, data } = $props();
 
@@ -20,6 +21,14 @@
   function close() {
     showSideMenu = false;
   }
+
+  $effect(() => {
+    if (showSideMenu) {
+      if (browser) document.body.style.overflow = "hidden";
+    } else {
+      if (browser) document.body.style.overflow = "";
+    }
+  });
 </script>
 
 <header class="flex h-16 items-center gap-4 bg-[--bg-color] px-4 py-2">
