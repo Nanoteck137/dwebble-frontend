@@ -1,9 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { formatTime } from "$lib/utils";
   import { musicManager } from "$lib/music-manager";
   import LargePlayer from "$lib/components/audio/LargePlayer.svelte";
   import SmallPlayer from "$lib/components/audio/SmallPlayer.svelte";
+
+  let showPlayer = $state(false);
 
   let loading = $state(false);
   let playing = $state(false);
@@ -103,9 +104,20 @@
       }
     });
   });
+
+  onMount(() => {
+    let unsub = musicManager.emitter.on("onQueueUpdated", () => {
+      showPlayer = !musicManager.isQueueEmpty();
+    });
+
+    return () => {
+      unsub();
+    };
+  });
 </script>
 
 <LargePlayer
+  {showPlayer}
   {playing}
   {loading}
   {trackName}
@@ -139,6 +151,7 @@
 />
 
 <SmallPlayer
+  {showPlayer}
   {playing}
   {loading}
   {trackName}
@@ -147,6 +160,7 @@
   {currentTime}
   {duration}
   {volume}
+  audioMuted={false}
   onPlay={() => {
     audio.play();
   }}
@@ -167,6 +181,7 @@
   onVolumeChanged={(e) => {
     audio.volume = e;
   }}
+  onToggleMuted={() => {}}
 />
 
 <!-- <div

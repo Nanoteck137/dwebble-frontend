@@ -16,6 +16,8 @@
   } from "lucide-svelte";
   import { onMount } from "svelte";
 
+  export let showPlayer: boolean;
+
   export let loading: boolean;
   export let playing: boolean;
   export let currentTime: number;
@@ -59,7 +61,7 @@
 </script>
 
 <div
-  class="fixed bottom-0 left-0 right-0 z-30 hidden h-20 bg-purple-400 md:block"
+  class={`fixed bottom-0 left-0 right-0 z-30 hidden h-20 bg-purple-400 transition-transform md:block ${showPlayer ? "translate-y-0" : "translate-y-[100%]"}`}
 >
   <div class="relative">
     <Slider
@@ -178,6 +180,7 @@
       title="Clear Queue"
       onclick={() => {
         musicManager.clearQueue();
+        open = false;
       }}
     >
       <ListX size="32" />

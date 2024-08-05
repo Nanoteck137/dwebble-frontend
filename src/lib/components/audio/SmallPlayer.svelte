@@ -12,11 +12,14 @@
 
   let open = false;
 
+  export let showPlayer: boolean;
+
   export let loading: boolean;
   export let playing: boolean;
   export let currentTime: number;
   export let duration: number;
   export let volume: number;
+  export let audioMuted: boolean;
   export let trackName: string;
   export let artistName: string;
   export let coverArt: string;
@@ -27,42 +30,48 @@
   export let onPrevTrack: () => void;
   export let onSeek: (e: number) => void;
   export let onVolumeChanged: (e: number) => void;
+  export let onToggleMuted: () => void;
 </script>
 
 <div
-  class={`fixed bottom-0 left-0 right-0 z-30 h-16 bg-[--bg-color-alt] text-[--fg-color] transition-transform duration-300 md:hidden ${open ? "translate-y-[100%]" : ""}`}
+  class={`fixed bottom-0 left-0 right-0 z-30 h-16 bg-[--bg-color-alt] text-[--fg-color] transition-transform duration-300 md:hidden ${open || !showPlayer ? "translate-y-[100%]" : "translate-y-0"}`}
 >
   <div class="flex items-center">
     <!-- <button class="p-4" onClick={() => props.onPlay()}>
                 <HiSolidPlay class="h-8 w-8" />
               </button> -->
-    <!-- <Show when={props.state === "playing"}>
+    {#if playing}
       <button class="p-4" onclick={() => onPause()}>
-        <Pause size="30" />
+        <Pause size="28" />
       </button>
-    </Show> -->
-    <div class="flex grow items-center">
+    {:else}
+      <button class="p-4" onclick={() => onPlay()}>
+        <Play size="28" />
+      </button>
+    {/if}
+    <button
+      class="flex grow items-center"
+      onclick={() => {
+        open = true;
+      }}
+    >
       <img
         class="aspect-square h-16 rounded object-cover p-1"
         src={coverArt}
         alt="Cover Art"
       />
-      <div class="flex flex-col justify-center px-2">
+      <div class="flex flex-col items-start justify-center px-2">
         <p class="line-clamp-1">{trackName}</p>
         <p class="line-clamp-1">{artistName}</p>
       </div>
       <div class="flex-grow"></div>
-      <button
-        class="flex h-16 min-w-16 items-center justify-center"
-        onclick={() => {
-          open = true;
-        }}
-      >
+      <div class="flex h-16 min-w-16 items-center justify-center">
         <ChevronUp size="30" />
-      </button>
-    </div>
+      </div>
+    </button>
   </div>
 </div>
+
 <div
   class={`fixed left-0 right-0 top-0 h-screen bg-[--bg-color] transition-transform duration-300 md:hidden ${open ? "" : "translate-y-[100%]"}`}
 >
