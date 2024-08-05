@@ -8,7 +8,7 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <svelte:element
   this={href ? "a" : "button"}
-  class="hover:text-[--on-primary flex w-full items-center gap-2 rounded px-2 py-2 hover:bg-[--primary]"
+  class="hover:text-[--on-primary flex w-full items-center gap-2 rounded px-2 py-2 hover:bg-[--primary] hover:text-[--on-primary]"
   onclick={() => onClick?.()}
   {href}
 >
