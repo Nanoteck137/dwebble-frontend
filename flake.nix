@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url      = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url  = "github:numtide/flake-utils";
-    pyrin.url        = "github:nanoteck137/pyrin/v0.1.1";
+    pyrin.url        = "github:nanoteck137/pyrin/v0.4.0";
 
     gitignore.url = "github:hercules-ci/gitignore.nix";
     gitignore.inputs.nixpkgs.follows = "nixpkgs";
@@ -41,6 +41,7 @@
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             nodejs
+            python3
             pyrin.packages.${system}.default
           ];
         };
