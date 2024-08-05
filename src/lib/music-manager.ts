@@ -51,6 +51,7 @@ export class MusicManager {
     this.queue.items = [];
 
     this.emitter.emit("onQueueUpdated");
+    this.emitter.emit("onTrackChanged");
   }
 
   setQueueIndex(index: number) {
