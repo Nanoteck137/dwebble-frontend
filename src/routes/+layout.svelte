@@ -113,3 +113,7 @@
     {/if}
   </div>
 </aside>
+
+<svelte:head>
+  <title>Dwebble</title>
+</svelte:head>
