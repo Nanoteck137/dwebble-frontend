@@ -15,16 +15,3 @@
   <svelte:component this={icon} size="32"></svelte:component>
   <p class="text-xl">{title}</p>
 </svelte:element>
-
-<!-- <Dynamic
-  component={props.href ? "a" : "button"}
-  class="flex items-center gap-2 rounded px-2 py-2 hover:bg-[--primary] hover:text-[--on-primary]"
-  href={props.href}
-  onClick={() => {
-    setShowSideMenu(false);
-    props.onClick?.();
-  }}
->
-  {props.icon}
-  <p class="text-xl">{props.title}</p>
-</Dynamic> -->
