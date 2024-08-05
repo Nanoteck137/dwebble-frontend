@@ -6,6 +6,7 @@
   export let playing: boolean;
   export let currentTime: number;
   export let duration: number;
+  export let volume: number;
   export let trackName: string;
   export let artistName: string;
   export let coverArt: string;
@@ -14,6 +15,8 @@
   export let onPause: () => void;
   export let onNextTrack: () => void;
   export let onPrevTrack: () => void;
+  export let onSeek: (e: number) => void;
+  export let onVolumeChanged: (e: number) => void;
 </script>
 
 <div

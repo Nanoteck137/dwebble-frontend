@@ -9,6 +9,7 @@
   let playing = $state(false);
   let currentTime = $state(0);
   let duration = $state(0);
+  let volume = $state(0);
 
   let trackName = $state("");
   let artistName = $state("");
@@ -60,6 +61,12 @@
     audio.addEventListener("load", () => {
       console.log("load");
     });
+
+    audio.addEventListener("volumechange", () => {
+      volume = audio.volume;
+    });
+
+    volume = audio.volume;
 
     musicManager.emitter.on("onTrackChanged", () => {
       const track = musicManager.getCurrentTrack();
@@ -114,30 +121,7 @@
   {coverArt}
   {currentTime}
   {duration}
-  onPlay={() => {
-    audio.play();
-  }}
-  onPause={() => {
-    audio.pause();
-  }}
-  onNextTrack={() => {
-    musicManager.nextTrack();
-    audio.play();
-  }}
-  onPrevTrack={() => {
-    musicManager.prevTrack();
-    audio.play();
-  }}
-/>
-
-<SmallPlayer
-  {playing}
-  {loading}
-  {trackName}
-  {artistName}
-  {coverArt}
-  {currentTime}
-  {duration}
+  {volume}
   onPlay={() => {
     audio.play();
   }}
@@ -153,8 +137,41 @@
     audio.play();
   }}
   onSeek={(e) => {
-    console.log("onSeek", e);
     audio.currentTime = e;
+  }}
+  onVolumeChanged={(e) => {
+    audio.volume = e;
+  }}
+/>
+
+<SmallPlayer
+  {playing}
+  {loading}
+  {trackName}
+  {artistName}
+  {coverArt}
+  {currentTime}
+  {duration}
+  {volume}
+  onPlay={() => {
+    audio.play();
+  }}
+  onPause={() => {
+    audio.pause();
+  }}
+  onNextTrack={() => {
+    musicManager.nextTrack();
+    audio.play();
+  }}
+  onPrevTrack={() => {
+    musicManager.prevTrack();
+    audio.play();
+  }}
+  onSeek={(e) => {
+    audio.currentTime = e;
+  }}
+  onVolumeChanged={(e) => {
+    audio.volume = e;
   }}
 />
 
