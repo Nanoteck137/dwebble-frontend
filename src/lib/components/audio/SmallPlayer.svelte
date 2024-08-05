@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Slider from "$lib/components/Slider.svelte";
   import { formatTime } from "$lib/utils";
   import {
     ChevronDown,
@@ -23,6 +24,7 @@
   export let onPause: () => void;
   export let onNextTrack: () => void;
   export let onPrevTrack: () => void;
+  export let onSeek: (e) => void;
 </script>
 
 <div
@@ -126,6 +128,13 @@
           props.onSeek(p * props.duration);
         }}
       /> -->
+
+      <div class="w-1/2">
+        <Slider
+          value={currentTime / duration}
+          onValue={(e) => onSeek(e * duration)}
+        />
+      </div>
     </div>
 
     <p>

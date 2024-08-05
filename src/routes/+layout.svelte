@@ -33,10 +33,6 @@
   </button>
 
   <a class="text-3xl font-medium text-[--logo-color]" href="/">Dwebble</a>
-
-  <div class="w-1/2">
-    <Slider />
-  </div>
 </header>
 
 <main>

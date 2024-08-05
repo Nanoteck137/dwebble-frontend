@@ -40,7 +40,6 @@
     });
 
     audio.addEventListener("timeupdate", () => {
-      console.log("timeupdate");
       currentTime = audio.currentTime;
     });
 
@@ -152,6 +151,10 @@
   onPrevTrack={() => {
     musicManager.prevTrack();
     audio.play();
+  }}
+  onSeek={(e) => {
+    console.log("onSeek", e);
+    audio.currentTime = e;
   }}
 />
 
