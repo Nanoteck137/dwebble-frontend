@@ -12,7 +12,6 @@
   import "../app.css";
   import AudioPlayer from "$lib/components/AudioPlayer.svelte";
   import Link from "$lib/components/Link.svelte";
-  import Slider from "$lib/components/Slider.svelte";
 
   let { children, data } = $props();
 
