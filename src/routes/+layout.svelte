@@ -13,6 +13,7 @@
   import AudioPlayer from "$lib/components/AudioPlayer.svelte";
   import Link from "$lib/components/Link.svelte";
   import { browser } from "$app/environment";
+  import { PUBLIC_VERSION, PUBLIC_COMMIT } from "$env/static/public";
 
   let { children, data } = $props();
 
@@ -41,6 +42,8 @@
   </button>
 
   <a class="text-3xl font-medium text-[--logo-color]" href="/">Dwebble</a>
+  <p>Version: {PUBLIC_VERSION}</p>
+  <p>Commit: {PUBLIC_COMMIT}</p>
 </header>
 
 <main>

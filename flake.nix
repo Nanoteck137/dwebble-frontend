@@ -18,14 +18,19 @@
           inherit system overlays;
         };
 
-        version = self.shortRev or "dirty";
+        version = pkgs.lib.strings.fileContents "${self}/version";
+        rev = self.dirtyShortRev or self.shortRev or "dirty";
+        fullVersion = ''${version}-${rev}'';
 
         app = pkgs.buildNpmPackage {
           name = "dwebble-frontend";
-          inherit version;
+          version = fullVersion;
 
           src = gitignore.lib.gitignoreSource ./.;
           npmDepsHash = "sha256-+lWfe52MGdvMHcGs7gta+VPr5o2eWhuzLZcglRUrt1E=";
+
+          PUBLIC_VERSION=version;
+          PUBLIC_COMMIT=self.rev or "dirty";
 
           installPhase = ''
             runHook preInstall
