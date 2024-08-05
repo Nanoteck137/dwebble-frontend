@@ -49,8 +49,6 @@
     };
   });
 
-  $: console.log(tracks);
-  $: console.log(currentTrack);
   $: {
     if (open) {
       if (browser) document.body.style.overflow = "hidden";
