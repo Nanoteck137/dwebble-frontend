@@ -21,6 +21,7 @@ export const Album = z.object({
   name: z.string(),
   coverArt: z.string(),
   artistId: z.string(),
+  artistName: z.string(),
 });
 export type Album = z.infer<typeof Album>;
 
@@ -115,6 +116,7 @@ export type PostAuthSigninBody = z.infer<typeof PostAuthSigninBody>;
 export const GetAuthMe = z.object({
   id: z.string(),
   username: z.string(),
+  isOwner: z.boolean(),
 });
 export type GetAuthMe = z.infer<typeof GetAuthMe>;
 
