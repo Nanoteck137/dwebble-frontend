@@ -56,5 +56,93 @@
           ];
         };
       }
-    );
+    ) // {
+      nixosModules.default = { config, lib, pkgs, ... }:
+        with lib; let
+          cfg = config.services.dwebble-frontend;
+
+          # dwebbleConfig = pkgs.writeText "config.toml" ''
+          #   listen_addr = "${cfg.host}:${toString cfg.port}"
+          #   data_dir = "/var/lib/dwebble"
+          #   library_dir = "${cfg.library}"
+          #   jwt_secret = "${cfg.jwtSecret}"
+          # '';
+        in
+        {
+          options.services.dwebble-frontend = {
+            enable = mkEnableOption "Enable the dwebble-frontend service";
+
+            port = mkOption {
+              type = types.port;
+              default = 7550;
+              description = "port to listen on";
+            };
+
+            host = mkOption {
+              type = types.str;
+              default = "";
+              description = "hostname or address to listen on";
+            };
+
+            package = mkOption {
+              type = types.package;
+              default = self.packages.${pkgs.system}.default;
+              description = "package to use for this service (defaults to the one in the flake)";
+            };
+
+            user = mkOption {
+              type = types.str;
+              default = "dwebble-frontend";
+              description = lib.mdDoc "user to use for this service";
+            };
+
+            group = mkOption {
+              type = types.str;
+              default = "dwebble-frontend";
+              description = lib.mdDoc "group to use for this service";
+            };
+
+          };
+
+          config = mkIf cfg.enable {
+            systemd.services.dwebble-frontend = {
+              description = "Frontend for dwebble";
+              wantedBy = [ "multi-user.target" ];
+
+              serviceConfig = {
+                User = cfg.user;
+                Group = cfg.group;
+
+                ExecStart = "${cfg.package}/bin/dwebble-frontend";
+
+                Restart = "on-failure";
+                RestartSec = "5s";
+
+                ProtectHome = true;
+                ProtectHostname = true;
+                ProtectKernelLogs = true;
+                ProtectKernelModules = true;
+                ProtectKernelTunables = true;
+                ProtectProc = "invisible";
+                ProtectSystem = "strict";
+                RestrictAddressFamilies = [ "AF_INET" "AF_INET6" "AF_UNIX" ];
+                RestrictNamespaces = true;
+                RestrictRealtime = true;
+                RestrictSUIDSGID = true;
+              };
+            };
+
+            users.users = mkIf (cfg.user == "dwebble-frontend") {
+              dwebble-frontend = {
+                group = cfg.group;
+                isSystemUser = true;
+              };
+            };
+
+            users.groups = mkIf (cfg.group == "dwebble-frontend") {
+              dwebble-frontend = {};
+            };
+          };
+        };
+    };
 }
