@@ -2,8 +2,10 @@ import { env } from "$env/dynamic/private";
 import { ApiClient } from "$lib/api/client";
 import { error, redirect, type Handle } from "@sveltejs/kit";
 
+const apiAddress = env.API_ADDRESS ? env.API_ADDRESS : "";
+
 export const handle: Handle = async ({ event, resolve }) => {
-  const client = new ApiClient(env.API_ADDRESS);
+  const client = new ApiClient(apiAddress);
 
   const auth = event.cookies.get("auth");
   if (auth) {
