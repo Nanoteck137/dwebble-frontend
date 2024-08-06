@@ -3,6 +3,7 @@
     DiscAlbum,
     FileMusic,
     Home,
+    LayoutDashboard,
     ListMusic,
     LogIn,
     LogOut,
@@ -110,6 +111,15 @@
         icon={User}
         onClick={close}
       />
+
+      {#if data.user.isOwner}
+        <Link
+          title="Dashboard"
+          href="/dashboard"
+          icon={LayoutDashboard}
+          onClick={close}
+        />
+      {/if}
 
       <form class="w-full" action="/logout" method="POST">
         <Link title="Logout" icon={LogOut} onClick={close} />
