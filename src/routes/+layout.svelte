@@ -4,6 +4,7 @@
     FileMusic,
     Home,
     ListMusic,
+    LogIn,
     LogOut,
     Menu,
     User,
@@ -113,6 +114,8 @@
       <form class="w-full" action="/logout" method="POST">
         <Link title="Logout" icon={LogOut} onClick={close} />
       </form>
+    {:else}
+      <Link title="Login" href="/login" icon={LogIn} onClick={close} />
     {/if}
   </div>
 </aside>
