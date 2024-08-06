@@ -113,7 +113,7 @@
               description = "Frontend for dwebble";
               wantedBy = [ "multi-user.target" ];
 
-              Environment = {
+              environment = {
                 PORT = "${toString cfg.port}";
                 HOST = "${cfg.host}";
                 API_ADDRESS = "${cfg.apiAddress}";
