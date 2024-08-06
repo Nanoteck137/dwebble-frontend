@@ -117,6 +117,7 @@
                 PORT = "${toString cfg.port}";
                 HOST = "${cfg.host}";
                 API_ADDRESS = "${cfg.apiAddress}";
+                HOST_HEADER = "x-forwarded-host";
               };
 
               serviceConfig = {
