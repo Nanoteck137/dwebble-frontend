@@ -118,9 +118,9 @@
                 Group = cfg.group;
 
                 Environment = {
-                  PORT = toString cfg.port;
-                  HOST = cfg.host;
-                  API_ADDRESS = cfg.apiAddress;
+                  PORT = "${toString cfg.port}";
+                  HOST = "${cfg.host}";
+                  API_ADDRESS = "${cfg.apiAddress}";
                 };
 
                 ExecStart = "${cfg.package}/bin/dwebble-frontend";
