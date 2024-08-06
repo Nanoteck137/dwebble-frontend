@@ -36,6 +36,11 @@
             runHook preInstall
             cp -r build $out/
             echo '{ "type": "module" }' > $out/package.json
+
+            mkdir $out/bin
+            echo -e "#!${pkgs.runtimeShell}\n${pkgs.nodejs}/bin/node $out\n" > $out/bin/dwebble-frontend
+            chmod +x $out/bin/dwebble-frontend
+
             runHook postInstall
           '';
         };
