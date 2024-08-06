@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url      = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url  = "github:numtide/flake-utils";
-    pyrin.url        = "github:nanoteck137/pyrin/v0.1.1";
+    pyrin.url        = "github:nanoteck137/pyrin/v0.4.0";
 
     gitignore.url = "github:hercules-ci/gitignore.nix";
     gitignore.inputs.nixpkgs.follows = "nixpkgs";
@@ -18,18 +18,24 @@
           inherit system overlays;
         };
 
-        version = self.shortRev or "dirty";
+        version = pkgs.lib.strings.fileContents "${self}/version";
+        rev = self.dirtyShortRev or self.shortRev or "dirty";
+        fullVersion = ''${version}-${rev}'';
 
         app = pkgs.buildNpmPackage {
           name = "dwebble-frontend";
-          inherit version;
+          version = fullVersion;
 
           src = gitignore.lib.gitignoreSource ./.;
-          npmDepsHash = "sha256-3hDm1/M3vgLgREyteMX+dKveW2j7x0dpJZfXSuuNqoE=";
+          npmDepsHash = "sha256-+lWfe52MGdvMHcGs7gta+VPr5o2eWhuzLZcglRUrt1E=";
+
+          PUBLIC_VERSION=version;
+          PUBLIC_COMMIT=self.rev or "dirty";
 
           installPhase = ''
             runHook preInstall
-            cp -r dist $out/
+            cp -r build $out/
+            echo '{ "type": "module" }' > $out/package.json
             runHook postInstall
           '';
         };
@@ -40,6 +46,7 @@
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
             nodejs
+            python3
             pyrin.packages.${system}.default
           ];
         };

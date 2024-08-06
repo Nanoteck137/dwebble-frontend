@@ -1,4 +1,4 @@
-import { Emitter, createNanoEvents } from "nanoevents";
+import { type Emitter, createNanoEvents } from "nanoevents";
 
 export type MusicTrack = {
   name: string;
@@ -33,6 +33,7 @@ export class MusicManager {
     this.emitter.emit("onQueueUpdated");
 
     if (play && requestPlay) {
+      this.emitter.emit("onTrackChanged");
       this.requestPlay();
     }
   }
@@ -50,6 +51,7 @@ export class MusicManager {
     this.queue.items = [];
 
     this.emitter.emit("onQueueUpdated");
+    this.emitter.emit("onTrackChanged");
   }
 
   setQueueIndex(index: number) {
@@ -64,6 +66,7 @@ export class MusicManager {
     this.queue.index = index;
 
     this.emitter.emit("onQueueUpdated");
+    this.emitter.emit("onTrackChanged");
   }
 
   nextTrack() {
@@ -90,3 +93,6 @@ export class MusicManager {
     console.log("Update server");
   }
 }
+
+const musicManager = new MusicManager();
+export { musicManager };

@@ -1,13 +1,6 @@
-import path from "path";
+import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig } from "vite";
-import solid from "vite-plugin-solid";
 
 export default defineConfig({
-  plugins: [solid()],
-  publicDir: "public",
-  resolve: {
-    alias: {
-      "~": path.resolve(__dirname, "src"),
-    },
-  },
+  plugins: [sveltekit()],
 });
