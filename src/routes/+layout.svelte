@@ -34,7 +34,9 @@
   });
 </script>
 
-<header class="flex h-16 items-center gap-4 bg-[--bg-color] px-4 py-2">
+<header
+  class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center gap-4 bg-[--bg-color] px-4 py-2"
+>
   <button
     onclick={() => {
       showSideMenu = true;
@@ -48,7 +50,7 @@
   <p>Commit: {PUBLIC_COMMIT}</p>
 </header>
 
-<main>
+<main class="mt-16">
   {@render children()}
 </main>
 
