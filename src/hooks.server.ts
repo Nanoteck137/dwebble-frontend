@@ -16,9 +16,11 @@ export const handle: Handle = async ({ event, resolve }) => {
     const obj = JSON.parse(auth);
     client.setToken(obj.token);
 
+    console.log(obj);
+
     const me = await client.getMe();
     if (me.status === "error") {
-      throw error(500, "Failed to get auth user");
+      throw error(500, "Failed to get auth user: " + me.error.message);
     }
 
     event.locals.user = me.data;
