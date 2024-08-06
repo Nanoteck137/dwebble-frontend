@@ -1,8 +1,9 @@
+import { env } from "$env/dynamic/private";
 import { ApiClient } from "$lib/api/client";
 import { error, redirect, type Handle } from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {
-  const client = new ApiClient("http://10.28.28.6:3000");
+  const client = new ApiClient(env.API_ADDRESS);
 
   const auth = event.cookies.get("auth");
   if (auth) {
