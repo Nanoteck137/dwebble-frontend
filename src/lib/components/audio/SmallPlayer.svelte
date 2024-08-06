@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
   import Slider from "$lib/components/Slider.svelte";
   import { formatTime } from "$lib/utils";
   import {
@@ -33,6 +34,14 @@
   export let onSeek: (e: number) => void;
   export let onVolumeChanged: (e: number) => void;
   export let onToggleMuted: () => void;
+
+  $: {
+    if (open) {
+      if (browser) document.body.style.overflow = "hidden";
+    } else {
+      if (browser) document.body.style.overflow = "";
+    }
+  }
 </script>
 
 <div
