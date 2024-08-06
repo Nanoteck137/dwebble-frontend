@@ -137,3 +137,7 @@ html[data-theme="light"] {
 .button-secondary-outline {
     @apply border border-[--secondary] text-[--secondary] hover:bg-[--secondary] hover:text-[--on-secondary]
 }
+
+body[data-player="true"] main {
+    @apply mb-16 md:mb-24
+}

@@ -114,6 +114,14 @@
       unsub();
     };
   });
+
+  $effect(() => {
+    if (showPlayer) {
+      document.body.setAttribute("data-player", "true");
+    } else {
+      document.body.setAttribute("data-player", "false");
+    }
+  });
 </script>
 
 <LargePlayer

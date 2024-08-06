@@ -61,9 +61,9 @@
 </script>
 
 <div
-  class={`fixed bottom-0 left-0 right-0 z-30 hidden h-20 bg-purple-400 transition-transform md:block ${showPlayer ? "translate-y-0" : "translate-y-[100%]"}`}
+  class={`fixed bottom-0 left-0 right-0 z-30 hidden h-20 bg-purple-400 transition-transform duration-500 md:block ${showPlayer ? "translate-y-0" : "translate-y-[110%]"}`}
 >
-  <div class="relative">
+  <div class="absolute -top-2 left-0 right-0">
     <Slider
       value={currentTime / duration}
       onValue={(p) => {
