@@ -17,6 +17,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     client.setToken(obj.token);
 
     console.log(obj);
+    console.log(client);
 
     const me = await client.getMe();
     if (me.status === "error") {
