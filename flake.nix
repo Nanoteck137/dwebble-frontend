@@ -74,7 +74,7 @@
 
             port = mkOption {
               type = types.port;
-              default = 7550;
+              default = 7551;
               description = "port to listen on";
             };
 
