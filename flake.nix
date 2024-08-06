@@ -113,15 +113,15 @@
               description = "Frontend for dwebble";
               wantedBy = [ "multi-user.target" ];
 
+              Environment = {
+                PORT = "${toString cfg.port}";
+                HOST = "${cfg.host}";
+                API_ADDRESS = "${cfg.apiAddress}";
+              };
+
               serviceConfig = {
                 User = cfg.user;
                 Group = cfg.group;
-
-                Environment = {
-                  PORT = "${toString cfg.port}";
-                  HOST = "${cfg.host}";
-                  API_ADDRESS = "${cfg.apiAddress}";
-                };
 
                 ExecStart = "${cfg.package}/bin/dwebble-frontend";
 
