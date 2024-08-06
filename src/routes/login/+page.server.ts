@@ -38,7 +38,6 @@ export const actions = {
 
     cookies.set("auth", JSON.stringify(data), {
       path: "/",
-      secure: false,
       sameSite: "strict",
     });
 
