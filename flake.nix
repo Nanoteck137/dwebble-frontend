@@ -84,6 +84,11 @@
               description = "hostname or address to listen on";
             };
 
+            apiAddress = mkOption {
+              type = types.str;
+              description = "address to the api server";
+            };
+
             package = mkOption {
               type = types.package;
               default = self.packages.${pkgs.system}.default;
@@ -101,7 +106,6 @@
               default = "dwebble-frontend";
               description = lib.mdDoc "group to use for this service";
             };
-
           };
 
           config = mkIf cfg.enable {
@@ -112,6 +116,12 @@
               serviceConfig = {
                 User = cfg.user;
                 Group = cfg.group;
+
+                Environment = {
+                  PORT = cfg.port;
+                  HOST = cfg.host;
+                  API_ADDRESS = cfg.apiAddress;
+                };
 
                 ExecStart = "${cfg.package}/bin/dwebble-frontend";
 
