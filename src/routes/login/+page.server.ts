@@ -1,19 +1,14 @@
-import { ApiClient } from "$lib/api/client";
 import { error, redirect } from "@sveltejs/kit";
 import type { Actions } from "./$types";
 
 export const actions = {
-  default: async ({ cookies, request }) => {
+  default: async ({ locals, cookies, request }) => {
     const formData = await request.formData();
-    console.log("Login");
 
     const username = formData.get("username")!;
     const password = formData.get("password")!;
 
-    console.log(username, password);
-
-    const client = new ApiClient("http://10.28.28.6:3000");
-    const res = await client.signin({
+    const res = await locals.apiClient.signin({
       username: username.toString(),
       password: password.toString(),
     });
@@ -22,8 +17,8 @@ export const actions = {
       throw error(res.error.code, { message: res.error.message });
     }
 
-    client.setToken(res.data.token);
-    const user = await client.getMe();
+    locals.apiClient.setToken(res.data.token);
+    const user = await locals.apiClient.getMe();
     if (user.status == "error") {
       throw error(user.error.code, { message: user.error.message });
     }
