@@ -1,109 +1,109 @@
 import { z } from "zod";
 import * as api from "./types";
-import BaseApiClient from "./base-client";
+import { BaseApiClient, type ExtraOptions } from "./base-client";
 
 export class ApiClient extends BaseApiClient {
   constructor(baseUrl: string) {
     super(baseUrl);
   }
   
-  getArtists() {
-    return this.request("/api/v1/artists", "GET", api.GetArtists)
+  getArtists(options?: ExtraOptions) {
+    return this.request("/api/v1/artists", "GET", api.GetArtists, undefined, options)
   }
   
-  getArtistById(id: string) {
-    return this.request(`/api/v1/artists/${id}`, "GET", api.GetArtistById)
+  getArtistById(id: string, options?: ExtraOptions) {
+    return this.request(`/api/v1/artists/${id}`, "GET", api.GetArtistById, undefined, options)
   }
   
-  getArtistAlbums(id: string) {
-    return this.request(`/api/v1/artists/${id}/albums`, "GET", api.GetArtistAlbumsById)
+  getArtistAlbums(id: string, options?: ExtraOptions) {
+    return this.request(`/api/v1/artists/${id}/albums`, "GET", api.GetArtistAlbumsById, undefined, options)
   }
   
-  getAlbums() {
-    return this.request("/api/v1/albums", "GET", api.GetAlbums)
+  getAlbums(options?: ExtraOptions) {
+    return this.request("/api/v1/albums", "GET", api.GetAlbums, undefined, options)
   }
   
-  getAlbumById(id: string) {
-    return this.request(`/api/v1/albums/${id}`, "GET", api.GetAlbumById)
+  getAlbumById(id: string, options?: ExtraOptions) {
+    return this.request(`/api/v1/albums/${id}`, "GET", api.GetAlbumById, undefined, options)
   }
   
-  getAlbumTracks(id: string) {
-    return this.request(`/api/v1/albums/${id}/tracks`, "GET", api.GetAlbumTracksById)
+  getAlbumTracks(id: string, options?: ExtraOptions) {
+    return this.request(`/api/v1/albums/${id}/tracks`, "GET", api.GetAlbumTracksById, undefined, options)
   }
   
-  getTracks() {
-    return this.request("/api/v1/tracks", "GET", api.GetTracks)
+  getTracks(options?: ExtraOptions) {
+    return this.request("/api/v1/tracks", "GET", api.GetTracks, undefined, options)
   }
   
-  getTrackById(id: string) {
-    return this.request(`/api/v1/tracks/${id}`, "GET", api.GetTrackById)
+  getTrackById(id: string, options?: ExtraOptions) {
+    return this.request(`/api/v1/tracks/${id}`, "GET", api.GetTrackById, undefined, options)
   }
   
-  getSyncStatus() {
-    return this.request("/api/v1/sync", "GET", api.GetSync)
+  getSyncStatus(options?: ExtraOptions) {
+    return this.request("/api/v1/sync", "GET", api.GetSync, undefined, options)
   }
   
-  runSync() {
-    return this.request("/api/v1/sync", "POST", z.undefined())
+  runSync(options?: ExtraOptions) {
+    return this.request("/api/v1/sync", "POST", z.undefined(), undefined, options)
   }
   
-  createQueue() {
-    return this.request("/api/v1/queue", "POST", api.PostQueue)
+  createQueue(options?: ExtraOptions) {
+    return this.request("/api/v1/queue", "POST", api.PostQueue, undefined, options)
   }
   
-  getTags() {
-    return this.request("/api/v1/tags", "GET", api.GetTags)
+  getTags(options?: ExtraOptions) {
+    return this.request("/api/v1/tags", "GET", api.GetTags, undefined, options)
   }
   
-  signup(body: api.PostAuthSignupBody) {
-    return this.request("/api/v1/auth/signup", "POST", api.PostAuthSignup, body)
+  signup(body: api.PostAuthSignupBody, options?: ExtraOptions) {
+    return this.request("/api/v1/auth/signup", "POST", api.PostAuthSignup, body, options)
   }
   
-  signin(body: api.PostAuthSigninBody) {
-    return this.request("/api/v1/auth/signin", "POST", api.PostAuthSignin, body)
+  signin(body: api.PostAuthSigninBody, options?: ExtraOptions) {
+    return this.request("/api/v1/auth/signin", "POST", api.PostAuthSignin, body, options)
   }
   
-  getMe() {
-    return this.request("/api/v1/auth/me", "GET", api.GetAuthMe)
+  getMe(options?: ExtraOptions) {
+    return this.request("/api/v1/auth/me", "GET", api.GetAuthMe, undefined, options)
   }
   
-  getPlaylists() {
-    return this.request("/api/v1/playlists", "GET", api.GetPlaylists)
+  getPlaylists(options?: ExtraOptions) {
+    return this.request("/api/v1/playlists", "GET", api.GetPlaylists, undefined, options)
   }
   
-  createPlaylist(body: api.PostPlaylistBody) {
-    return this.request("/api/v1/playlists", "POST", api.PostPlaylist, body)
+  createPlaylist(body: api.PostPlaylistBody, options?: ExtraOptions) {
+    return this.request("/api/v1/playlists", "POST", api.PostPlaylist, body, options)
   }
   
-  getPlaylistById(id: string) {
-    return this.request(`/api/v1/playlists/${id}`, "GET", api.GetPlaylistById)
+  getPlaylistById(id: string, options?: ExtraOptions) {
+    return this.request(`/api/v1/playlists/${id}`, "GET", api.GetPlaylistById, undefined, options)
   }
   
-  addItemsToPlaylist(id: string, body: api.PostPlaylistItemsByIdBody) {
-    return this.request(`/api/v1/playlists/${id}/items`, "POST", z.undefined(), body)
+  addItemsToPlaylist(id: string, body: api.PostPlaylistItemsByIdBody, options?: ExtraOptions) {
+    return this.request(`/api/v1/playlists/${id}/items`, "POST", z.undefined(), body, options)
   }
   
-  deletePlaylistItems(id: string, body: api.DeletePlaylistItemsByIdBody) {
-    return this.request(`/api/v1/playlists/${id}/items`, "DELETE", z.undefined(), body)
+  deletePlaylistItems(id: string, body: api.DeletePlaylistItemsByIdBody, options?: ExtraOptions) {
+    return this.request(`/api/v1/playlists/${id}/items`, "DELETE", z.undefined(), body, options)
   }
   
-  movePlaylistItem(id: string, body: api.PostPlaylistsItemMoveByIdBody) {
-    return this.request(`/api/v1/playlists/${id}/items/move`, "POST", z.undefined(), body)
+  movePlaylistItem(id: string, body: api.PostPlaylistsItemMoveByIdBody, options?: ExtraOptions) {
+    return this.request(`/api/v1/playlists/${id}/items/move`, "POST", z.undefined(), body, options)
   }
   
-  getSystemInfo() {
-    return this.request("/api/v1/system/info", "GET", api.GetSystemInfo)
+  getSystemInfo(options?: ExtraOptions) {
+    return this.request("/api/v1/system/info", "GET", api.GetSystemInfo, undefined, options)
   }
   
-  runSystemSetup(body: api.PostSystemSetupBody) {
-    return this.request("/api/v1/system/setup", "POST", z.undefined(), body)
+  runSystemSetup(body: api.PostSystemSetupBody, options?: ExtraOptions) {
+    return this.request("/api/v1/system/setup", "POST", z.undefined(), body, options)
   }
   
-  systemExport() {
-    return this.request("/api/v1/system/export", "POST", api.PostSystemExport)
+  systemExport(options?: ExtraOptions) {
+    return this.request("/api/v1/system/export", "POST", api.PostSystemExport, undefined, options)
   }
   
-  systemImport() {
-    return this.request("/api/v1/system/import", "POST", z.undefined())
+  systemImport(options?: ExtraOptions) {
+    return this.request("/api/v1/system/import", "POST", z.undefined(), undefined, options)
   }
 }
