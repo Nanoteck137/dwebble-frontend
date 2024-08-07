@@ -81,7 +81,7 @@
 </div>
 
 <div
-  class={`fixed left-0 right-0 top-0 h-screen bg-[--bg-color] transition-transform duration-300 md:hidden ${open ? "" : "translate-y-[100%]"}`}
+  class={`fixed left-0 right-0 top-0 z-50 h-screen bg-[--bg-color] transition-transform duration-300 md:hidden ${open ? "" : "translate-y-[100%]"}`}
 >
   <div class="relative flex flex-col items-center justify-center gap-2">
     <div class="flex h-12 w-full items-center">
