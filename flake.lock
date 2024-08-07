@@ -94,16 +94,16 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1721519267,
-        "narHash": "sha256-92g9WDJVUZ/inx2Q/+3ndO+QH1hJpXhX9/K+4pq+F/w=",
+        "lastModified": 1723038524,
+        "narHash": "sha256-sav0g2HcsSqhEDgJZ8Pf/lMmGBWh3ny13J/CW6DzhaA=",
         "owner": "nanoteck137",
         "repo": "pyrin",
-        "rev": "257eee19786957d26c03743426b1ca9470553cd8",
+        "rev": "a91cfd683f22f880b03541cf953ea108005aa72b",
         "type": "github"
       },
       "original": {
         "owner": "nanoteck137",
-        "ref": "v0.4.0",
+        "ref": "v0.4.1",
         "repo": "pyrin",
         "type": "github"
       }
