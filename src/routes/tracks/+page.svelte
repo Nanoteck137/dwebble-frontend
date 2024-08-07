@@ -9,13 +9,19 @@
 
 <p>Num Tracks: {data.tracks.length}</p>
 
-<form method="GET">
-  <input
-    class="border-1 h-8 rounded-[50px] border-[--input-border-color] bg-[--input-bg-color] px-5 text-sm text-[--input-fg-color] placeholder:text-[--input-placeholder-color] focus:border-[--input-focus-border-color] focus:ring-0"
-    type="text"
-    name="filter"
-    placeholder="Filter"
-  />
+<form class="px-4" method="GET">
+  <div class="flex flex-col">
+    <input
+      class="border-1 h-8 rounded-[50px] border-[--input-border-color] bg-[--input-bg-color] px-5 text-sm text-[--input-fg-color] placeholder:text-[--input-placeholder-color] focus:border-[--input-focus-border-color] focus:ring-0"
+      type="text"
+      name="filter"
+      placeholder="Filter"
+      value={data.filter ?? ""}
+    />
+    {#if data.filterError}
+      <p class="text-red-400">{data.filterError}</p>
+    {/if}
+  </div>
   <button>Filter</button>
 </form>
 
@@ -30,7 +36,7 @@
           loading="lazy"
         />
         <button
-          class={`absolute bottom-0 left-0 right-0 top-0 hidden items-center justify-center bg-[--overlay-bg] group-hover:flex`}
+          class={`absolute bottom-0 left-0 right-0 top-0 hidden items-center justify-center rounded bg-[--overlay-bg] group-hover:flex`}
           onclick={() => {
             musicManager.clearQueue();
             musicManager.addTrackToQueue(trackToMusicTrack(track));

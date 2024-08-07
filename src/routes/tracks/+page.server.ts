@@ -10,10 +10,18 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
   const tracks = await locals.apiClient.getTracks({ query });
   if (tracks.status === "error") {
-    throw error(500, "Failed to fetch tracks");
+    if (tracks.error.code === 400) {
+      return {
+        tracks: [],
+        filter,
+        filterError: tracks.error.message,
+      };
+    }
+    throw error(tracks.error.code, tracks.error.message);
   }
 
   return {
     tracks: tracks.data.tracks,
+    filter,
   };
 };
