@@ -46,8 +46,8 @@
   </button>
 
   <a class="text-3xl font-medium text-[--logo-color]" href="/">Dwebble</a>
-  <p>Version: {PUBLIC_VERSION}</p>
-  <p>Commit: {PUBLIC_COMMIT}</p>
+  <!-- <p>Version: {PUBLIC_VERSION}</p>
+  <p>Commit: {PUBLIC_COMMIT}</p> -->
 </header>
 
 <main class="mt-16">
