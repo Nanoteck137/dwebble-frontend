@@ -63,6 +63,11 @@
       console.log("load");
     });
 
+    audio.addEventListener("ended", () => {
+      musicManager.nextTrack();
+      musicManager.requestPlay();
+    });
+
     audio.addEventListener("volumechange", () => {
       volume = audio.volume;
     });
