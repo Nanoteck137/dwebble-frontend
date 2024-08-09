@@ -16,7 +16,27 @@
   let artistName = $state("");
   let coverArt = $state("");
 
+  let muted = $state(false);
+
   let audio: HTMLAudioElement;
+
+  function getVolume(): number {
+    const volume = localStorage.getItem("player-volume");
+    if (volume) {
+      return parseFloat(volume);
+    }
+
+    return 1.0;
+  }
+
+  function getMuted(): boolean {
+    const muted = localStorage.getItem("player-muted");
+    if (muted) {
+      return muted === "true";
+    }
+
+    return false;
+  }
 
   onMount(() => {
     audio = new Audio();
@@ -68,12 +88,6 @@
       musicManager.requestPlay();
     });
 
-    audio.addEventListener("volumechange", () => {
-      volume = audio.volume;
-    });
-
-    volume = audio.volume;
-
     musicManager.emitter.on("onTrackChanged", () => {
       const track = musicManager.getCurrentTrack();
       console.log(track);
@@ -111,6 +125,17 @@
   });
 
   onMount(() => {
+    volume = getVolume();
+    muted = getMuted();
+
+    if (muted) {
+      audio.volume = 0.0;
+    } else {
+      audio.volume = volume;
+    }
+  });
+
+  onMount(() => {
     let unsub = musicManager.emitter.on("onQueueUpdated", () => {
       showPlayer = !musicManager.isQueueEmpty();
     });
@@ -139,7 +164,7 @@
   {currentTime}
   {duration}
   {volume}
-  audioMuted={false}
+  audioMuted={muted}
   onPlay={() => {
     audio.play();
   }}
@@ -158,9 +183,23 @@
     audio.currentTime = e;
   }}
   onVolumeChanged={(e) => {
-    audio.volume = e;
+    if (!muted) {
+      audio.volume = e;
+    }
+
+    volume = e;
+    localStorage.setItem("player-volume", e.toString());
   }}
-  onToggleMuted={() => {}}
+  onToggleMuted={() => {
+    muted = !muted;
+    localStorage.setItem("player-muted", muted ? "true" : "false");
+
+    if (muted) {
+      audio.volume = 0;
+    } else {
+      audio.volume = volume;
+    }
+  }}
 />
 
 <SmallPlayer
@@ -192,9 +231,23 @@
     audio.currentTime = e;
   }}
   onVolumeChanged={(e) => {
-    audio.volume = e;
+    if (!muted) {
+      audio.volume = e;
+    }
+
+    volume = e;
+    localStorage.setItem("player-volume", e.toString());
   }}
-  onToggleMuted={() => {}}
+  onToggleMuted={() => {
+    muted = !muted;
+    localStorage.setItem("player-muted", muted ? "true" : "false");
+
+    if (muted) {
+      audio.volume = 0;
+    } else {
+      audio.volume = volume;
+    }
+  }}
 />
 
 <!-- <div
