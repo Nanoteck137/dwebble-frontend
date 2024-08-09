@@ -1,19 +1,3 @@
-<script lang="ts">
-  import { musicManager } from "$lib/music-manager";
-  import { trackToMusicTrack } from "$lib/utils";
-  import type { PageData } from "./$types";
+<script lang="ts"></script>
 
-  export let data: PageData;
-</script>
-
-<button
-  onclick={() => {
-    for (const track of data.tracks) {
-      musicManager.addTrackToQueue(trackToMusicTrack(track));
-    }
-  }}>Add to Queue</button
->
-
-{#each data.tracks as track}
-  <p>{track.name}</p>
-{/each}
+<p class="p-4 text-xl">Home Page</p>
