@@ -8,6 +8,7 @@
     LogIn,
     LogOut,
     Menu,
+    Server,
     User,
     Users,
   } from "lucide-svelte";
@@ -15,7 +16,6 @@
   import AudioPlayer from "$lib/components/AudioPlayer.svelte";
   import Link from "$lib/components/Link.svelte";
   import { browser } from "$app/environment";
-  import { PUBLIC_VERSION, PUBLIC_COMMIT } from "$env/static/public";
 
   let { children, data } = $props();
 
@@ -46,8 +46,6 @@
   </button>
 
   <a class="text-3xl font-medium text-[--logo-color]" href="/">Dwebble</a>
-  <!-- <p>Version: {PUBLIC_VERSION}</p>
-  <p>Commit: {PUBLIC_COMMIT}</p> -->
 </header>
 
 <main class="mt-16">
@@ -115,12 +113,7 @@
       />
 
       {#if data.user.isOwner}
-        <Link
-          title="Dashboard"
-          href="/dashboard"
-          icon={LayoutDashboard}
-          onClick={close}
-        />
+        <Link title="Server" href="/server" icon={Server} onClick={close} />
       {/if}
 
       <form class="w-full" action="/logout" method="POST">

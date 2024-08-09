@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-function createApiResponse<
+export function createApiResponse<
   Data extends z.ZodTypeAny,
   Errors extends z.ZodTypeAny,
 >(data: Data, errors: Errors) {
