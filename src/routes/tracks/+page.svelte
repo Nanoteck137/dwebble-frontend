@@ -26,6 +26,14 @@
 </form>
 
 <div class="flex flex-col">
+  <button
+    onclick={() => {
+      musicManager.clearQueue();
+      for (const track of data.tracks) {
+        musicManager.addTrackToQueue(trackToMusicTrack(track));
+      }
+    }}>Play</button
+  >
   {#each data.tracks as track}
     <div class="group flex items-center gap-2 border-b p-2 pr-4">
       <div class="group relative">
