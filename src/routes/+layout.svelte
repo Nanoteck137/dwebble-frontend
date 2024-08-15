@@ -35,7 +35,7 @@
 </script>
 
 <header
-  class="fixed left-0 right-0 top-0 z-50 flex h-16 items-center gap-4 bg-[--bg-color] px-4 py-2"
+  class="fixed left-0 right-0 top-0 z-30 flex h-16 items-center gap-4 bg-[--bg-color] px-4 py-2"
 >
   <button
     onclick={() => {

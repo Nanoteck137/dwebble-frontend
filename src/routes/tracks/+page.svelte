@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { EllipsisVertical, Play } from "lucide-svelte";
+  import { EllipsisVertical, Play, Plus, X } from "lucide-svelte";
   import type { PageData } from "./$types";
   import { musicManager } from "$lib/music-manager";
   import { trackToMusicTrack } from "$lib/utils";
+  import { enhance } from "$app/forms";
 
   export let data: PageData;
 </script>
@@ -81,6 +82,11 @@
         </p>
       </div>
       <div class="flex items-center">
+        <form action="?/quickAddToPlaylist" method="post" use:enhance>
+          <input type="hidden" name="trackId" value={track.id} />
+          <button title="Quick Add"><Plus size="28" /></button>
+        </form>
+
         <button>
           <EllipsisVertical size="28" />
         </button>

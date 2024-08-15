@@ -6,7 +6,9 @@ import type { GetAuthMe } from "$lib/api/types";
 // for information about these interfaces
 declare global {
   namespace App {
-    // interface Error {}
+    interface Error {
+      type?: string;
+    }
     interface Locals {
       apiClient: ApiClient;
       user?: GetAuthMe;

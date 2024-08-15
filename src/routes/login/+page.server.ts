@@ -13,13 +13,13 @@ export const actions = {
       password: password.toString(),
     });
 
-    if (res.status == "error") {
+    if (!res.success) {
       throw error(res.error.code, { message: res.error.message });
     }
 
     locals.apiClient.setToken(res.data.token);
     const user = await locals.apiClient.getMe();
-    if (user.status == "error") {
+    if (!user.success) {
       throw error(user.error.code, { message: user.error.message });
     }
 

@@ -4,7 +4,8 @@
   inputs = {
     nixpkgs.url      = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url  = "github:numtide/flake-utils";
-    pyrin.url        = "github:nanoteck137/pyrin/v0.4.1";
+    pyrin.url        = "github:nanoteck137/pyrin/v0.6.3";
+    pyrin.inputs.nixpkgs.follows = "nixpkgs";
 
     gitignore.url = "github:hercules-ci/gitignore.nix";
     gitignore.inputs.nixpkgs.follows = "nixpkgs";

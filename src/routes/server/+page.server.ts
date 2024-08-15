@@ -8,7 +8,7 @@ export const load: PageServerLoad = async () => {
 export const actions: Actions = {
   runSync: async ({ locals }) => {
     const res = await locals.apiClient.runSync();
-    if (res.status === "error") {
+    if (!res.success) {
       throw error(res.error.code, res.error.message);
     }
   },

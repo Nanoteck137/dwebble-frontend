@@ -1,5 +1,5 @@
 import { error } from "@sveltejs/kit";
-import type { PageServerLoad } from "./$types";
+import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals, url }) => {
   const query: Record<string, string> = {};
@@ -9,7 +9,8 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   }
 
   const tracks = await locals.apiClient.getTracks({ query });
-  if (tracks.status === "error") {
+  if (!tracks.success) {
+    // TODO(patrik): Fix this
     if (tracks.error.code === 400) {
       return {
         tracks: [],
@@ -24,4 +25,27 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     tracks: tracks.data.tracks,
     filter,
   };
+};
+
+export const actions: Actions = {
+  quickAddToPlaylist: async ({ request, locals, cookies }) => {
+    const formData = await request.formData();
+
+    const trackId = formData.get("trackId");
+    if (!trackId) {
+      throw error(400, "No track id set");
+    }
+
+    const playlistId = cookies.get("quick-playlist");
+    if (!playlistId) {
+      throw error(400, "No quick playlist set");
+    }
+
+    const res = await locals.apiClient.addItemsToPlaylist(playlistId, {
+      tracks: [trackId.toString()],
+    });
+    if (!res.success) {
+      throw error(res.error.code, res.error.message);
+    }
+  },
 };

@@ -3,13 +3,19 @@ import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params, locals }) => {
   const album = await locals.apiClient.getAlbumById(params.id);
-  if (album.status === "error") {
-    throw error(album.error.code, album.error.message);
+  if (!album.success) {
+    throw error(album.error.code, {
+      message: album.error.message,
+      type: album.error.type,
+    });
   }
 
   const tracks = await locals.apiClient.getAlbumTracks(params.id);
-  if (tracks.status === "error") {
-    throw error(tracks.error.code, tracks.error.message);
+  if (!tracks.success) {
+    throw error(tracks.error.code, {
+      message: tracks.error.message,
+      type: tracks.error.type,
+    });
   }
 
   return {
