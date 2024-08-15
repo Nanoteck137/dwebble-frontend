@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   const tracks = await locals.apiClient.getTracks({ query });
   if (!tracks.success) {
     // TODO(patrik): Fix this
-    if (tracks.error.code === 400) {
+    if (tracks.error.type === "INVALID_FILTER") {
       return {
         tracks: [],
         filter,
