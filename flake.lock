@@ -121,16 +121,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1723756102,
-        "narHash": "sha256-BRCHOWIPV0QjdoHieXkPvo5OLTu0Bv4ZWrZVlDE0mC4=",
+        "lastModified": 1723756433,
+        "narHash": "sha256-2JelS9rbv/YjQTy7uysVyeOM/AUeVFLcaRA+6H/MyzU=",
         "owner": "nanoteck137",
         "repo": "pyrin",
-        "rev": "8c113ad0a1ec66f7effaba4d06d9a00e325e1abd",
+        "rev": "4a682fdadefb4432891212cd573afae82e9e0fbf",
         "type": "github"
       },
       "original": {
         "owner": "nanoteck137",
-        "ref": "v0.6.3",
+        "ref": "v0.6.5",
         "repo": "pyrin",
         "type": "github"
       }
