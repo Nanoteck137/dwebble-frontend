@@ -35,7 +35,7 @@
       }
     }}>Play</button
   >
-  {#each data.tracks as track}
+  {#each data.tracks as track, i}
     <div class="group flex items-center gap-2 border-b p-2 pr-4">
       <div class="group relative">
         <img
@@ -48,7 +48,11 @@
           class={`absolute bottom-0 left-0 right-0 top-0 hidden items-center justify-center rounded bg-[--overlay-bg] group-hover:flex`}
           onclick={() => {
             musicManager.clearQueue();
-            musicManager.addTrackToQueue(trackToMusicTrack(track));
+            for (const track of data.tracks) {
+              musicManager.addTrackToQueue(trackToMusicTrack(track), false);
+            }
+            musicManager.setQueueIndex(i);
+
             musicManager.requestPlay();
           }}
         >
