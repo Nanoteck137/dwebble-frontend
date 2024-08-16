@@ -161,7 +161,7 @@
 
 {#if open}
   <button
-    class="absolute inset-0 z-50 bg-[--modal-overlay-bg]"
+    class="fixed inset-0 z-50 bg-[--modal-overlay-bg]"
     onclick={() => {
       open = false;
     }}
