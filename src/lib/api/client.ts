@@ -41,7 +41,7 @@ export class ApiClient extends BaseApiClient {
   
   getAlbumById(id: string, options?: ExtraOptions) {
     const error = createError(
-      z.enum(["ALBUM_NOT_FOUND", "UNKNOWN_ERROR"]),
+      z.enum(["UNKNOWN_ERROR", "ALBUM_NOT_FOUND"]),
       z.map(z.string(), z.string()).optional(),
     )
     return this.request(`/api/v1/albums/${id}`, "GET", api.GetAlbumById, error, undefined, options)
@@ -57,7 +57,7 @@ export class ApiClient extends BaseApiClient {
   
   getTracks(options?: ExtraOptions) {
     const error = createError(
-      z.enum(["UNKNOWN_ERROR", "INVALID_FILTER"]),
+      z.enum(["UNKNOWN_ERROR", "INVALID_FILTER", "INVALID_SORT"]),
       z.map(z.string(), z.string()).optional(),
     )
     return this.request("/api/v1/tracks", "GET", api.GetTracks, error, undefined, options)
@@ -65,7 +65,7 @@ export class ApiClient extends BaseApiClient {
   
   getTrackById(id: string, options?: ExtraOptions) {
     const error = createError(
-      z.enum(["TRACK_NOT_FOUND", "UNKNOWN_ERROR"]),
+      z.enum(["UNKNOWN_ERROR", "TRACK_NOT_FOUND"]),
       z.map(z.string(), z.string()).optional(),
     )
     return this.request(`/api/v1/tracks/${id}`, "GET", api.GetTrackById, error, undefined, options)
@@ -85,14 +85,6 @@ export class ApiClient extends BaseApiClient {
       z.map(z.string(), z.string()).optional(),
     )
     return this.request("/api/v1/sync", "POST", z.undefined(), error, undefined, options)
-  }
-  
-  createQueue(options?: ExtraOptions) {
-    const error = createError(
-      z.enum(["UNKNOWN_ERROR"]),
-      z.map(z.string(), z.string()).optional(),
-    )
-    return this.request("/api/v1/queue", "POST", api.PostQueue, error, undefined, options)
   }
   
   getTags(options?: ExtraOptions) {

@@ -73,11 +73,6 @@ export const GetSync = z.object({
 });
 export type GetSync = z.infer<typeof GetSync>;
 
-export const PostQueue = z.object({
-  tracks: z.array(Track),
-});
-export type PostQueue = z.infer<typeof PostQueue>;
-
 export const Tag = z.object({
   id: z.string(),
   name: z.string(),
