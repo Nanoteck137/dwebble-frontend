@@ -11,7 +11,7 @@
 <p>Num Tracks: {data.tracks.length}</p>
 
 <form class="px-4" method="GET">
-  <div class="flex flex-col">
+  <div class="flex flex-col gap-2">
     <input
       class="border-1 h-8 rounded-[50px] border-[--input-border-color] bg-[--input-bg-color] px-5 text-sm text-[--input-fg-color] placeholder:text-[--input-placeholder-color] focus:border-[--input-focus-border-color] focus:ring-0"
       type="text"
@@ -19,10 +19,21 @@
       placeholder="Filter"
       value={data.filter ?? ""}
     />
-    {#if data.filterError}
-      <p class="text-red-400">{data.filterError}</p>
-    {/if}
+    <input
+      class="border-1 h-8 rounded-[50px] border-[--input-border-color] bg-[--input-bg-color] px-5 text-sm text-[--input-fg-color] placeholder:text-[--input-placeholder-color] focus:border-[--input-focus-border-color] focus:ring-0"
+      type="text"
+      name="sort"
+      placeholder="Sort"
+      value={data.sort ?? ""}
+    />
   </div>
+
+  {#if data.filterError}
+    <p class="text-red-400">{data.filterError}</p>
+  {/if}
+  {#if data.sortError}
+    <p class="text-red-400">{data.sortError}</p>
+  {/if}
   <button>Filter</button>
 </form>
 

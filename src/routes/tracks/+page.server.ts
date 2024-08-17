@@ -8,6 +8,11 @@ export const load: PageServerLoad = async ({ locals, url }) => {
     query["filter"] = filter;
   }
 
+  const sort = url.searchParams.get("sort");
+  if (sort) {
+    query["sort"] = sort;
+  }
+
   const tracks = await locals.apiClient.getTracks({ query });
   if (!tracks.success) {
     // TODO(patrik): Fix this
@@ -15,7 +20,17 @@ export const load: PageServerLoad = async ({ locals, url }) => {
       return {
         tracks: [],
         filter,
+        sort,
         filterError: tracks.error.message,
+      };
+    }
+
+    if (tracks.error.type === "INVALID_SORT") {
+      return {
+        tracks: [],
+        filter,
+        sort,
+        sortError: tracks.error.message,
       };
     }
     throw error(tracks.error.code, tracks.error.message);
@@ -24,6 +39,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
   return {
     tracks: tracks.data.tracks,
     filter,
+    sort,
   };
 };
 
