@@ -12,7 +12,7 @@
     User,
     Users,
   } from "lucide-svelte";
-  import "../../app.css";
+  import "../app.css";
   import AudioPlayer from "$lib/components/AudioPlayer.svelte";
   import Link from "$lib/components/Link.svelte";
   import { browser } from "$app/environment";
