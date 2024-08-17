@@ -5,28 +5,40 @@ import { error, redirect, type Handle } from "@sveltejs/kit";
 const apiAddress = env.API_ADDRESS ? env.API_ADDRESS : "";
 
 export const handle: Handle = async ({ event, resolve }) => {
+  const url = new URL(event.request.url);
+
   let addr = apiAddress;
   if (addr == "") {
-    addr = new URL(event.request.url).origin;
+    addr = url.origin;
   }
   const client = new ApiClient(addr);
 
+  const systemInfo = await client.getSystemInfo();
+  if (!systemInfo.success) {
+    throw error(systemInfo.error.code, { message: systemInfo.error.message });
+  }
+
+  console.log(systemInfo.data);
+
+  if (!systemInfo.data.isSetup && url.pathname !== "/setup") {
+    throw redirect(302, "/setup");
+    // throw error(500, "Server not setup");
+  }
+
   const auth = event.cookies.get("auth");
-  if (auth) {
+  if (auth && systemInfo.data.isSetup) {
     const obj = JSON.parse(auth);
     client.setToken(obj.token);
 
     const me = await client.getMe();
-    if (me.status === "error") {
-      throw error(500, "Failed to get auth user: " + me.error.message);
+    if (!me.success) {
+      throw error(me.error.code, { message: me.error.message });
     }
 
     event.locals.user = me.data;
   }
 
   event.locals.apiClient = client;
-
-  const url = new URL(event.request.url);
 
   if (url.pathname === "/login" && event.locals.user) {
     throw redirect(303, "/");
