@@ -50,6 +50,7 @@ export const Track = z.object({
   artistId: z.string(),
   albumName: z.string(),
   artistName: z.string(),
+  available: z.boolean(),
   tags: z.array(z.string()),
   genres: z.array(z.string()),
 });

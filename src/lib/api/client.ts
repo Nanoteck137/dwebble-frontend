@@ -57,7 +57,7 @@ export class ApiClient extends BaseApiClient {
   
   getTracks(options?: ExtraOptions) {
     const error = createError(
-      z.enum(["UNKNOWN_ERROR", "INVALID_FILTER", "INVALID_SORT"]),
+      z.enum(["INVALID_SORT", "UNKNOWN_ERROR", "INVALID_FILTER"]),
       z.map(z.string(), z.string()).optional(),
     )
     return this.request("/api/v1/tracks", "GET", api.GetTracks, error, undefined, options)
